@@ -1,0 +1,7 @@
+*.exe
+*.o
+*.a
+imgui.ini
+log.txt
+build/
+.vscode/
