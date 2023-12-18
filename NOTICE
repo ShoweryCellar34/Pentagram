@@ -1,6 +1,6 @@
 This project uses the following projects:
 
-- ImGui: The license for ImGui can be found at `imgui/LICENSE.txt`.
+- ImGui: The license for ImGui can be found at `imgui/imgui/LICENSE.txt`.
 - SDL: The license for SDL can be found at `SDL/LICENCE.txt`.
 - glm: The license for glm can be found at `glm/copying.txt`.
 - GLAD: The license for GLAD can be found at `glad/LICENSE`.
