@@ -17,8 +17,19 @@
 #include <fstream>
 #include <sstream>
 
-class Logger
+enum loggerFlags {
+    NOTE = 1,
+    WARNING = 2,
+    ERROR = 3,
+    FATAL = 4
+};
+
+class logger
 {
 public:
-    
+
+    void log(int level, std::string message)
+    {
+        std::string buffer;
+    }
 };
