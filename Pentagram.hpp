@@ -16,6 +16,7 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <ctime>
 
 enum loggerFlags {
     NOTE = 1,
@@ -26,10 +27,22 @@ enum loggerFlags {
 
 class logger
 {
+private:
+    char buffer[80];
+    std::string getTime()
+    {
+        time_t currentTime = time(0);
+        strftime(buffer, 80, "%d-%m-%Y %H:%M:%S", localtime(&currentTime));
+        return buffer;
+    }
+
+    std::string numToStr(int number)
+    {
+    }
 public:
 
     void log(int level, std::string message)
     {
-        std::string buffer;
+        std::string buffer = '[' +  + "][" + getTime() + ']';
     }
 };
