@@ -16,7 +16,6 @@
 #include <fstream>
 #include <string>
 #include <ctime>
-#include <bitset>
 
 enum loggerFlags
 {
@@ -26,106 +25,44 @@ enum loggerFlags
     FATAL = 4
 };
 
-enum timeFlags
+namespace PENTA
 {
-    SECOND = 1,
-    MINUTE = 2,
-    HOUR = 4,
-    DAY = 8,
-    MONTH = 16,
-    YEAR = 32,
-    ALL = 64
-};
+    struct time
+    {
+        std::string second, minute, hour, day, month, year;
+    };
+}
+
+void calculateTime(PENTA::time *aaa)
+{
+    char *buffer;
+    std::string format = "%S%M%H%d%m%Y";
+    time_t currentTime = time(0);
+    aaa->second = std::to_string(strftime(buffer, 80, format.c_str(), localtime(&currentTime)));
+    std::cout << aaa->second << '\n';
+}
 
 class logger
 {
 public:
     void log(int level, std::string message)
     {
-        std::string buffer = '[' + numToStr(level) + "][" + getTime(ALL, true) + "]: " + message;
+        calculateTime(&currentTime);
+        myfile.open (date.day + '-' + date.month + '-' + date.year + ".txt");
+        std::string buffer = '[' + numToStr(level) + "][" + currentTime.hour + ':' + currentTime.minute + ':' + currentTime.second + "]: " + message;
         std::cout << buffer << std::endl;
-        std::string logName = getTime(DAY | MONTH | YEAR, true);
-        myfile.open (logName + ".txt");
-        myfile << "Writing this to a file.\n";
+    }
+
+    logger()
+    {
+        calculateTime(&date);
+        myfile.open (date.day + '-' + date.month + '-' + date.year + ".txt");
         myfile.close();
     }
 private:
     std::ofstream myfile;
-    char buffer[80];
-    std::string getTime(int components, bool filler)
-    {
-        std::bitset<7> flags(components);
-        std::string format;
-        if(flags.test(6))
-        {
-            format.append("%d-%m-%Y %H:%M:%S");
-        }
-        else
-        {
-            if(flags.test(3))
-            {
-                if(flags.test(4) & filler)
-                {
-                    format.append("%d-");
-                }
-                else
-                {
-                    format.append("%d");
-                }
-            }
-            if(flags.test(4))
-            {
-                if(flags.test(5) & filler)
-                {
-                    format.append("%m-");
-                }
-                else
-                {
-                    format.append("%m");
-                }
-            }
-            if(flags.test(5))
-            {
-                if(flags.test(2) & filler)
-                {
-                    format.append("%Y ");
-                }
-                else
-                {
-                    format.append("%Y");
-                }
-            }
-            if(flags.test(2))
-            {
-                if(flags.test(1) & filler)
-                {
-                    format.append("%H:");
-                }
-                else
-                {
-                    format.append("%H");
-                }
-            }
-            if(flags.test(1))
-            {
-                if(flags.test(0) & filler)
-                {
-                    format.append("%M:");
-                }
-                else
-                {
-                    format.append("%M");
-                }
-            }
-            if(flags.test(0))
-            {
-                format.append("%S");
-            }
-        }
-        time_t currentTime = time(0);
-        strftime(buffer, 80, format.c_str(), localtime(&currentTime));
-        return buffer;
-    }
+    PENTA::time date;
+    PENTA::time currentTime;
 
     std::string numToStr(int number)
     {
