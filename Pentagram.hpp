@@ -1,3 +1,5 @@
+#pragma once
+
 #include <GLAD/gl.h>
 
 #include <glm/glm.hpp>
@@ -33,13 +35,12 @@ namespace PENTA
     };
 }
 
-void calculateTime(PENTA::time *aaa)
+void calculateTime(PENTA::time *inputTime)
 {
-    char *buffer;
-    std::string format = "%S%M%H%d%m%Y";
     time_t currentTime = time(0);
-    aaa->second = std::to_string(strftime(buffer, 80, format.c_str(), localtime(&currentTime)));
-    std::cout << aaa->second << '\n';
+    std::tm* now = std::localtime(&currentTime);
+    inputTime->second = std::to_string(now->tm_sec);
+    inputTime->minute = std::to_string(now->tm_min);
 }
 
 class logger
