@@ -41,6 +41,7 @@ void calculateTime(PENTA::time *inputTime)
     std::tm* now = std::localtime(&currentTime);
     inputTime->second = std::to_string(now->tm_sec);
     inputTime->minute = std::to_string(now->tm_min);
+    inputTime->hour = std::to_string(now->tm_hour);
 }
 
 class logger
