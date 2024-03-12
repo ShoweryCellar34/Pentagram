@@ -33,16 +33,21 @@ namespace PENTA
     {
         std::string second, minute, hour, day, month, year;
     };
+
+    // Fills a structure with time data,or if no structure specified, returns the data.
+    void calculateTime(PENTA::time *inputTime)
+    {
+        time_t currentTime = std::time(0);
+        std::tm* now = std::localtime(&currentTime);
+        inputTime->second = std::to_string(now->tm_sec);
+        inputTime->minute = std::to_string(now->tm_min);
+        inputTime->hour = std::to_string(now->tm_hour);
+        inputTime->day = std::to_string(now->tm_mday);
+        inputTime->month = std::to_string(now->tm_mon + 1);
+        inputTime->year = std::to_string(now->tm_year + 1900);
+    }
 }
 
-void calculateTime(PENTA::time *inputTime)
-{
-    time_t currentTime = time(0);
-    std::tm* now = std::localtime(&currentTime);
-    inputTime->second = std::to_string(now->tm_sec);
-    inputTime->minute = std::to_string(now->tm_min);
-    inputTime->hour = std::to_string(now->tm_hour);
-}
 
 class logger
 {
@@ -50,21 +55,20 @@ public:
     void log(int level, std::string message)
     {
         calculateTime(&currentTime);
-        myfile.open (date.day + '-' + date.month + '-' + date.year + ".txt");
-        std::string buffer = '[' + numToStr(level) + "][" + currentTime.hour + ':' + currentTime.minute + ':' + currentTime.second + "]: " + message;
+        buffer = '[' + numToStr(level) + "][" + currentTime.hour + ':' + currentTime.minute + ':' + currentTime.second + "]: " + message;
         std::cout << buffer << std::endl;
+        myfile << buffer << std::endl;
     }
 
     logger()
     {
-        calculateTime(&date);
-        myfile.open (date.day + '-' + date.month + '-' + date.year + ".txt");
-        myfile.close();
+        calculateTime(&currentTime);
+        myfile.open(currentTime.day + '-' + currentTime.month + '-' + currentTime.year + ".txt");
     }
 private:
-    std::ofstream myfile;
-    PENTA::time date;
     PENTA::time currentTime;
+    std::string buffer;
+    std::ofstream myfile;
 
     std::string numToStr(int number)
     {
