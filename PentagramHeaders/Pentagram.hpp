@@ -34,7 +34,7 @@ namespace PENTA
         std::string second, minute, hour, day, month, year;
     };
 
-    // Fills a structure with time data,or if no structure specified, returns the data.
+    // Fills a structure with time data, or if no structure specified, returns the data.
     void calculateTime(PENTA::time *inputTime)
     {
         time_t currentTime = std::time(0);
