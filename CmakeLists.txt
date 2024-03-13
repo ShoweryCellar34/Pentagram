@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.27)
 project(Pentagram DESCRIPTION "A framwork for building apps" LANGUAGES CXX HOMEPAGE_URL "https://github.com/ShoweryCellar34/Pentagram")
-add_library(Pentagram STATIC "Pentagram.hpp")
+add_library(Pentagram STATIC)
 set_target_properties(Pentagram PROPERTIES LINKER_LANGUAGE CXX)
 
 
