@@ -33,10 +33,18 @@ namespace PNT
     class logger
     {
     public:
-        void log(int level, std::string message)
+        void log(int level, const char *message)
         {
             calculateTime(&currentTime);
-            buffer = '[' + numToStr(level) + "][" + currentTime.hour + ':' + currentTime.minute + ':' + currentTime.second + "]: " + message;
+            buffer = ('[' + currentTime.hour + ':' + currentTime.minute + ':' + currentTime.second + "][" + numToStr(level) + "]: " + message);
+            std::cout << buffer << std::endl;
+            myfile << buffer << std::endl;
+        }
+        void log(int level, const char *message, std::string sender)
+        {
+            calculateTime(&currentTime);
+            sender = sender + "][";
+            buffer = ('[' + currentTime.hour + ':' + currentTime.minute + ':' + currentTime.second + "][" + sender + numToStr(level) + "]: " + message);
             std::cout << buffer << std::endl;
             myfile << buffer << std::endl;
         }
