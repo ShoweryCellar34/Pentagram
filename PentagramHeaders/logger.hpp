@@ -4,14 +4,6 @@
 
 namespace PNT
 {
-    enum loggerFlags
-    {
-        NOTE = 1,
-        WARNING = 2,
-        ERROR = 3,
-        FATAL = 4
-    };
-
     struct timeData
     {
         std::string second, minute, hour, day, month, year;
@@ -37,8 +29,8 @@ namespace PNT
         {
             calculateTime(&currentTime);
             buffer = ('[' + currentTime.hour + ':' + currentTime.minute + ':' + currentTime.second + "][" + numToStr(level) + "]: " + message);
-            std::cout << buffer << std::endl;
-            myfile << buffer << std::endl;
+            std::cout << std::endl << buffer;
+            myfile << std::endl << buffer;
         }
         void log(int level, const char *message, std::string sender)
         {
@@ -47,6 +39,12 @@ namespace PNT
             buffer = ('[' + currentTime.hour + ':' + currentTime.minute + ':' + currentTime.second + "][" + sender + numToStr(level) + "]: " + message);
             std::cout << buffer << std::endl;
             myfile << buffer << std::endl;
+        }
+        void postfix(const char *postfix)
+        {
+            buffer = ' ' + postfix;
+            std::cout << std::endl << buffer;
+            myfile << std::endl << buffer;
         }
 
         logger()
