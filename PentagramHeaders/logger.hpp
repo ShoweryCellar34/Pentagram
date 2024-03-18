@@ -25,26 +25,28 @@ namespace PNT
     class logger
     {
     public:
+        std::string sender;
+
         void log(int level, const char *message)
         {
             calculateTime(&currentTime);
-            buffer = ('[' + currentTime.hour + ':' + currentTime.minute + ':' + currentTime.second + "][" + numToStr(level) + "]: " + message);
+            buffer = ('[' + currentTime.hour + ':' + currentTime.minute + ':' + currentTime.second + "][" + numToStr(level) + (sender.empty() ? "" : "][" + sender) + "]: " + message);
             std::cout << std::endl << buffer;
             myfile << std::endl << buffer;
         }
         void log(int level, const char *message, std::string sender)
         {
             calculateTime(&currentTime);
-            sender = sender + "][";
-            buffer = ('[' + currentTime.hour + ':' + currentTime.minute + ':' + currentTime.second + "][" + sender + numToStr(level) + "]: " + message);
-            std::cout << buffer << std::endl;
+            sender = "][" + sender;
+            buffer = ('[' + currentTime.hour + ':' + currentTime.minute + ':' + currentTime.second + "][" + numToStr(level) + sender + "]: " + message);
+            std::cout << std::endl << buffer;
             myfile << buffer << std::endl;
         }
         void postfix(const char *postfix)
         {
-            buffer = ' ' + postfix;
-            std::cout << std::endl << buffer;
-            myfile << std::endl << buffer;
+            buffer = postfix;
+            std::cout << buffer;
+            myfile << buffer;
         }
 
         logger()
