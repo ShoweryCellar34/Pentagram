@@ -36,6 +36,7 @@ namespace PNT
         log.postfix("Succeeded");
 
         // OpenGL Context Creation
+        log.sender = "SDL_GL";
         log.log(1, "Creating OpenGL Context... ");
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
@@ -93,7 +94,7 @@ namespace PNT
 
     int vsync(int mode)
     {
-        log.log(1, "Configuring Vsync... ");
+        log.log(1, "Configuring Vsync... ", "SDL_GL");
         if (SDL_GL_SetSwapInterval(mode) == -1)
         {
             log.postfix("Failed");

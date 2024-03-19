@@ -40,7 +40,7 @@ namespace PNT
             sender = "][" + sender;
             buffer = ('[' + currentTime.hour + ':' + currentTime.minute + ':' + currentTime.second + "][" + numToStr(level) + sender + "]: " + message);
             std::cout << std::endl << buffer;
-            myfile << buffer << std::endl;
+            myfile << std::endl << buffer;
         }
         void postfix(const char *postfix)
         {
