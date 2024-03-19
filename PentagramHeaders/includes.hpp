@@ -1,6 +1,6 @@
 #pragma once
 
-#include <GLAD/gl.h>
+#include <GLAD/glad.h>
 
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>

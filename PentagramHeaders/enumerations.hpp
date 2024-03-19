@@ -7,4 +7,11 @@ namespace PNT
         ERROR = 3,
         FATAL = 4
     };
+
+    enum vsyncFlags
+    {
+        ADAPTIVE = -1,
+        OFF,
+        ON
+    };
 }

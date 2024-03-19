@@ -47,13 +47,35 @@ namespace PNT
         log.postfix("Succeeded");
 
         // OpenGL Context Setup
-        log.log(1, "Seting up OpenGL context");
+        log.log(1, "Seting up OpenGL context... ");
         SDLErrorCode = SDL_GL_MakeCurrent(window, openglContext);
         if (SDLErrorCode != 0)
         {
-            log.FatalError("SDL Failed to Setup OpenGL Context: " + (std::string)SDL_GetError());
-            log.FatalError("Exiting With Code " + std::to_string(SDLErrorCode));
-            return SDLErrorCode;
+            log.postfix("Failed");
+            log.log(4, SDL_GetError());
         }
+        log.postfix("Succeeded");
+
+        // Setup GLAD
+        log.sender = "GLAD";
+        log.log(1, "Initializing GLAD... ");
+        if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
+        {
+            log.postfix("Failed");
+        }
+        log.postfix("Succeeded");
+    }
+
+    int vsync(int mode)
+    {
+        log.log(1, "Configuring Vsync... ");
+        if (SDL_GL_SetSwapInterval(mode) == -1)
+        {
+            log.postfix("Failed");
+            log.log(3, SDL_GetError());
+            return -1;
+        }
+        log.postfix("Succeeded");
+        return 0;
     }
 }
