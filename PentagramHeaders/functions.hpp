@@ -7,6 +7,8 @@ namespace PNT
 {
     void initialize(int windowWidth = 700, int windowHeight = 400, const char *windowTitle = "Window")
     {
+        const char *oldSender = log.sender.c_str();
+
         // Windows Flags
         uint32_t windowFlags = (SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY);
 
@@ -64,6 +66,29 @@ namespace PNT
             log.postfix("Failed");
         }
         log.postfix("Succeeded");
+
+        // Setup ImGui
+        log.sender = "ImGui";
+        IMGUI_CHECKVERSION();
+        ImGui::CreateContext();
+        ImGuiIO &io = ImGui::GetIO();
+        io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+        io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+        ImGui::StyleColorsDark();
+        log.log(1, "Initializing Imgui For SDL2... ");
+        if (ImGui_ImplSDL3_InitForOpenGL(window, openglContext) == 0)
+        {
+            log.postfix("Failed");
+        }
+        log.postfix("Succeeded");
+        log.log(1, "Initializing Imgui For OpenGL... ");
+        if (ImGui_ImplOpenGL3_Init(glsl_version) == 0)
+        {
+            log.postfix("Failed");
+        }
+        log.postfix("Succeeded");
+
+        log.sender = oldSender;
     }
 
     int vsync(int mode)
