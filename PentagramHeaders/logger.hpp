@@ -27,14 +27,14 @@ namespace PNT
     public:
         std::string sender;
 
-        void log(int level, const char *message)
+        void log(unsigned short level, const char *message)
         {
             calculateTime(&currentTime);
             buffer = ('[' + currentTime.hour + ':' + currentTime.minute + ':' + currentTime.second + "][" + numToStr(level) + (sender.empty() ? "" : "][" + sender) + "]: " + message);
             std::cout << std::endl << buffer;
             myfile << std::endl << buffer;
         }
-        void log(int level, const char *message, std::string sender)
+        void log(unsigned short level, const char *message, std::string sender)
         {
             calculateTime(&currentTime);
             sender = "][" + sender;
@@ -59,20 +59,20 @@ namespace PNT
         std::string buffer;
         std::ofstream myfile;
 
-        std::string numToStr(int number)
+        std::string numToStr(unsigned short number)
         {
             switch(number)
             {
-                case 1:
+                case 0:
                     return "NOTE";
                     break;
-                case 2:
+                case 1:
                     return "WARN";
                     break;
-                case 3:
+                case 2:
                     return "ERROR";
                     break;
-                case 4:
+                case 3:
                     return "FATAL";
                     break;
                 default:
