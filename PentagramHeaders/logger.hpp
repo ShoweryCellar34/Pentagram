@@ -1,7 +1,7 @@
 #pragma once
 
 #include <includes.hpp>
-#include <functions/time.hpp>
+#include <utilities/time.hpp>
 
 namespace PNT
 {
