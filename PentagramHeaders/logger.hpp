@@ -4,33 +4,15 @@
 
 namespace PNT
 {
-    struct timeData
-    {
-        std::string second, minute, hour, day, month, year;
-    };
-
-    // Fills a structure with time data, or if no structure specified, returns the data.
-    void calculateTime(timeData *inputTime)
-    {
-        time_t currentTime = std::time(0);
-        std::tm* now = std::localtime(&currentTime);
-        inputTime->second = std::to_string(now->tm_sec);
-        inputTime->minute = std::to_string(now->tm_min);
-        inputTime->hour = std::to_string(now->tm_hour);
-        inputTime->day = std::to_string(now->tm_mday);
-        inputTime->month = std::to_string(now->tm_mon + 1);
-        inputTime->year = std::to_string(now->tm_year + 1900);
-    }
-
     class logger
     {
     public:
-        std::string sender;
+        std::string source;
 
         void log(unsigned short level, const char *message)
         {
             calculateTime(&currentTime);
-            buffer = ('[' + currentTime.hour + ':' + currentTime.minute + ':' + currentTime.second + "][" + numToStr(level) + (sender.empty() ? "" : "][" + sender) + "]: " + message);
+            buffer = ('[' + currentTime.hour + ':' + currentTime.minute + ':' + currentTime.second + "][" + numToStr(level) + (source.empty() ? "" : "][" + source) + "]: " + message);
             std::cout << std::endl << buffer;
             myfile << std::endl << buffer;
         }
@@ -55,6 +37,24 @@ namespace PNT
             myfile.open(currentTime.day + '-' + currentTime.month + '-' + currentTime.year + ".txt");
         }
     private:
+        struct timeData
+        {
+            std::string second, minute, hour, day, month, year;
+        };
+
+        // Fills a structure with time data, or if no structure specified, returns the data.
+        void calculateTime(timeData *inputTime)
+        {
+            time_t currentTime = std::time(0);
+            std::tm* now = std::localtime(&currentTime);
+            inputTime->second = std::to_string(now->tm_sec);
+            inputTime->minute = std::to_string(now->tm_min);
+            inputTime->hour = std::to_string(now->tm_hour);
+            inputTime->day = std::to_string(now->tm_mday);
+            inputTime->month = std::to_string(now->tm_mon + 1);
+            inputTime->year = std::to_string(now->tm_year + 1900);
+        }
+
         timeData currentTime;
         std::string buffer;
         std::ofstream myfile;
