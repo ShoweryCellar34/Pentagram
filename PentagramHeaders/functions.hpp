@@ -11,7 +11,7 @@ namespace PNT
         int errorCode;
     };
 
-    std::optional<errorData> initialize(unsigned short windowWidth = 700, unsigned short windowHeight = 400, const char *windowTitle = "Window")
+    errorData initialize(unsigned short windowWidth = 700, unsigned short windowHeight = 400, const char *windowTitle = "Window")
     {
         errorData errorData;
 
@@ -128,9 +128,10 @@ namespace PNT
         log.postfix("Succeeded");
 
         log.source = oldSource;
+        return errorData;
     }
 
-    std::optional<errorData> vsync(int mode)
+    errorData vsync(int mode)
     {
         errorData errorData;
         int errorCode;
@@ -144,6 +145,7 @@ namespace PNT
             return errorData;
         }
         log.postfix("Succeeded");
+        return errorData;
     }
 
     struct timeData
