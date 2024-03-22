@@ -9,7 +9,8 @@ namespace PNT
         errorData errorData;
         int errorCode;
         log.log(0, "Configuring Vsync... ", "SDL_GL");
-        if (SDL_GL_SetSwapInterval(mode) == -1)
+        errorCode = SDL_GL_SetSwapInterval(mode);
+        if(errorCode == -1)
         {
             log.postfix("Failed");
             log.log(2, SDL_GetError());

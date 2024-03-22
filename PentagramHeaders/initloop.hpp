@@ -11,7 +11,13 @@ namespace PNT
         int errorCode;
     };
 
-    errorData initialize(unsigned short windowWidth = 700, unsigned short windowHeight = 400, const char *windowTitle = "Window")
+    uint32_t windowFlags = 0;
+    const char *glsl_version = "#version 460";
+    SDL_Window *window = nullptr;
+    SDL_GLContext openglContext = nullptr;
+    ImGuiIO io;
+
+    errorData initialize(unsigned short windowWidth = 700, unsigned short windowHeight = 400, const char *windowTitle = "Window", uint32_t windowsFlagsTemp = (SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY))
     {
         errorData errorData;
 
@@ -24,7 +30,7 @@ namespace PNT
         oldSource[log.source.length()] = '\0';
 
         // Windows Flags
-        uint32_t windowFlags = (SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY);
+        windowFlags = windowsFlagsTemp;
 
         // SDL Setup
         log.source = "SDL";
@@ -40,10 +46,8 @@ namespace PNT
         }
         log.postfix("Succeeded");
 
-        const char *glsl_version = "#version 460";
-
+        window = SDL_CreateWindow(windowTitle, windowWidth, windowHeight, windowFlags);
         // Window Setup
-        SDL_Window *window = SDL_CreateWindow(windowTitle, windowWidth, windowHeight, windowFlags);
         log.log(0, "Creating Window... ");
         if (window == NULL)
         {
@@ -61,8 +65,8 @@ namespace PNT
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-        SDL_GLContext openglContext = SDL_GL_CreateContext(window);
-        if (openglContext == NULL)
+        openglContext = SDL_GL_CreateContext(window);
+        if(openglContext == NULL)
         {
             log.postfix("Failed");
             log.log(3, SDL_GetError());
@@ -102,7 +106,7 @@ namespace PNT
         log.source = "ImGui";
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
-        ImGuiIO &io = ImGui::GetIO();
+        io = ImGui::GetIO();
         io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
         io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
         ImGui::StyleColorsDark();
@@ -128,6 +132,40 @@ namespace PNT
         log.postfix("Succeeded");
 
         log.source = oldSource;
+        return errorData;
+    }
+
+    SDL_Event startFrame(bool *running)
+    {
+        glClearColor(255, 255, 255, 255);
+        glClear(GL_COLOR_BUFFER_BIT);
+        SDL_Event event;
+        while (SDL_PollEvent(&event))
+        {
+            ImGui_ImplSDL3_ProcessEvent(&event);
+        }
+
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplSDL3_NewFrame();
+        ImGui::NewFrame();
+        return event;
+    }
+
+    errorData endFrame()
+    {
+        errorData errorData;
+        int errorCode;
+        ImGui::Render();
+        glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        errorCode = SDL_GL_SwapWindow(window);
+        if(errorCode != 0)
+        {
+            log.log(3, "Failed to swap framebuffers");
+            log.log(3, SDL_GetError());
+            errorData.errorSource = "SDL_GL";
+            errorData.errorCode = errorCode;
+        }
         return errorData;
     }
 }
