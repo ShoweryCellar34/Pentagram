@@ -1,5 +1,4 @@
 #pragma once
-#define CORE
 
 #include <includes.hpp>
 #include <logger.hpp>
