@@ -1,4 +1,5 @@
 #pragma once
+#define CORE
 
 #include <includes.hpp>
 #include <logger.hpp>
@@ -17,6 +18,7 @@ namespace PNT
     SDL_GLContext openglContext = nullptr;
     ImGuiIO io;
 
+    // Initialize SDL, GLAD and ImGui. Returns an error data struct
     errorData initialize(unsigned short windowWidth = 700, unsigned short windowHeight = 400, const char *windowTitle = "Window", uint32_t windowsFlagsTemp = (SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY))
     {
         errorData errorData;

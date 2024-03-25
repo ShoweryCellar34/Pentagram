@@ -1,4 +1,5 @@
 #pragma once
+#define LOGGER
 
 #include <includes.hpp>
 #include <utilities/time.hpp>

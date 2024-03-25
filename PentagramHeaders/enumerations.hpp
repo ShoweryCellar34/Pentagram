@@ -2,6 +2,7 @@
 
 namespace PNT
 {
+    #ifdef LOGGER
     enum loggerFlags
     {
         NOTE,
@@ -9,11 +10,14 @@ namespace PNT
         ERROR,
         FATAL
     };
+    #endif
 
+    #ifdef VSYNC
     enum vsyncFlags
     {
         ADAPTIVE = -1,
         OFF,
         ON
     };
+    #endif
 }
