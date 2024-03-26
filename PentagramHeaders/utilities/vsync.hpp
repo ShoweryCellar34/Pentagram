@@ -5,6 +5,7 @@
 
 namespace PNT
 {
+    // Toggles vsync (some systems support adaptive vsync), returns an error data struct.
     errorData vsync(int mode)
     {
         errorData errorData;

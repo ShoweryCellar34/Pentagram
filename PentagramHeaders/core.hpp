@@ -17,10 +17,11 @@ namespace PNT
     SDL_GLContext openglContext = nullptr;
     ImGuiIO io;
 
-    // Initialize SDL, GLAD and ImGui. Returns an error data struct
+    // Initialize SDL, GLAD and ImGui. Returns an error data struct.
     errorData initialize(unsigned short windowWidth = 700, unsigned short windowHeight = 400, const char *windowTitle = "Window", uint32_t windowsFlagsTemp = (SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY))
     {
         errorData errorData;
+        int errorCode = 0;
 
         // Get the current source and save it for later
         const char *ptr = log.source.c_str();
@@ -36,7 +37,7 @@ namespace PNT
         // SDL Setup
         log.source = "SDL";
         log.log(0, "Initializing SDL... ");
-        int errorCode = SDL_Init(SDL_INIT_VIDEO);
+        errorCode = SDL_Init(SDL_INIT_VIDEO);
         if (errorCode != 0)
         {
             log.postfix("Failed");
@@ -136,6 +137,38 @@ namespace PNT
         return errorData;
     }
 
+    // Quits everything. Returns an error data struct.
+    errorData deinitialize()
+    {
+        errorData errorData;
+        int errorCode = 0;
+
+        log.log(0, "Quitting ImGui... ", "ImGui");
+        ImGui_ImplOpenGL3_Shutdown();
+        ImGui_ImplSDL3_Shutdown();
+        ImGui::DestroyContext();
+        log.postfix("Succeeded");
+        log.log(0, "Deleting the OpenGL Context... ", "SDL_GL");
+        errorCode = SDL_GL_DeleteContext(openglContext);
+        if(errorCode != 0)
+        {
+            log.postfix("Failed");
+            log.log(2, SDL_GetError(), "SDL_GL");
+            errorData.errorCode = errorCode;
+            errorData.errorSource = "SDL_GL";
+            return errorData;
+        }
+        log.postfix("Succeeded");
+        log.log(0, "Destroying Window... ", "SDL");
+        SDL_DestroyWindow(window);
+        log.postfix("Succeeded");
+        log.log(0, "Quitting SDL... ", "SDL");
+        SDL_Quit();
+        log.postfix("Succeeded");
+        return errorData;
+    }
+
+    // Calls glClearColor, starts the ImGui frame and returns the Event (Quitting the window is automaticly handled).
     SDL_Event startFrame(bool *running)
     {
         glClearColor(255, 255, 255, 255);
@@ -156,6 +189,7 @@ namespace PNT
         return event;
     }
 
+    // Renders ImGui and swaps the framebuffers, returns an error data struct.
     errorData endFrame()
     {
         errorData errorData;

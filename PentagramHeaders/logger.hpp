@@ -11,6 +11,7 @@ namespace PNT
     public:
         std::string source;
 
+        // Logs a message with a level.
         void log(unsigned short level, const char *message)
         {
             calculateTime(&currentTime);
@@ -18,6 +19,7 @@ namespace PNT
             std::cout << std::endl << buffer;
             myfile << std::endl << buffer;
         }
+        // Logs a message with a level.
         void log(unsigned short level, const char *message, std::string sender)
         {
             calculateTime(&currentTime);
@@ -26,6 +28,7 @@ namespace PNT
             std::cout << std::endl << buffer;
             myfile << std::endl << buffer;
         }
+        // Postfixes a message on to the end of the previous message.
         void postfix(const char *postfix)
         {
             buffer = postfix;

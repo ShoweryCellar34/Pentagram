@@ -9,7 +9,7 @@ namespace PNT
         std::string second, minute, hour, day, month, year;
     };
 
-    // Fills a structure with time data, or if no structure specified, returns the data.
+    // Fills a structure with time data.
     void calculateTime(timeData *inputTime)
     {
         time_t currentTime = std::time(0);
