@@ -7,4 +7,4 @@ This project uses the following projects:
 - stb: The license for stb can be found at `stb/LICENSE`.
 
 Please ensure to comply with the terms and conditions of each license when using these projects.
-Some of the mentioned projects are added a git submodules, you may need to initulize all submodules before the files for these projects will appear.
+Some of the mentioned projects are added a git submodules, you may need to initialize all submodules before the files for these projects will appear.

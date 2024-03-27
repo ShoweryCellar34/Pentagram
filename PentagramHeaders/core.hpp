@@ -168,7 +168,7 @@ namespace PNT
         return errorData;
     }
 
-    // Calls glClearColor, starts the ImGui frame and returns the Event (Quitting the window is automaticly handled).
+    // Calls glClearColor, starts the ImGui frame and returns the Event (Closing the window is automaticly handled).
     SDL_Event startFrame(bool *running)
     {
         glClearColor(255, 255, 255, 255);
