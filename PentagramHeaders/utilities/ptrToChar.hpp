@@ -1,19 +1,15 @@
 #pragma once
 
+#include <includes.hpp>
+
 namespace PNT
 {
-    char *ptrToChar(const char *str)
+    // Fills the first string with the second string
+    void ptrToChar(const char *str, char *newStr)
     {
-        int size = 0;
-        while(str[size] != '\0')
-        {
-            size++;
-        }
-        char charArray[size + 1];
-        for (int i = 0; i < size; i++) {
-            charArray[i] = str[i];
-        }
-        charArray[size] = '\0';
-        return charArray;
+        char *strCopy = strdup(str);
+        strCopy = (char *)realloc(strCopy, strlen(newStr));
+        strcpy(strCopy, newStr);
+        free(strCopy);
     }
 }
