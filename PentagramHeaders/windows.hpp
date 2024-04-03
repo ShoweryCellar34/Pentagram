@@ -70,8 +70,9 @@ namespace PNT
             }
         }
 
-        void eventProcess()
+        SDL_Event eventProcess()
         {
+            SDL_PollEvent(&event);
             if(event.window.windowID == windowID)
             {
                 switch (event.window.type)
@@ -90,14 +91,15 @@ namespace PNT
                     break;
 
                 default:
+                    return event; 
                     break;
                 }
+
             }
         }
 
         Window(const char *windowTitle = "Title", int windowWidth = 700, int windowHeight = 400, SDL_WindowFlags windowFlags = SDL_WINDOW_OPENGL)
         {
-            instances++;
             errorData.errorSource = "SDL";
             ptrToChar(title, windowTitle);
             width = windowWidth;
@@ -107,11 +109,9 @@ namespace PNT
         }
         ~Window()
         {
-            instances--;
+            SDL_DestroyWindow(window);
         }
     private:
-        static unsigned short instances;
-
         const char *title = nullptr;
         unsigned short width = 0;
         unsigned short height = 0;
