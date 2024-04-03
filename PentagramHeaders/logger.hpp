@@ -50,20 +50,20 @@ namespace PNT
         {
             switch(number)
             {
-                case 0:
-                    return "NOTE";
-                    break;
-                case 1:
-                    return "WARN";
-                    break;
-                case 2:
-                    return "ERROR";
-                    break;
-                case 3:
-                    return "FATAL";
-                    break;
-                default:
-                    return "N/A";
+            case 0:
+                return "NOTE";
+                break;
+            case 1:
+                return "WARN";
+                break;
+            case 2:
+                return "ERROR";
+                break;
+            case 3:
+                return "FATAL";
+                break;
+            default:
+                return "N/A";
             }
         }
     };
