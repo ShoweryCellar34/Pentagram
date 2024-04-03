@@ -18,7 +18,7 @@ namespace PNT
     ImGuiIO io;
 
     // Initialize SDL, GLAD and ImGui. Returns an error data struct.
-    errorData initialize(unsigned short windowWidth = 700, unsigned short windowHeight = 400, const char *windowTitle = "Window", uint32_t windowsFlagsTemp = (SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY))
+    errorData initialize(unsigned short windowWidth = 700, unsigned short windowHeight = 400, const char *windowTitle = "Window", uint32_t windowsFlagsTemp = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY)
     {
         errorData errorData;
         int errorCode = 0;
@@ -174,7 +174,7 @@ namespace PNT
         glClearColor((float)red/255, (float)green/255, (float)blue/255, (float)alpha/255);
         glClear(GL_COLOR_BUFFER_BIT);
         SDL_Event event;
-        while (SDL_PollEvent(&event))
+        while(SDL_PollEvent(&event))
         {
             ImGui_ImplSDL3_ProcessEvent(&event);
             if(event.type == SDL_EVENT_QUIT)

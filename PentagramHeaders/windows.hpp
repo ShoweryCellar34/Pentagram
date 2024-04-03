@@ -70,32 +70,42 @@ namespace PNT
             }
         }
 
-        SDL_Event eventProcess()
+        void startFrame(unsigned short red = 255, unsigned short green = 255, unsigned short blue = 255, unsigned short alpha = 255)
         {
-            SDL_PollEvent(&event);
+            glClearColor((float)red/255, (float)green/255, (float)blue/255, (float)alpha/255);
+            glClear(GL_COLOR_BUFFER_BIT);
+        }
+        std::optional<SDL_Event> eventProcess()
+        {
             if(event.window.windowID == windowID)
             {
-                switch (event.window.type)
+                if(SDL_PollEvent(&event))
                 {
-                case SDL_EVENT_WINDOW_RESIZED:
-                    width = event.window.data1;
-                    height = event.window.data2;
-                    break;
+                    switch(event.window.type)
+                    {
+                    case SDL_EVENT_WINDOW_RESIZED:
+                        width = event.window.data1;
+                        height = event.window.data2;
+                        break;
 
-                case SDL_EVENT_WINDOW_SHOWN:
-                    visiblity = true;
-                    break;
+                    case SDL_EVENT_WINDOW_SHOWN:
+                        visiblity = true;
+                        break;
 
-                case SDL_EVENT_WINDOW_HIDDEN:
-                    visiblity = false;
-                    break;
+                    case SDL_EVENT_WINDOW_HIDDEN:
+                        visiblity = false;
+                        break;
 
-                default:
-                    return event; 
-                    break;
+                    default:
+                        return event; 
+                        break;
+                    }
                 }
-
             }
+        }
+        void endFrame()
+        {
+            SDL_GL_SwapWindow(window);
         }
 
         Window(const char *windowTitle = "Title", int windowWidth = 700, int windowHeight = 400, SDL_WindowFlags windowFlags = SDL_WINDOW_OPENGL)
@@ -106,6 +116,8 @@ namespace PNT
             height = windowHeight;
             window = SDL_CreateWindow(title, width, height, windowFlags | SDL_WINDOW_OPENGL);
             windowID = SDL_GetWindowID(window);
+            openglContext = SDL_GL_CreateContext(window);
+            SDL_GL_MakeCurrent(window, openglContext);
         }
         ~Window()
         {
@@ -120,6 +132,7 @@ namespace PNT
 
         SDL_Window *window = nullptr;
         SDL_Event event;
+        SDL_GLContext openglContext;
 
         errorData errorData;
         int errorCode = 0;
