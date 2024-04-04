@@ -72,11 +72,10 @@ namespace PNT
 
         void startFrame(unsigned short red = 255, unsigned short green = 255, unsigned short blue = 255, unsigned short alpha = 255)
         {
-            SDL_GL_MakeCurrent(window, openglContext);
             glClearColor((float)red/255, (float)green/255, (float)blue/255, (float)alpha/255);
             glClear(GL_COLOR_BUFFER_BIT);
         }
-        SDL_Event eventProcess()
+        SDL_Event eventProcess(bool *open = nullptr)
         {
             if(event.window.windowID == windowID)
             {
@@ -95,6 +94,10 @@ namespace PNT
 
                     case SDL_EVENT_WINDOW_HIDDEN:
                         visible = false;
+                        break;
+
+                    case SDL_EVENT_QUIT:
+                        *open = false;
                         break;
 
                     default:
@@ -128,7 +131,7 @@ namespace PNT
             SDL_GL_DeleteContext(openglContext);
         }
     private:
-        const char *title = nullptr;
+        char *title = new char[0];
         unsigned short width = 0;
         unsigned short height = 0;
         bool visible = true;
@@ -138,7 +141,7 @@ namespace PNT
         SDL_Event event;
         SDL_GLContext openglContext;
 
-        
+
 
         errorData errorData;
         int errorCode = 0;
