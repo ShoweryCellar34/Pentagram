@@ -21,7 +21,7 @@ namespace PNT
         }
         bool getVisiblity()
         {
-            return visiblity;
+            return visible;
         }
 
         // Sets the window name.
@@ -50,7 +50,7 @@ namespace PNT
         // Shows the window.
         errorData show()
         {
-            visiblity = true;
+            visible = true;
             errorCode = SDL_RaiseWindow(window);
             if(errorCode != 0)
             {
@@ -61,7 +61,7 @@ namespace PNT
         // Hides the window.
         errorData hide()
         {
-            visiblity = false;
+            visible = false;
             errorCode = SDL_HideWindow(window);
             if(errorCode != 0)
             {
@@ -72,10 +72,11 @@ namespace PNT
 
         void startFrame(unsigned short red = 255, unsigned short green = 255, unsigned short blue = 255, unsigned short alpha = 255)
         {
+            SDL_GL_MakeCurrent(window, openglContext);
             glClearColor((float)red/255, (float)green/255, (float)blue/255, (float)alpha/255);
             glClear(GL_COLOR_BUFFER_BIT);
         }
-        std::optional<SDL_Event> eventProcess()
+        SDL_Event eventProcess()
         {
             if(event.window.windowID == windowID)
             {
@@ -89,11 +90,11 @@ namespace PNT
                         break;
 
                     case SDL_EVENT_WINDOW_SHOWN:
-                        visiblity = true;
+                        visible = true;
                         break;
 
                     case SDL_EVENT_WINDOW_HIDDEN:
-                        visiblity = false;
+                        visible = false;
                         break;
 
                     default:
@@ -102,6 +103,7 @@ namespace PNT
                     }
                 }
             }
+            return SDL_Event();
         }
         void endFrame()
         {
@@ -118,21 +120,25 @@ namespace PNT
             windowID = SDL_GetWindowID(window);
             openglContext = SDL_GL_CreateContext(window);
             SDL_GL_MakeCurrent(window, openglContext);
+            gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress);
         }
         ~Window()
         {
             SDL_DestroyWindow(window);
+            SDL_GL_DeleteContext(openglContext);
         }
     private:
         const char *title = nullptr;
         unsigned short width = 0;
         unsigned short height = 0;
-        bool visiblity = true;
+        bool visible = true;
         unsigned short windowID = 0;
 
         SDL_Window *window = nullptr;
         SDL_Event event;
         SDL_GLContext openglContext;
+
+        
 
         errorData errorData;
         int errorCode = 0;

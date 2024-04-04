@@ -171,6 +171,7 @@ namespace PNT
     // Calls glClearColor, starts the ImGui frame and returns the Event (Closing the window is automaticly handled).
     SDL_Event startFrame(bool *running, unsigned short red = 255, unsigned short green = 255, unsigned short blue = 255, unsigned short alpha = 255)
     {
+        SDL_GL_MakeCurrent(window, openglContext);
         glClearColor((float)red/255, (float)green/255, (float)blue/255, (float)alpha/255);
         glClear(GL_COLOR_BUFFER_BIT);
         SDL_Event event;
