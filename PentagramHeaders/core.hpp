@@ -7,8 +7,8 @@ namespace PNT
 {
     struct errorData
     {
-        std::string errorSource;
-        int errorCode;
+        std::string source;
+        int code = 0;
     };
 
     uint32_t windowFlags = 0;
@@ -42,8 +42,8 @@ namespace PNT
         {
             log.postfix("Failed");
             log.log(3, SDL_GetError());
-            errorData.errorSource = log.source;
-            errorData.errorCode = errorCode;
+            errorData.source = log.source;
+            errorData.code = errorCode;
             return errorData;
         }
         log.postfix("Succeeded");
@@ -55,8 +55,8 @@ namespace PNT
         {
             log.postfix("Failed");
             log.log(3, SDL_GetError());
-            errorData.errorSource = log.source;
-            errorData.errorCode = errorCode;
+            errorData.source = log.source;
+            errorData.code = errorCode;
             return errorData;
         }
         log.postfix("Succeeded");
@@ -72,8 +72,8 @@ namespace PNT
         {
             log.postfix("Failed");
             log.log(3, SDL_GetError());
-            errorData.errorSource = log.source;
-            errorData.errorCode = -1;
+            errorData.source = log.source;
+            errorData.code = -1;
             return errorData;
         }
         log.postfix("Succeeded");
@@ -85,8 +85,8 @@ namespace PNT
         {
             log.postfix("Failed");
             log.log(3, SDL_GetError());
-            errorData.errorSource = log.source;
-            errorData.errorCode = errorCode;
+            errorData.source = log.source;
+            errorData.code = errorCode;
             return errorData;
         }
         log.postfix("Succeeded");
@@ -98,8 +98,8 @@ namespace PNT
         if (!errorCode)
         {
             log.postfix("Failed");
-            errorData.errorSource = log.source;
-            errorData.errorCode = errorCode;
+            errorData.source = log.source;
+            errorData.code = errorCode;
             return errorData;
         }
         log.postfix("Succeeded");
@@ -117,8 +117,8 @@ namespace PNT
         if (errorCode == 0)
         {
             log.postfix("Failed");
-            errorData.errorSource = log.source;
-            errorData.errorCode = errorCode;
+            errorData.source = log.source;
+            errorData.code = errorCode;
             return errorData;
         }
         log.postfix("Succeeded");
@@ -127,8 +127,8 @@ namespace PNT
         if (errorCode == 0)
         {
             log.postfix("Failed");
-            errorData.errorSource = log.source;
-            errorData.errorCode = errorCode;
+            errorData.source = log.source;
+            errorData.code = errorCode;
             return errorData;
         }
         log.postfix("Succeeded");
@@ -154,8 +154,8 @@ namespace PNT
         {
             log.postfix("Failed");
             log.log(2, SDL_GetError(), "SDL_GL");
-            errorData.errorCode = errorCode;
-            errorData.errorSource = "SDL_GL";
+            errorData.code = errorCode;
+            errorData.source = "SDL_GL";
             return errorData;
         }
         log.postfix("Succeeded");
@@ -203,8 +203,8 @@ namespace PNT
         {
             log.log(3, "Failed to swap framebuffers");
             log.log(3, SDL_GetError());
-            errorData.errorSource = "SDL_GL";
-            errorData.errorCode = errorCode;
+            errorData.source = "SDL_GL";
+            errorData.code = errorCode;
         }
         return errorData;
     }

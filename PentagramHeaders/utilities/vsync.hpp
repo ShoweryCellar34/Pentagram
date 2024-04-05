@@ -16,8 +16,8 @@ namespace PNT
         {
             log.postfix("Failed");
             log.log(2, SDL_GetError());
-            errorData.errorSource = log.source;
-            errorData.errorCode = errorCode;
+            errorData.source = log.source;
+            errorData.code = errorCode;
             return errorData;
         }
         log.postfix("Succeeded");
