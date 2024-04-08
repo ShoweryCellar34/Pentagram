@@ -6,6 +6,7 @@
 
 namespace PNT
 {
+    SDL_Event event;
     class Window
     {
     public:
@@ -86,7 +87,34 @@ namespace PNT
             glClearColor((float)red/255, (float)green/255, (float)blue/255, (float)alpha/255);
             glClear(GL_COLOR_BUFFER_BIT);
         }
+        void eventProcess()
+        {
+            if(event.window.windowID == windowID)
+            {
+                switch(event.window.type)
+                {
+                case SDL_EVENT_WINDOW_RESIZED:
+                    width = event.window.data1;
+                    height = event.window.data2;
+                    break;
 
+                case SDL_EVENT_WINDOW_SHOWN:
+                    visible = true;
+                    break;
+
+                case SDL_EVENT_WINDOW_HIDDEN:
+                    visible = false;
+                    break;
+
+                case SDL_EVENT_WINDOW_CLOSE_REQUESTED:
+                    SDL_HideWindow(window);
+                    break;
+
+                default:
+                    break;
+                }
+            }
+        }
         void endFrame()
         {
             SDL_GL_SwapWindow(window);
@@ -118,7 +146,6 @@ namespace PNT
         unsigned short windowID = 0;
 
         SDL_Window *window = nullptr;
-        SDL_Event event;
         SDL_GLContext openglContext;
 
 
