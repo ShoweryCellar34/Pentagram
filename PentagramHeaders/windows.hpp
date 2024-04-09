@@ -6,10 +6,10 @@
 
 namespace PNT
 {
-    SDL_Event event;
     class Window
     {
     public:
+        static inline SDL_Event event = SDL_Event();
         // Returns the window title.
         const char *getTitle()
         {
@@ -83,6 +83,7 @@ namespace PNT
 
         void startFrame(unsigned short red = 255, unsigned short green = 255, unsigned short blue = 255, unsigned short alpha = 255)
         {
+            ImGui::SetCurrentContext(ImGuiContext);
             SDL_GL_MakeCurrent(window, openglContext);
             glClearColor((float)red/255, (float)green/255, (float)blue/255, (float)alpha/255);
             glClear(GL_COLOR_BUFFER_BIT);
@@ -91,6 +92,7 @@ namespace PNT
         {
             if(event.window.windowID == windowID)
             {
+                //ImGui_ImplSDL3_ProcessEvent(&event);
                 switch(event.window.type)
                 {
                 case SDL_EVENT_WINDOW_RESIZED:
@@ -131,11 +133,17 @@ namespace PNT
             openglContext = SDL_GL_CreateContext(window);
             SDL_GL_MakeCurrent(window, openglContext);
             gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress);
+            ImGuiContext = ImGui::CreateContext();
+            io = ImGui::GetIO();
+            io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+            io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+            ImGui::StyleColorsDark();
         }
         ~Window()
         {
             SDL_DestroyWindow(window);
             SDL_GL_DeleteContext(openglContext);
+            ImGui::DestroyContext(ImGuiContext);
             delete title;
         }
     private:
@@ -146,9 +154,11 @@ namespace PNT
         unsigned short windowID = 0;
 
         SDL_Window *window = nullptr;
-        SDL_GLContext openglContext;
+        SDL_GLContext openglContext = nullptr;
 
-
+        ImGuiContext *ImGuiContext = nullptr;
+        ImGuiIO io;
+        const char *glsl_version = "#version 460";
 
         errorData errorData;
         int errorCode = 0;
