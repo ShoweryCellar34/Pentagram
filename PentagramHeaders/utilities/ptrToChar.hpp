@@ -5,7 +5,7 @@
 namespace PNT
 {
     // Resizes and fills the char array with the const char *.
-    void ptrToChar(char*& array, const char* source)
+    void ptrToChar(char *&array, const char* source)
     {
         unsigned int sourceSize = strlen(source); // Get string length
         unsigned int newSize = sourceSize + 1; // New size (source size + null terminator)
