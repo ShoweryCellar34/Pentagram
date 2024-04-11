@@ -12,7 +12,7 @@ namespace PNT
         std::string source;
 
         // Logs a message with a level.
-        void log(unsigned short level, const char *message)
+        void log(loggerFlags level, const char *message)
         {
             calculateTime(&currentTime);
             buffer = ('[' + currentTime.hour + ':' + currentTime.minute + ':' + currentTime.second + "][" + numToStr(level) + (source.empty() ? "" : "][" + source) + "]: " + message);
@@ -20,7 +20,7 @@ namespace PNT
             myfile << std::endl << buffer;
         }
         // Logs a message with a level.
-        void log(unsigned short level, const char *message, std::string sender)
+        void log(loggerFlags level, const char *message, std::string sender)
         {
             calculateTime(&currentTime);
             sender = "][" + sender;

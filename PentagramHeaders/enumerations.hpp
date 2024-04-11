@@ -1,21 +1,16 @@
 #pragma once
 
-
-#ifdef LOGGER
 enum loggerFlags
 {
-    PNT_LOGGER_NOTE,
-    PNT_LOGGER_WARNING,
-    PNT_LOGGER_ERROR,
-    PNT_LOGGER_FATAL
+    PNT_LOGGER_FLAGS_NOTE,
+    PNT_LOGGER_FLAGS_WARNING,
+    PNT_LOGGER_FLAGS_ERROR,
+    PNT_LOGGER_FLAGS_FATAL
 };
-#endif
 
-#ifdef VSYNC
 enum vsyncFlags
 {
-    PNT_VSYNC_ADAPTIVE = -1,
-    PNT_VSYNC_OFF,
-    PNT_VSYNC_ON
+    PNT_VSYNC_FLAGS_OFF,
+    PNT_VSYNC_FLAGS_ON,
+    PNT_VSYNC_FLAGS_ADAPTIVE,
 };
-#endif

@@ -10,6 +10,8 @@ namespace PNT
     {
     public:
         static inline SDL_Event event = SDL_Event();
+
+        // Getters
         // Returns the window title (WARN: returned value must be deleted using 'delete[] ...' when your done with it).
         char *getTitle()
         {
@@ -17,27 +19,33 @@ namespace PNT
             ptrToChar(arrayTitle, title);
             return arrayTitle;
         }
+
         // Returns the width and height of the window.
         unsigned short getDimentions()
         {
             return width, height;
         }
+
         // Returns the position of the window.
         unsigned short getPosition()
         {
             return x, y;
         }
+
         // Returns the visiblity of the window.
         bool getVisiblity()
         {
             return hidden;
         }
+
+        // Returns the window ID.
         int getID()
         {
             return windowID;
         }
 
-        // Sets the window name.
+        // Setters
+        // Sets the title of the window, returns the sdl error code (0 is success).
         int setTitle(const char *newTitle)
         {
             int errorCode = 0;
@@ -49,6 +57,7 @@ namespace PNT
             }
             return errorCode;
         }
+
         // Sets the width and height of the window, returns the sdl error code (0 is success).
         int setDimentions(unsigned short newWidth, unsigned short newHeight)
         {
@@ -60,6 +69,7 @@ namespace PNT
             }
             return errorCode;
         }
+
         // Sets the x and y coordinates of the window, returns the sdl error code (0 is success).
         int setPosition(unsigned short newX, unsigned short newY)
         {
@@ -71,6 +81,7 @@ namespace PNT
             }
             return errorCode;
         }
+
         // Shows the window, returns the sdl error code (0 is success).
         int show()
         {
@@ -82,6 +93,7 @@ namespace PNT
             }
             return errorCode;
         }
+
         // Hides the window, returns the sdl error code (0 is success).
         int hide()
         {
@@ -94,6 +106,19 @@ namespace PNT
             return errorCode;
         }
 
+        // Sets the vsync mode of the window (0 = off, 1 = on, -1 = adaptive), returns the sdl error code (0 is success).
+        int vsync(vsyncFlags mode)
+        {
+            int errorCode;
+            errorCode = SDL_GL_SetSwapInterval(mode);
+            if(errorCode != 0)
+            {
+                log.log(2, SDL_GetError());
+            }
+            return errorCode;
+        }
+
+        //
         void startFrame(unsigned short red = 255, unsigned short green = 255, unsigned short blue = 255, unsigned short alpha = 255)
         {
             SDL_GL_MakeCurrent(window, openglContext);
@@ -105,14 +130,15 @@ namespace PNT
             ImGui::NewFrame();
         }
 
-        // Sets the event callback to be called when a event for the current window takes place.
+        // Sets the callback for window events.
         void setEventCallback(void (*newEventCallback)(SDL_Event event))
         {
-            void (*eventCallback)(SDL_Event event) = newEventCallback;
+            eventCallback = newEventCallback;
         }
 
-        // Processes the current event callback functionality supported (Check setEventCallback() function for details), returns a boolean stating if the window should close.
-        void eventProcess(bool *shouldClose = nullptr)
+        /* Processes the current event, callback functionality supported (Check setEventCallback() function for details),
+        takes a boolean as a parameter setting it to true if a close request was detected for the window.*/
+        void eventProcess(bool &shouldClose)
         {
             if(event.window.windowID == windowID)
             {
@@ -133,7 +159,7 @@ namespace PNT
                     break;
 
                 case SDL_EVENT_WINDOW_CLOSE_REQUESTED:
-                    *shouldClose = true;
+                    shouldClose = true;
                     break;
 
                 case SDL_EVENT_WINDOW_MOVED:
@@ -148,7 +174,6 @@ namespace PNT
                 {
                     eventCallback(event);
                 }
-                *shouldClose = false;
             }
         }
         void endFrame()
@@ -184,11 +209,15 @@ namespace PNT
         }
         ~Window()
         {
-            SDL_DestroyWindow(window);
-            SDL_GL_DeleteContext(openglContext);
+            ImGui::SetCurrentContext(ImGuiContext);
+            ImGui_ImplOpenGL3_Shutdown();
+            ImGui_ImplSDL3_Shutdown();
             ImGui::DestroyContext(ImGuiContext);
+            SDL_GL_DeleteContext(openglContext);
+            SDL_DestroyWindow(window);
             delete title;
         }
+        void (*eventCallback)(SDL_Event event);
     private:
         static inline int instances;
 
@@ -205,6 +234,5 @@ namespace PNT
         ImGuiIO io;
         const char *glsl_version = "#version 460";
 
-        void (*eventCallback)(SDL_Event event) = nullptr;
     };
 }
