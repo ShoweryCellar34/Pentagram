@@ -118,22 +118,35 @@ namespace PNT
             return errorCode;
         }
 
-        //
-        void startFrame(unsigned short red = 255, unsigned short green = 255, unsigned short blue = 255, unsigned short alpha = 255)
+        // Sets the opengl clear color for the window.
+        void setClearColor(float red = -1, float green = -1, float blue = -1, float alpha = -1)
         {
-            SDL_GL_MakeCurrent(window, openglContext);
-            glClearColor((float)red/255, (float)green/255, (float)blue/255, (float)alpha/255);
-            glClear(GL_COLOR_BUFFER_BIT);
-            ImGui::SetCurrentContext(ImGuiContext);
-            ImGui_ImplOpenGL3_NewFrame();
-            ImGui_ImplSDL3_NewFrame();
-            ImGui::NewFrame();
+            
         }
 
         // Sets the callback for window events.
         void setEventCallback(void (*newEventCallback)(SDL_Event event))
         {
             eventCallback = newEventCallback;
+        }
+
+        // Starts the opengl and imgui frames for the window, returns the sdl error code (0 is success)..
+        int startFrame()
+        {
+            int errorCode = 0;
+            errorCode = SDL_GL_MakeCurrent(window, openglContext);
+            if(errorCode != 0)
+            {
+                log.log(2, SDL_GetError());
+                return errorCode;
+            }
+            glClearColor(rgba[0], rgba[1], rgba[2], rgba[3]);
+            glClear(GL_COLOR_BUFFER_BIT);
+            ImGui::SetCurrentContext(ImGuiContext);
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplSDL3_NewFrame();
+            ImGui::NewFrame();
+            return errorCode;
         }
 
         /* Processes the current event, callback functionality supported (Check setEventCallback() function for details),
@@ -176,6 +189,7 @@ namespace PNT
                 }
             }
         }
+
         void endFrame()
         {
             ImGui::Render();
@@ -234,5 +248,6 @@ namespace PNT
         ImGuiIO io;
         const char *glsl_version = "#version 460";
 
+        float rgba[] = {255,  255, 255, 255};
     };
 }
