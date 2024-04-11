@@ -107,7 +107,7 @@ namespace PNT
         }
 
         // Sets the vsync mode of the window (0 = off, 1 = on, -1 = adaptive), returns the sdl error code (0 is success).
-        int vsync(vsyncFlags mode)
+        int vsync(short mode)
         {
             int errorCode;
             errorCode = SDL_GL_SetSwapInterval(mode);
@@ -118,10 +118,25 @@ namespace PNT
             return errorCode;
         }
 
-        // Sets the opengl clear color for the window.
+        // Sets the opengl clear color for the window (-1 = unchanged).
         void setClearColor(float red = -1, float green = -1, float blue = -1, float alpha = -1)
         {
-            
+            if(red != -1)
+            {
+                rgba[0] = red;
+            }
+            if(green != -1)
+            {
+                rgba[1] = green;
+            }
+            if(blue != -1)
+            {
+                rgba[2] = blue;
+            }
+            if(alpha != -1)
+            {
+                rgba[3] = alpha;
+            }
         }
 
         // Sets the callback for window events.
@@ -190,12 +205,19 @@ namespace PNT
             }
         }
 
-        void endFrame()
+        // Hides the window, returns the sdl error code (0 is success). 
+        int endFrame()
         {
+            int errorCode = 0;
             ImGui::Render();
             glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-            SDL_GL_SwapWindow(window);
+            errorCode = SDL_GL_SwapWindow(window);
+            if(errorCode != 0)
+            {
+                log.log(2, SDL_GetError());
+            }
+            return errorCode;
         }
 
         Window(const char *windowTitle = "Title", int windowWidth = 700, int windowHeight = 400, SDL_WindowFlags windowFlags = SDL_WINDOW_OPENGL)
@@ -248,6 +270,6 @@ namespace PNT
         ImGuiIO io;
         const char *glsl_version = "#version 460";
 
-        float rgba[] = {255,  255, 255, 255};
+        float rgba[4] = {255.0f,  255.0f, 255.0f, 255.0f};
     };
 }
