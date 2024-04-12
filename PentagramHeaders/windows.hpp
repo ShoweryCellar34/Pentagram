@@ -121,22 +121,10 @@ namespace PNT
         // Sets the opengl clear color for the window (-1 = unchanged).
         void setClearColor(float red = -1, float green = -1, float blue = -1, float alpha = -1)
         {
-            if(red != -1)
-            {
-                rgba[0] = red;
-            }
-            if(green != -1)
-            {
-                rgba[1] = green;
-            }
-            if(blue != -1)
-            {
-                rgba[2] = blue;
-            }
-            if(alpha != -1)
-            {
-                rgba[3] = alpha;
-            }
+            if(red != -1) rgba[0] = red;
+            if(green != -1) rgba[1] = green;
+            if(blue != -1) rgba[2] = blue;
+            if(alpha != -1) rgba[3] = alpha;
         }
 
         // Sets the callback for window events.
@@ -166,7 +154,7 @@ namespace PNT
 
         /* Processes the current event, callback functionality supported (Check setEventCallback() function for details),
         takes a boolean as a parameter setting it to true if a close request was detected for the window.*/
-        void eventProcess(bool &shouldClose)
+        void eventProcess(bool *shouldClose)
         {
             if(event.window.windowID == windowID)
             {
@@ -187,7 +175,7 @@ namespace PNT
                     break;
 
                 case SDL_EVENT_WINDOW_CLOSE_REQUESTED:
-                    shouldClose = true;
+                    *shouldClose = true;
                     break;
 
                 case SDL_EVENT_WINDOW_MOVED:
@@ -220,28 +208,20 @@ namespace PNT
             return errorCode;
         }
 
-        Window(const char *windowTitle = "Title", int windowWidth = 700, int windowHeight = 400, SDL_WindowFlags windowFlags = SDL_WINDOW_OPENGL)
+        Window(const char *windowTitle = "Title", int windowWidth = 600, int windowHeight = 600, SDL_WindowFlags windowFlags = SDL_WINDOW_OPENGL)
         {
             instances++;
             ptrToChar(title, windowTitle);
             width = windowWidth;
             height = windowHeight;
-            SDL_PropertiesID properties = SDL_CreateProperties();
-            SDL_SetStringProperty(properties, SDL_PROP_WINDOW_CREATE_TITLE_STRING, title);
-            SDL_SetNumberProperty(properties, SDL_PROP_WINDOW_CREATE_X_NUMBER, SDL_WINDOWPOS_CENTERED);
-            SDL_SetNumberProperty(properties, SDL_PROP_WINDOW_CREATE_Y_NUMBER, SDL_WINDOWPOS_CENTERED);
-            SDL_SetNumberProperty(properties, SDL_PROP_WINDOW_CREATE_WIDTH_NUMBER, width);
-            SDL_SetNumberProperty(properties, SDL_PROP_WINDOW_CREATE_HEIGHT_NUMBER, height);
-            SDL_SetNumberProperty(properties, "flags", windowFlags | SDL_WINDOW_OPENGL);
-            window = SDL_CreateWindowWithProperties(properties);
-            SDL_DestroyProperties(properties);
+            window = SDL_CreateWindow(title, width, height, windowFlags | SDL_WINDOW_OPENGL);
+            SDL_SetWindowPosition(window, (SDL_GetCurrentDisplayMode(1)->w / 2) - (width / 2), (SDL_GetCurrentDisplayMode(1)->h / 2) - (height / 2) + 1);
             windowID = SDL_GetWindowID(window);
 
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
             openglContext = SDL_GL_CreateContext(window);
-            SDL_GL_MakeCurrent(window, openglContext);
             gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress);
 
             ImGuiContext = ImGui::CreateContext();
