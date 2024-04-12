@@ -27,9 +27,9 @@ namespace PNT
         }
 
         // Returns the position of the window.
-        unsigned short getPosition()
+        std::pair<unsigned short, unsigned short> getPosition()
         {
-            return x, y;
+            return std::make_pair(x, y);
         }
 
         // Returns the visiblity of the window.
@@ -58,11 +58,11 @@ namespace PNT
             return errorCode;
         }
 
-        // Sets the width and height of the window, returns the sdl error code (0 is success).
+        // Sets the width and height of the window (-1 = unchanged), returns the sdl error code (0 is success).
         int setDimentions(unsigned short newWidth, unsigned short newHeight)
         {
             int errorCode = 0;
-            errorCode = SDL_SetWindowSize(window, newWidth, newHeight);
+            errorCode = SDL_SetWindowSize(window, newWidth == -1 ? width : newWidth, newHeight == -1 ? height : newHeight);
             if(errorCode != 0)
             {
                 log.log(2, SDL_GetError());
@@ -70,10 +70,18 @@ namespace PNT
             return errorCode;
         }
 
-        // Sets the x and y coordinates of the window, returns the sdl error code (0 is success).
-        int setPosition(unsigned short newX, unsigned short newY)
+        // Sets the x and y coordinates of the window (-1 = unchanged), returns the sdl error code (0 is success).
+        int setPosition(short newX, short newY)
         {
             int errorCode = 0;
+            if(newX == -1)
+            {
+                newX = x;
+            }
+            if(newY == -1)
+            {
+                newY = y;
+            }
             errorCode = SDL_SetWindowPosition(window, newX, newY);
             if(errorCode != 0)
             {
@@ -140,7 +148,7 @@ namespace PNT
         }
 
         // Sets the callback for window events.
-        void setEventCallback(void (*newEventCallback)(SDL_Event event))
+        void setEventCallback(void (*newEventCallback)(Window *window, SDL_Event event))
         {
             eventCallback = newEventCallback;
         }
@@ -200,7 +208,7 @@ namespace PNT
                 }
                 if(eventCallback != nullptr)
                 {
-                    eventCallback(event);
+                    eventCallback(this, event);
                 }
             }
         }
@@ -253,7 +261,6 @@ namespace PNT
             SDL_DestroyWindow(window);
             delete title;
         }
-        void (*eventCallback)(SDL_Event event);
     private:
         static inline int instances;
 
@@ -265,6 +272,7 @@ namespace PNT
 
         SDL_Window *window = nullptr;
         SDL_GLContext openglContext = nullptr;
+        void (*eventCallback)(Window *window, SDL_Event event);
 
         ImGuiContext *ImGuiContext = nullptr;
         ImGuiIO io;
