@@ -20,13 +20,13 @@ namespace PNT
             return arrayTitle;
         }
 
-        // Returns the width and height of the window.
-        unsigned short getDimentions()
+        // Returns the width and height of the window in a standard pair.
+        std::pair<unsigned short, unsigned short> getDimentions()
         {
-            return width, height;
+            return std::make_pair(width, height);
         }
 
-        // Returns the position of the window.
+        // Returns the position of the window in a standard pair.
         std::pair<unsigned short, unsigned short> getPosition()
         {
             return std::make_pair(x, y);
@@ -71,18 +71,10 @@ namespace PNT
         }
 
         // Sets the x and y coordinates of the window (-1 = unchanged), returns the sdl error code (0 is success).
-        int setPosition(short newX, short newY)
+        int setPosition(int newX, int newY)
         {
             int errorCode = 0;
-            if(newX == -1)
-            {
-                newX = x;
-            }
-            if(newY == -1)
-            {
-                newY = y;
-            }
-            errorCode = SDL_SetWindowPosition(window, newX, newY);
+            errorCode = SDL_SetWindowPosition(window, newX == -1 ? x : newX, newY == -1 ? y : newY);
             if(errorCode != 0)
             {
                 log.log(2, SDL_GetError());
@@ -234,14 +226,24 @@ namespace PNT
             ptrToChar(title, windowTitle);
             width = windowWidth;
             height = windowHeight;
-            window = SDL_CreateWindow(title, width, height, windowFlags | SDL_WINDOW_OPENGL);
+            SDL_PropertiesID properties = SDL_CreateProperties();
+            SDL_SetStringProperty(properties, SDL_PROP_WINDOW_CREATE_TITLE_STRING, title);
+            SDL_SetNumberProperty(properties, SDL_PROP_WINDOW_CREATE_X_NUMBER, SDL_WINDOWPOS_CENTERED);
+            SDL_SetNumberProperty(properties, SDL_PROP_WINDOW_CREATE_Y_NUMBER, SDL_WINDOWPOS_CENTERED);
+            SDL_SetNumberProperty(properties, SDL_PROP_WINDOW_CREATE_WIDTH_NUMBER, width);
+            SDL_SetNumberProperty(properties, SDL_PROP_WINDOW_CREATE_HEIGHT_NUMBER, height);
+            SDL_SetNumberProperty(properties, "flags", windowFlags | SDL_WINDOW_OPENGL);
+            window = SDL_CreateWindowWithProperties(properties);
+            SDL_DestroyProperties(properties);
             windowID = SDL_GetWindowID(window);
+
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
             openglContext = SDL_GL_CreateContext(window);
             SDL_GL_MakeCurrent(window, openglContext);
             gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress);
+
             ImGuiContext = ImGui::CreateContext();
             ImGui::SetCurrentContext(ImGuiContext);
             ImGui_ImplSDL3_InitForOpenGL(window, openglContext);
@@ -257,16 +259,18 @@ namespace PNT
             ImGui_ImplOpenGL3_Shutdown();
             ImGui_ImplSDL3_Shutdown();
             ImGui::DestroyContext(ImGuiContext);
+
             SDL_GL_DeleteContext(openglContext);
+
             SDL_DestroyWindow(window);
-            delete title;
+            delete[] title;
         }
     private:
         static inline int instances;
 
         char *title = new char[0];
         unsigned short width = 0, height = 0;
-        unsigned short x, y = 0;
+        int x = 0, y = 0;
         bool hidden = true;
         unsigned short windowID = 0;
 
