@@ -215,7 +215,8 @@ namespace PNT
             width = windowWidth;
             height = windowHeight;
             window = SDL_CreateWindow(title, width, height, windowFlags | SDL_WINDOW_OPENGL);
-            SDL_SetWindowPosition(window, (SDL_GetCurrentDisplayMode(1)->w / 2) - (width / 2), (SDL_GetCurrentDisplayMode(1)->h / 2) - (height / 2) + 1);
+            unsigned short currentDisplay = SDL_GetDisplayForWindow(window);
+            SDL_SetWindowPosition(window, (SDL_GetCurrentDisplayMode(currentDisplay)->w / 2) - (width / 2), (SDL_GetCurrentDisplayMode(currentDisplay)->h / 2) - (height / 2) + 1);
             windowID = SDL_GetWindowID(window);
 
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
