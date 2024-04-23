@@ -7,13 +7,13 @@
 
 namespace PNT
 {
-    class PNT_Window
+    class Window
     {
     public:
         static inline SDL_Event event = SDL_Event();
 
         // Getters
-        // Returns the window title (WARN: returned value must be deleted using 'delete[] ...' when your done with it).
+        // Returns the window title (WARN: returned value must be deleted using 'delete[]' when your done with it).
         char *getTitle()
         {
             char *arrayTitle = new char[0];
@@ -44,6 +44,7 @@ namespace PNT
         {
             return windowID;
         }
+
 
         // Setters
         // Sets the title of the window, returns the sdl error code (0 is success).
@@ -150,6 +151,8 @@ namespace PNT
             }
         }
 
+
+        // Core
         // Starts the opengl and imgui frames for the window, returns the sdl error code (0 is success)..
         int startFrame()
         {
@@ -233,7 +236,9 @@ namespace PNT
             }
         }
 
-        PNT_Window(const char *windowTitle = "Title", int windowWidth = 600, int windowHeight = 600, SDL_WindowFlags windowFlags = SDL_WINDOW_OPENGL)
+
+        // Constructure/Deconstructure
+        Window(const char *windowTitle = "Title", int windowWidth = 600, int windowHeight = 600, SDL_WindowFlags windowFlags = SDL_WINDOW_OPENGL)
         {
             instances++;
             ptrToChar(title, windowTitle);
@@ -259,7 +264,7 @@ namespace PNT
             io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
             ImGui::StyleColorsDark();
         }
-        ~PNT_Window()
+        ~Window()
         {
             ImGui::SetCurrentContext(ImGuiContext);
             ImGui_ImplOpenGL3_Shutdown();
