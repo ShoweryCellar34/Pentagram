@@ -2,11 +2,12 @@
 
 #include <includes.hpp>
 #include <logger.hpp>
+#include <enumerations.hpp>
 #include <utilities/ptrToChar.hpp>
 
 namespace PNT
 {
-    class Window
+    class PNT_Window
     {
     public:
         static inline SDL_Event event = SDL_Event();
@@ -127,10 +128,26 @@ namespace PNT
             if(alpha != -1) rgba[3] = alpha;
         }
 
-        // Sets the callback for window events.
-        void setEventCallback(void (*newEventCallback)(Window *window, SDL_Event event))
+        // Sets the callback for the specified event.
+        void setCallback(unsigned short callbackID, void (*newCallback)())
         {
-            eventCallback = newEventCallback;
+            switch(callbackID)
+            {
+            case PNT_CALLBACK_FLAGS_EVENT:
+                eventCallback = newCallback;
+                break;
+
+        	case PNT_CALLBACK_FLAGS_STARTFRAME:
+                startFrameCallback = newCallback;
+                break;
+
+            case PNT_CALLBACK_FLAGS_ENDFRAME:
+                endFrameCallback = newCallback;
+                break;
+
+            default:
+                break;
+            }
         }
 
         // Starts the opengl and imgui frames for the window, returns the sdl error code (0 is success)..
@@ -149,10 +166,33 @@ namespace PNT
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplSDL3_NewFrame();
             ImGui::NewFrame();
+            if(startFrameCallback != nullptr)
+            {
+                startFrameCallback();
+            }
             return errorCode;
         }
 
-        /* Processes the current event, callback functionality supported (Check setEventCallback() function for details),
+        // Hides the window, returns the sdl error code (0 is success). 
+        int endFrame()
+        {
+            int errorCode = 0;
+            ImGui::Render();
+            glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+            errorCode = SDL_GL_SwapWindow(window);
+            if(errorCode != 0)
+            {
+                log.log(2, SDL_GetError());
+            }
+            if(endFrameCallback != nullptr)
+            {
+                endFrameCallback();
+            }
+            return errorCode;
+        }
+
+        /* Processes the current event, callback functionality supported (check setEventCallback() function for details),
         takes a boolean as a parameter setting it to true if a close request was detected for the window.*/
         void eventProcess(bool *shouldClose)
         {
@@ -188,27 +228,12 @@ namespace PNT
                 }
                 if(eventCallback != nullptr)
                 {
-                    eventCallback(this, event);
+                    eventCallback();
                 }
             }
         }
 
-        // Hides the window, returns the sdl error code (0 is success). 
-        int endFrame()
-        {
-            int errorCode = 0;
-            ImGui::Render();
-            glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
-            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-            errorCode = SDL_GL_SwapWindow(window);
-            if(errorCode != 0)
-            {
-                log.log(2, SDL_GetError());
-            }
-            return errorCode;
-        }
-
-        Window(const char *windowTitle = "Title", int windowWidth = 600, int windowHeight = 600, SDL_WindowFlags windowFlags = SDL_WINDOW_OPENGL)
+        PNT_Window(const char *windowTitle = "Title", int windowWidth = 600, int windowHeight = 600, SDL_WindowFlags windowFlags = SDL_WINDOW_OPENGL)
         {
             instances++;
             ptrToChar(title, windowTitle);
@@ -234,7 +259,7 @@ namespace PNT
             io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
             ImGui::StyleColorsDark();
         }
-        ~Window()
+        ~PNT_Window()
         {
             ImGui::SetCurrentContext(ImGuiContext);
             ImGui_ImplOpenGL3_Shutdown();
@@ -249,20 +274,28 @@ namespace PNT
     private:
         static inline int instances;
 
+        // Internal data
         char *title = new char[0];
         unsigned short width = 0, height = 0;
         int x = 0, y = 0;
         bool hidden = true;
         unsigned short windowID = 0;
 
+        // Callbacks
+        void (*eventCallback)();
+        void (*startFrameCallback)();
+        void (*endFrameCallback)();
+
+        // SDL data
         SDL_Window *window = nullptr;
         SDL_GLContext openglContext = nullptr;
-        void (*eventCallback)(Window *window, SDL_Event event);
 
+        // ImGui data
         ImGuiContext *ImGuiContext = nullptr;
         ImGuiIO io;
         const char *glsl_version = "#version 460";
 
+        // OpenGL data
         float rgba[4] = {255.0f,  255.0f, 255.0f, 255.0f};
     };
 }
