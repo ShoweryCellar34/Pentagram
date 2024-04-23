@@ -282,9 +282,9 @@ namespace PNT
         unsigned short windowID = 0;
 
         // Callbacks
-        void (*eventCallback)();
         void (*startFrameCallback)();
         void (*endFrameCallback)();
+        void (*eventCallback)();
 
         // SDL data
         SDL_Window *window = nullptr;
