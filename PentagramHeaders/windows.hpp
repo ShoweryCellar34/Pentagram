@@ -9,6 +9,32 @@ namespace PNT
 {
     class Window
     {
+    private:
+        static inline int instances;
+
+        // Internal data
+        char *title = new char[0];
+        unsigned short width = 0, height = 0;
+        int x = 0, y = 0;
+        bool hidden = true;
+        unsigned short windowID = 0;
+
+        // Callbacks
+        void (*startFrameCallback)();
+        void (*endFrameCallback)();
+        void (*eventCallback)();
+
+        // SDL data
+        SDL_Window *window = nullptr;
+        SDL_GLContext openglContext = nullptr;
+
+        // ImGui data
+        ImGuiContext *ImGuiContext = nullptr;
+        ImGuiIO io;
+        const char *glsl_version = "#version 460";
+
+        // OpenGL data
+        float rgba[4] = {255.0f,  255.0f, 255.0f, 255.0f};
     public:
         static inline SDL_Event event = SDL_Event();
 
@@ -276,31 +302,5 @@ namespace PNT
             SDL_DestroyWindow(window);
             delete[] title;
         }
-    private:
-        static inline int instances;
-
-        // Internal data
-        char *title = new char[0];
-        unsigned short width = 0, height = 0;
-        int x = 0, y = 0;
-        bool hidden = true;
-        unsigned short windowID = 0;
-
-        // Callbacks
-        void (*startFrameCallback)();
-        void (*endFrameCallback)();
-        void (*eventCallback)();
-
-        // SDL data
-        SDL_Window *window = nullptr;
-        SDL_GLContext openglContext = nullptr;
-
-        // ImGui data
-        ImGuiContext *ImGuiContext = nullptr;
-        ImGuiIO io;
-        const char *glsl_version = "#version 460";
-
-        // OpenGL data
-        float rgba[4] = {255.0f,  255.0f, 255.0f, 255.0f};
     };
 }

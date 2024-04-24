@@ -1,6 +1,6 @@
 #pragma once
 
-enum loggerFlags
+enum loggerFlags : short
 {
     PNT_LOGGER_FLAGS_NOTE,
     PNT_LOGGER_FLAGS_WARNING,
@@ -8,14 +8,14 @@ enum loggerFlags
     PNT_LOGGER_FLAGS_FATAL
 };
 
-enum vsyncFlags
+enum vsyncFlags : short
 {
     PNT_VSYNC_FLAGS_OFF,
     PNT_VSYNC_FLAGS_ON,
     PNT_VSYNC_FLAGS_ADAPTIVE,
 };
 
-enum callbackFlags
+enum callbackFlags : short
 {
     PNT_CALLBACK_FLAGS_EVENT,
     PNT_CALLBACK_FLAGS_STARTFRAME,
