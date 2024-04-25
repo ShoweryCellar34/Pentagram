@@ -10,20 +10,6 @@ namespace PNT
     class Window
     {
     private:
-        static inline int instances;
-
-        // Internal data
-        char *title = new char[0];
-        unsigned short width = 0, height = 0;
-        int x = 0, y = 0;
-        bool hidden = true;
-        unsigned short windowID = 0;
-
-        // Callbacks
-        void (*startFrameCallback)();
-        void (*endFrameCallback)();
-        void (*eventCallback)();
-
         // SDL data
         SDL_Window *window = nullptr;
         SDL_GLContext openglContext = nullptr;
@@ -32,47 +18,28 @@ namespace PNT
         ImGuiContext *ImGuiContext = nullptr;
         ImGuiIO io;
         const char *glsl_version = "#version 460";
-
-        // OpenGL data
-        float rgba[4] = {255.0f,  255.0f, 255.0f, 255.0f};
     public:
+        // Window data
+        char *title = new char[0];
+        unsigned short width = 0, height = 0;
+        int x = 0, y = 0;
+        bool hidden = true;
+        unsigned short windowID = 0;
+        float rgba[4] = {255.0f,  255.0f, 255.0f, 255.0f};
+        short vsyncMode = 0;
+
+        // other data
+        static inline int instances;
+        double deltaTime = 0;
+
+        // Callback data
+        void (*startFrameListener)();
+        void (*endFrameListener)();
+        void (*eventListener)();
+    public:
+    // The global event for all windows.
         static inline SDL_Event event = SDL_Event();
 
-        // Getters
-        // Returns the window title (WARN: returned value must be deleted using 'delete[]' when your done with it).
-        char *getTitle()
-        {
-            char *arrayTitle = new char[0];
-            ptrToChar(arrayTitle, title);
-            return arrayTitle;
-        }
-
-        // Returns the width and height of the window in a standard pair.
-        std::pair<unsigned short, unsigned short> getDimentions()
-        {
-            return std::make_pair(width, height);
-        }
-
-        // Returns the position of the window in a standard pair.
-        std::pair<unsigned short, unsigned short> getPosition()
-        {
-            return std::make_pair(x, y);
-        }
-
-        // Returns the visiblity of the window.
-        bool getVisiblity()
-        {
-            return hidden;
-        }
-
-        // Returns the window ID.
-        int getID()
-        {
-            return windowID;
-        }
-
-
-        // Setters
         // Sets the title of the window, returns the sdl error code (0 is success).
         int setTitle(const char *newTitle)
         {
@@ -135,10 +102,11 @@ namespace PNT
         }
 
         // Sets the vsync mode of the window (0 = off, 1 = on, -1 = adaptive), returns the sdl error code (0 is success).
-        int vsync(short mode)
+        int vsync(short newVsyncMode)
         {
             int errorCode;
-            errorCode = SDL_GL_SetSwapInterval(mode);
+            vsyncMode = newVsyncMode;
+            errorCode = SDL_GL_SetSwapInterval(vsyncMode);
             if(errorCode != 0)
             {
                 log.log(2, SDL_GetError());
@@ -155,21 +123,21 @@ namespace PNT
             if(alpha != -1) rgba[3] = alpha;
         }
 
-        // Sets the callback for the specified event.
-        void setCallback(unsigned short callbackID, void (*newCallback)())
+        // Sets the listener for the specified event (use nullptr to clear callback).
+        void setListener(unsigned short listenerID, void (*newListener)())
         {
-            switch(callbackID)
+            switch(listenerID)
             {
-            case PNT_CALLBACK_FLAGS_EVENT:
-                eventCallback = newCallback;
+            case PNT_LISTENER_FLAGS_EVENT:
+                eventListener = newListener;
                 break;
 
-        	case PNT_CALLBACK_FLAGS_STARTFRAME:
-                startFrameCallback = newCallback;
+        	case PNT_LISTENER_FLAGS_STARTFRAME:
+                startFrameListener = newListener;
                 break;
 
-            case PNT_CALLBACK_FLAGS_ENDFRAME:
-                endFrameCallback = newCallback;
+            case PNT_LISTENER_FLAGS_ENDFRAME:
+                endFrameListener = newListener;
                 break;
 
             default:
@@ -177,8 +145,6 @@ namespace PNT
             }
         }
 
-
-        // Core
         // Starts the opengl and imgui frames for the window, returns the sdl error code (0 is success)..
         int startFrame()
         {
@@ -195,9 +161,9 @@ namespace PNT
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplSDL3_NewFrame();
             ImGui::NewFrame();
-            if(startFrameCallback != nullptr)
+            if(startFrameListener != nullptr)
             {
-                startFrameCallback();
+                startFrameListener();
             }
             return errorCode;
         }
@@ -214,9 +180,9 @@ namespace PNT
             {
                 log.log(2, SDL_GetError());
             }
-            if(endFrameCallback != nullptr)
+            if(endFrameListener != nullptr)
             {
-                endFrameCallback();
+                endFrameListener();
             }
             return errorCode;
         }
@@ -255,13 +221,12 @@ namespace PNT
                 default:
                     break;
                 }
-                if(eventCallback != nullptr)
+                if(eventListener != nullptr)
                 {
-                    eventCallback();
+                    eventListener();
                 }
             }
         }
-
 
         // Constructure/Deconstructure
         Window(const char *windowTitle = "Title", int windowWidth = 600, int windowHeight = 600, SDL_WindowFlags windowFlags = SDL_WINDOW_OPENGL)
