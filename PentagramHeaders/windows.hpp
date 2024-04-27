@@ -24,9 +24,9 @@ namespace PNT
         unsigned short width = 0, height = 0;
         int x = 0, y = 0;
         bool hidden = true;
-        unsigned short windowID = 0;
+        unsigned char windowID = 0;
         float rgba[4] = {255.0f,  255.0f, 255.0f, 255.0f};
-        short vsyncMode = 0;
+        char vsyncMode = 0;
 
         // other data
         static inline int instances;
@@ -102,7 +102,7 @@ namespace PNT
         }
 
         // Sets the vsync mode of the window (0 = off, 1 = on, -1 = adaptive), returns the sdl error code (0 is success).
-        int vsync(short newVsyncMode)
+        int vsync(char newVsyncMode)
         {
             int errorCode;
             vsyncMode = newVsyncMode;
@@ -124,7 +124,7 @@ namespace PNT
         }
 
         // Sets the listener for the specified event (use nullptr to clear listener).
-        void setListener(unsigned short listenerID, void (*newListener)())
+        void setListener(unsigned char listenerID, void (*newListener)())
         {
             switch(listenerID)
             {
@@ -236,7 +236,7 @@ namespace PNT
             width = windowWidth;
             height = windowHeight;
             window = SDL_CreateWindow(title, width, height, windowFlags | SDL_WINDOW_OPENGL);
-            unsigned short currentDisplay = SDL_GetDisplayForWindow(window);
+            unsigned char currentDisplay = SDL_GetDisplayForWindow(window);
             SDL_SetWindowPosition(window, (SDL_GetCurrentDisplayMode(currentDisplay)->w / 2) - (width / 2), (SDL_GetCurrentDisplayMode(currentDisplay)->h / 2) - (height / 2) + 1);
             windowID = SDL_GetWindowID(window);
 

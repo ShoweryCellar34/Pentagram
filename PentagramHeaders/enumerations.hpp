@@ -1,6 +1,6 @@
 #pragma once
 
-enum loggerFlags : short
+enum loggerFlags : unsigned char
 {
     PNT_LOGGER_FLAGS_NOTE,
     PNT_LOGGER_FLAGS_WARNING,
@@ -8,14 +8,14 @@ enum loggerFlags : short
     PNT_LOGGER_FLAGS_FATAL
 };
 
-enum vsyncFlags : short
+enum vsyncFlags : unsigned char
 {
     PNT_VSYNC_FLAGS_OFF,
     PNT_VSYNC_FLAGS_ON,
     PNT_VSYNC_FLAGS_ADAPTIVE,
 };
 
-enum listenerFlags : short
+enum listenerFlags : unsigned char
 {
     PNT_LISTENER_FLAGS_EVENT,
     PNT_LISTENER_FLAGS_STARTFRAME,
