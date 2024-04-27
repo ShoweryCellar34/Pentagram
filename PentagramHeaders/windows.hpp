@@ -32,7 +32,7 @@ namespace PNT
         static inline int instances;
         double deltaTime = 0;
 
-        // Callback data
+        // listener data
         void (*startFrameListener)();
         void (*endFrameListener)();
         void (*eventListener)();
@@ -123,7 +123,7 @@ namespace PNT
             if(alpha != -1) rgba[3] = alpha;
         }
 
-        // Sets the listener for the specified event (use nullptr to clear callback).
+        // Sets the listener for the specified event (use nullptr to clear listener).
         void setListener(unsigned short listenerID, void (*newListener)())
         {
             switch(listenerID)
@@ -187,7 +187,7 @@ namespace PNT
             return errorCode;
         }
 
-        /* Processes the current event, callback functionality supported (check setEventCallback() function for details),
+        /* Processes the current event, listener functionality supported (check setEventlistener() function for details),
         takes a boolean as a parameter setting it to true if a close request was detected for the window.*/
         void eventProcess(bool *shouldClose)
         {
@@ -228,7 +228,7 @@ namespace PNT
             }
         }
 
-        // Constructure/Deconstructure
+        // Constructor/Destructor
         Window(const char *windowTitle = "Title", int windowWidth = 600, int windowHeight = 600, SDL_WindowFlags windowFlags = SDL_WINDOW_OPENGL)
         {
             instances++;
