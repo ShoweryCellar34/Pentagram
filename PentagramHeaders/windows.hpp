@@ -5,6 +5,9 @@
 #include <enumerations.hpp>
 #include <utilities/ptrToChar.hpp>
 
+#define PNT_SDL_CALL(function) function;
+
+
 namespace PNT
 {
     class Window
@@ -18,6 +21,18 @@ namespace PNT
         ImGuiContext *ImGuiContext = nullptr;
         ImGuiIO io;
         const char *glsl_version = "#version 460";
+
+        // listener data
+        void (*startFrameListener)();
+        void (*endFrameListener)();
+        void (*eventListener)();
+        void (*errorListener)();
+
+        // Error data
+        int errorCode = 0;
+        const char *errorFunction = nullptr;
+        const char *errorLine = nullptr;
+        const char *errorFile = nullptr;
     public:
         // Window data
         char *title = new char[0];
@@ -31,11 +46,6 @@ namespace PNT
         // other data
         static inline int instances;
         double deltaTime = 0;
-
-        // listener data
-        void (*startFrameListener)();
-        void (*endFrameListener)();
-        void (*eventListener)();
     public:
     // The global event for all windows.
         static inline SDL_Event event = SDL_Event();
@@ -123,28 +133,6 @@ namespace PNT
             if(alpha != -1) rgba[3] = alpha;
         }
 
-        // Sets the listener for the specified event (use nullptr to clear listener).
-        void setListener(unsigned char listenerID, void (*newListener)())
-        {
-            switch(listenerID)
-            {
-            case PNT_LISTENER_FLAGS_EVENT:
-                eventListener = newListener;
-                break;
-
-        	case PNT_LISTENER_FLAGS_STARTFRAME:
-                startFrameListener = newListener;
-                break;
-
-            case PNT_LISTENER_FLAGS_ENDFRAME:
-                endFrameListener = newListener;
-                break;
-
-            default:
-                break;
-            }
-        }
-
         // Starts the opengl and imgui frames for the window, returns the sdl error code (0 is success)..
         int startFrame()
         {
@@ -185,6 +173,32 @@ namespace PNT
                 endFrameListener();
             }
             return errorCode;
+        }
+
+        // Sets the listener for the specified event (use nullptr to clear listener).
+        void setListener(unsigned char listenerID, void (*newListener)())
+        {
+            switch(listenerID)
+            {
+            case PNT_LISTENER_FLAGS_EVENT:
+                eventListener = newListener;
+                break;
+
+        	case PNT_LISTENER_FLAGS_STARTFRAME:
+                startFrameListener = newListener;
+                break;
+
+            case PNT_LISTENER_FLAGS_ENDFRAME:
+                endFrameListener = newListener;
+                break;
+
+            case PNT_LISTENER_FLAGS_ERROR:
+                errorListener = newListener;
+                break;
+
+            default:
+                break;
+            }
         }
 
         /* Processes the current event, listener functionality supported (check setEventlistener() function for details),
