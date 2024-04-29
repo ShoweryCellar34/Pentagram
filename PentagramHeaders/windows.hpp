@@ -9,13 +9,12 @@ namespace PNT
 {
     struct windowData
     {
-        unsigned char windowID;
-        char *title;
-        unsigned short width, height;
-        unsigned short x, y;
-        char vsyncMode;
-        bool hidden;
-        float clearColor[4];
+        char *title = (char *)'\0';
+        short width = -1, height = -1;
+        short x = -1, y = -1;
+        char vsyncMode = -1;
+        char visiblity = -1;
+        float clearColor[4] = {-1.0f, -1.0f, -1.0f, -1.0f};
     };
 
     class Window
@@ -26,10 +25,8 @@ namespace PNT
         SDL_GLContext openglContext;
 
         // Window data
+        unsigned char windowID;
         windowData data;
-
-        // Universal window event data
-        static inline SDL_Event event = SDL_Event();
 
         // ImGui data
         ImGuiContext *ImGuiContext;
@@ -43,11 +40,14 @@ namespace PNT
         void (*errorListener)();
 
         // other data
-        std::chrono::steady_clock::time_point startTime;
-        std::chrono::steady_clock::time_point endTime;
+        auto startTime = std::chrono::steady_clock::now();
+        auto endTime = std::chrono::steady_clock::now();
         double deltaTime;
         static inline int instances;
     public:
+        // Universal window event data
+        static inline SDL_Event event = SDL_Event();
+
         // Returns the data struct of the window.
         windowData getWindowData()
         {
@@ -57,7 +57,12 @@ namespace PNT
         // Sets the data struct of the window.
         void setWindowData(windowData newData)
         {
-            data = newData;
+            setTitle(newData.title);
+            setDimentions(newData.width, newData.height);
+            setPosition(newData.x, newData.y);
+            setVsyncMode(newData.vsyncMode);
+            setVisiblity(newData.visiblity);
+            setClearColor(newData.clearColor[0], newData.clearColor[1], newData.clearColor[2], newData.clearColor[3]);
         }
 
         // Sets the title of the window, returns the sdl error code (0 is success).
@@ -66,7 +71,7 @@ namespace PNT
             window;
             int errorCode = 0;
             ptrToChar(data.title, newTitle);
-            errorCode = SDL_SetWindowTitle(window, newTitle);
+            errorCode = SDL_SetWindowTitle(window, newTitle == (char *)'\0' ? data.title : newTitle);
             if(errorCode != 0)
             {
                 log.log(2, SDL_GetError());
@@ -98,23 +103,14 @@ namespace PNT
             return errorCode;
         }
 
-        // Shows the window, returns the sdl error code (0 is success).
-        int show()
+        // Sets the visiblity of the window, returns the sdl error code (0 is success).
+        int setVisiblity(char newVisiblity)
         {
             int errorCode = 0;
-            errorCode = SDL_RaiseWindow(window);
-            if(errorCode != 0)
+            if(newVisiblity != -1)
             {
-                log.log(2, SDL_GetError());
+                newVisiblity == true ? errorCode = SDL_RaiseWindow(window) : errorCode = SDL_HideWindow(window);
             }
-            return errorCode;
-        }
-
-        // Hides the window, returns the sdl error code (0 is success).
-        int hide()
-        {
-            int errorCode = 0;
-            errorCode = SDL_HideWindow(window);
             if(errorCode != 0)
             {
                 log.log(2, SDL_GetError());
@@ -123,11 +119,11 @@ namespace PNT
         }
 
         // Sets the vsync mode of the window (0 = off, 1 = on, -1 = adaptive), returns the sdl error code (0 is success).
-        int vsync(char newVsyncMode)
+        int setVsyncMode(char newVsyncMode)
         {
             int errorCode;
             data.vsyncMode = newVsyncMode;
-            errorCode = SDL_GL_SetSwapInterval(data.vsyncMode);
+            errorCode = SDL_GL_SetSwapInterval(newVsyncMode == -1 ? data.vsyncMode : newVsyncMode);
             if(errorCode != 0)
             {
                 log.log(2, SDL_GetError());
@@ -184,8 +180,8 @@ namespace PNT
             {
                 endFrameListener();
             }
-            endTime = std::chrono::high_resolution_clock::now();
-            deltaTime = (endTime - startTime) * 1000;
+            endTime = std::chrono::steady_clock::now();
+            deltaTime = std::chrono::duration_cast<std::chrono::duration<double, std::chrono::milliseconds>>(endTime - startTime).count();
             return errorCode;
         }
 
@@ -219,7 +215,7 @@ namespace PNT
         takes a boolean as a parameter setting it to true if a close request was detected for the window.*/
         void eventProcess(bool *shouldClose)
         {
-            if(event.window.windowID == data.windowID)
+            if(event.window.windowID == windowID)
             {
                 ImGui_ImplSDL3_ProcessEvent(&event);
                 switch(event.window.type)
@@ -230,11 +226,11 @@ namespace PNT
                     break;
 
                 case SDL_EVENT_WINDOW_SHOWN:
-                    data.hidden = true;
+                    data.visiblity = true;
                     break;
 
                 case SDL_EVENT_WINDOW_HIDDEN:
-                    data.hidden = false;
+                    data.visiblity = false;
                     break;
 
                 case SDL_EVENT_WINDOW_CLOSE_REQUESTED:
@@ -263,16 +259,13 @@ namespace PNT
             data.title = (char *)title;
             data.width = width;
             data.height = height;
-            data.vsyncMode = false;
-            data.hidden = false;
-            data.clearColor = {1.0f, 1.0f, 1.0f, 1.0f};
 
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
             window = SDL_CreateWindow(data.title, data.width, data.height, flags | SDL_WINDOW_OPENGL);
-            data.windowID = SDL_GetWindowID(window);
+            windowID = SDL_GetWindowID(window);
             unsigned char currentDisplay = SDL_GetDisplayForWindow(window);
             SDL_SetWindowPosition(window, (SDL_GetCurrentDisplayMode(currentDisplay)->w / 2) - (data.width / 2), (SDL_GetCurrentDisplayMode(currentDisplay)->h / 2) - (data.height / 2) + 1);
 
