@@ -1,24 +1,37 @@
 #pragma once
 
 #include <includes.hpp>
-#include <logger.hpp>
 #include <enumerations.hpp>
 #include <utilities/ptrToChar.hpp>
 
-#define PNT_SDL_CALL(function) function;
-
-
 namespace PNT
 {
+    struct windowData
+    {
+        unsigned char windowID;
+        char *title;
+        unsigned short width, height;
+        unsigned short x, y;
+        char vsyncMode;
+        bool hidden;
+        float clearColor[4];
+    };
+
     class Window
     {
     private:
         // SDL data
-        SDL_Window *window = nullptr;
-        SDL_GLContext openglContext = nullptr;
+        SDL_Window *window;
+        SDL_GLContext openglContext;
+
+        // Window data
+        windowData data;
+
+        // Universal window event data
+        static inline SDL_Event event = SDL_Event();
 
         // ImGui data
-        ImGuiContext *ImGuiContext = nullptr;
+        ImGuiContext *ImGuiContext;
         ImGuiIO io;
         const char *glsl_version = "#version 460";
 
@@ -28,33 +41,30 @@ namespace PNT
         void (*eventListener)();
         void (*errorListener)();
 
-        // Error data
-        int errorCode = 0;
-        const char *errorFunction = nullptr;
-        const char *errorLine = nullptr;
-        const char *errorFile = nullptr;
-    public:
-        // Window data
-        char *title = new char[0];
-        unsigned short width = 0, height = 0;
-        int x = 0, y = 0;
-        bool hidden = true;
-        unsigned char windowID = 0;
-        float rgba[4] = {255.0f,  255.0f, 255.0f, 255.0f};
-        char vsyncMode = 0;
-
         // other data
+        long startTime;
+        long endTime;
+        double deltaTime;
         static inline int instances;
-        double deltaTime = 0;
     public:
-    // The global event for all windows.
-        static inline SDL_Event event = SDL_Event();
+        // Returns the data struct of the window.
+        windowData getWindowData()
+        {
+            return data;
+        }
+
+        // Sets the data struct of the window.
+        void setWindowData(windowData newData)
+        {
+            data = newData;
+        }
 
         // Sets the title of the window, returns the sdl error code (0 is success).
         int setTitle(const char *newTitle)
         {
+            window;
             int errorCode = 0;
-            ptrToChar(title, newTitle);
+            ptrToChar(data.title, newTitle);
             errorCode = SDL_SetWindowTitle(window, newTitle);
             if(errorCode != 0)
             {
@@ -67,7 +77,7 @@ namespace PNT
         int setDimentions(unsigned short newWidth, unsigned short newHeight)
         {
             int errorCode = 0;
-            errorCode = SDL_SetWindowSize(window, newWidth == -1 ? width : newWidth, newHeight == -1 ? height : newHeight);
+            errorCode = SDL_SetWindowSize(window, newWidth == -1 ? data.width : newWidth, newHeight == -1 ? data.height : newHeight);
             if(errorCode != 0)
             {
                 log.log(2, SDL_GetError());
@@ -79,7 +89,7 @@ namespace PNT
         int setPosition(int newX, int newY)
         {
             int errorCode = 0;
-            errorCode = SDL_SetWindowPosition(window, newX == -1 ? x : newX, newY == -1 ? y : newY);
+            errorCode = SDL_SetWindowPosition(window, newX == -1 ? data.x : newX, newY == -1 ? data.y : newY);
             if(errorCode != 0)
             {
                 log.log(2, SDL_GetError());
@@ -115,8 +125,8 @@ namespace PNT
         int vsync(char newVsyncMode)
         {
             int errorCode;
-            vsyncMode = newVsyncMode;
-            errorCode = SDL_GL_SetSwapInterval(vsyncMode);
+            data.vsyncMode = newVsyncMode;
+            errorCode = SDL_GL_SetSwapInterval(data.vsyncMode);
             if(errorCode != 0)
             {
                 log.log(2, SDL_GetError());
@@ -127,15 +137,16 @@ namespace PNT
         // Sets the opengl clear color for the window (-1 = unchanged).
         void setClearColor(float red = -1, float green = -1, float blue = -1, float alpha = -1)
         {
-            if(red != -1) rgba[0] = red;
-            if(green != -1) rgba[1] = green;
-            if(blue != -1) rgba[2] = blue;
-            if(alpha != -1) rgba[3] = alpha;
+            if(red != -1) data.clearColor[0] = red;
+            if(green != -1) data.clearColor[1] = green;
+            if(blue != -1) data.clearColor[2] = blue;
+            if(alpha != -1) data.clearColor[3] = alpha;
         }
 
         // Starts the opengl and imgui frames for the window, returns the sdl error code (0 is success)..
         int startFrame()
         {
+            startTime = std::chrono::high_resolution_clock::now();
             int errorCode = 0;
             errorCode = SDL_GL_MakeCurrent(window, openglContext);
             if(errorCode != 0)
@@ -143,7 +154,7 @@ namespace PNT
                 log.log(2, SDL_GetError());
                 return errorCode;
             }
-            glClearColor(rgba[0], rgba[1], rgba[2], rgba[3]);
+            glClearColor(data.clearColor[0], data.clearColor[1], data.clearColor[2], data.clearColor[3]);
             glClear(GL_COLOR_BUFFER_BIT);
             ImGui::SetCurrentContext(ImGuiContext);
             ImGui_ImplOpenGL3_NewFrame();
@@ -172,6 +183,8 @@ namespace PNT
             {
                 endFrameListener();
             }
+            endTime = std::chrono::high_resolution_clock::now();
+            deltaTime = (endTime - startTime) * 1000;
             return errorCode;
         }
 
@@ -205,22 +218,22 @@ namespace PNT
         takes a boolean as a parameter setting it to true if a close request was detected for the window.*/
         void eventProcess(bool *shouldClose)
         {
-            if(event.window.windowID == windowID)
+            if(event.window.windowID == data.windowID)
             {
                 ImGui_ImplSDL3_ProcessEvent(&event);
                 switch(event.window.type)
                 {
                 case SDL_EVENT_WINDOW_RESIZED:
-                    width = event.window.data1;
-                    height = event.window.data2;
+                    data.width = event.window.data1;
+                    data.height = event.window.data2;
                     break;
 
                 case SDL_EVENT_WINDOW_SHOWN:
-                    hidden = true;
+                    data.hidden = true;
                     break;
 
                 case SDL_EVENT_WINDOW_HIDDEN:
-                    hidden = false;
+                    data.hidden = false;
                     break;
 
                 case SDL_EVENT_WINDOW_CLOSE_REQUESTED:
@@ -228,8 +241,8 @@ namespace PNT
                     break;
 
                 case SDL_EVENT_WINDOW_MOVED:
-                    x = event.window.data1;
-                    y = event.window.data2;
+                    data.x = event.window.data1;
+                    data.y = event.window.data2;
                     break;
 
                 default:
@@ -243,20 +256,25 @@ namespace PNT
         }
 
         // Constructor/Destructor
-        Window(const char *windowTitle = "Title", int windowWidth = 600, int windowHeight = 600, SDL_WindowFlags windowFlags = SDL_WINDOW_OPENGL)
+        Window(const char *title = "Title", unsigned short width = 600, unsigned short height = 600, SDL_WindowFlags flags = SDL_WINDOW_OPENGL)
         {
             instances++;
-            ptrToChar(title, windowTitle);
-            width = windowWidth;
-            height = windowHeight;
-            window = SDL_CreateWindow(title, width, height, windowFlags | SDL_WINDOW_OPENGL);
-            unsigned char currentDisplay = SDL_GetDisplayForWindow(window);
-            SDL_SetWindowPosition(window, (SDL_GetCurrentDisplayMode(currentDisplay)->w / 2) - (width / 2), (SDL_GetCurrentDisplayMode(currentDisplay)->h / 2) - (height / 2) + 1);
-            windowID = SDL_GetWindowID(window);
+            data.title = (char *)title;
+            data.width = width;
+            data.height = height;
+            data.vsyncMode = false;
+            data.hidden = false;
+            data.clearColor = {1.0f, 1.0f, 1.0f, 1.0f};
 
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+
+            window = SDL_CreateWindow(data.title, data.width, data.height, flags | SDL_WINDOW_OPENGL);
+            data.windowID = SDL_GetWindowID(window);
+            unsigned char currentDisplay = SDL_GetDisplayForWindow(window);
+            SDL_SetWindowPosition(window, (SDL_GetCurrentDisplayMode(currentDisplay)->w / 2) - (data.width / 2), (SDL_GetCurrentDisplayMode(currentDisplay)->h / 2) - (data.height / 2) + 1);
+
             openglContext = SDL_GL_CreateContext(window);
             gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress);
 
@@ -279,7 +297,7 @@ namespace PNT
             SDL_GL_DeleteContext(openglContext);
 
             SDL_DestroyWindow(window);
-            delete[] title;
+            delete[] data.title;
         }
     };
 }
