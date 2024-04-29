@@ -1,6 +1,7 @@
 #pragma once
 
 #include <includes.hpp>
+#include <logger.hpp>
 #include <enumerations.hpp>
 #include <utilities/ptrToChar.hpp>
 
@@ -42,8 +43,8 @@ namespace PNT
         void (*errorListener)();
 
         // other data
-        long startTime;
-        long endTime;
+        std::chrono::steady_clock::time_point startTime;
+        std::chrono::steady_clock::time_point endTime;
         double deltaTime;
         static inline int instances;
     public:
@@ -146,7 +147,7 @@ namespace PNT
         // Starts the opengl and imgui frames for the window, returns the sdl error code (0 is success)..
         int startFrame()
         {
-            startTime = std::chrono::high_resolution_clock::now();
+            startTime = std::chrono::steady_clock::now();
             int errorCode = 0;
             errorCode = SDL_GL_MakeCurrent(window, openglContext);
             if(errorCode != 0)
