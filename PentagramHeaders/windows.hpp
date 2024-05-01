@@ -40,10 +40,8 @@ namespace PNT
         void (*errorListener)();
 
         // other data
-        auto startTime = std::chrono::steady_clock::now();
-        auto endTime = std::chrono::steady_clock::now();
-        double deltaTime;
         static inline int instances;
+        static inline std::vector<Window *> instanceList;
     public:
         // Universal window event data
         static inline SDL_Event event = SDL_Event();
@@ -60,8 +58,8 @@ namespace PNT
             setTitle(newData.title);
             setDimentions(newData.width, newData.height);
             setPosition(newData.x, newData.y);
-            setVsyncMode(newData.vsyncMode);
-            setVisiblity(newData.visiblity);
+            if(newData.vsyncMode != -1) setVsyncMode(newData.vsyncMode);
+            if(newData.visiblity != -1) setVisiblity(newData.visiblity);
             setClearColor(newData.clearColor[0], newData.clearColor[1], newData.clearColor[2], newData.clearColor[3]);
         }
 
@@ -104,13 +102,11 @@ namespace PNT
         }
 
         // Sets the visiblity of the window, returns the sdl error code (0 is success).
-        int setVisiblity(char newVisiblity)
+        int setVisiblity(bool newVisiblity)
         {
             int errorCode = 0;
-            if(newVisiblity != -1)
-            {
-                newVisiblity == true ? errorCode = SDL_RaiseWindow(window) : errorCode = SDL_HideWindow(window);
-            }
+            data.visiblity = newVisiblity;
+            newVisiblity == true ? errorCode = SDL_RaiseWindow(window) : errorCode = SDL_HideWindow(window);
             if(errorCode != 0)
             {
                 log.log(2, SDL_GetError());
@@ -123,7 +119,7 @@ namespace PNT
         {
             int errorCode;
             data.vsyncMode = newVsyncMode;
-            errorCode = SDL_GL_SetSwapInterval(newVsyncMode == -1 ? data.vsyncMode : newVsyncMode);
+            errorCode = SDL_GL_SetSwapInterval(newVsyncMode);
             if(errorCode != 0)
             {
                 log.log(2, SDL_GetError());
@@ -140,10 +136,31 @@ namespace PNT
             if(alpha != -1) data.clearColor[3] = alpha;
         }
 
-        // Starts the opengl and imgui frames for the window, returns the sdl error code (0 is success)..
+        // Sets the listener for the specified event (use nullptr to clear listener).
+        void setListener(unsigned char listenerID, void (*newListener)())
+        {
+            switch(listenerID)
+            {
+            case PNT_LISTENER_FLAGS_EVENT:
+                eventListener = newListener;
+                break;
+
+        	case PNT_LISTENER_FLAGS_STARTFRAME:
+                startFrameListener = newListener;
+                break;
+
+            case PNT_LISTENER_FLAGS_ENDFRAME:
+                endFrameListener = newListener;
+                break;
+
+            default:
+                break;
+            }
+        }
+
+        // Starts the opengl and imgui frame for the window, returns the sdl error code (0 is success)..
         int startFrame()
         {
-            startTime = std::chrono::steady_clock::now();
             int errorCode = 0;
             errorCode = SDL_GL_MakeCurrent(window, openglContext);
             if(errorCode != 0)
@@ -180,40 +197,11 @@ namespace PNT
             {
                 endFrameListener();
             }
-            endTime = std::chrono::steady_clock::now();
-            deltaTime = std::chrono::duration_cast<std::chrono::duration<double, std::chrono::milliseconds>>(endTime - startTime).count();
             return errorCode;
         }
 
-        // Sets the listener for the specified event (use nullptr to clear listener).
-        void setListener(unsigned char listenerID, void (*newListener)())
-        {
-            switch(listenerID)
-            {
-            case PNT_LISTENER_FLAGS_EVENT:
-                eventListener = newListener;
-                break;
-
-        	case PNT_LISTENER_FLAGS_STARTFRAME:
-                startFrameListener = newListener;
-                break;
-
-            case PNT_LISTENER_FLAGS_ENDFRAME:
-                endFrameListener = newListener;
-                break;
-
-            case PNT_LISTENER_FLAGS_ERROR:
-                errorListener = newListener;
-                break;
-
-            default:
-                break;
-            }
-        }
-
-        /* Processes the current event, listener functionality supported (check setEventlistener() function for details),
-        takes a boolean as a parameter setting it to true if a close request was detected for the window.*/
-        void eventProcess(bool *shouldClose)
+        // Processes the current event, listener functionality supported (check setEventlistener() function for details).
+        void eventProcess()
         {
             if(event.window.windowID == windowID)
             {
@@ -234,7 +222,7 @@ namespace PNT
                     break;
 
                 case SDL_EVENT_WINDOW_CLOSE_REQUESTED:
-                    *shouldClose = true;
+                    setVisiblity(false);
                     break;
 
                 case SDL_EVENT_WINDOW_MOVED:
@@ -256,6 +244,8 @@ namespace PNT
         Window(const char *title = "Title", unsigned short width = 600, unsigned short height = 600, SDL_WindowFlags flags = SDL_WINDOW_OPENGL)
         {
             instances++;
+            instanceList.push_back(this);
+
             data.title = (char *)title;
             data.width = width;
             data.height = height;
