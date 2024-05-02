@@ -11,6 +11,7 @@ namespace PNT
         return Window::event;
     }
 
+    // Polls the event (should be called in the while loop).
     bool pollEvent()
     {
         return SDL_PollEvent(&Window::event);
