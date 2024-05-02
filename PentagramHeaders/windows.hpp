@@ -20,9 +20,6 @@ namespace PNT
     class Window
     {
     private:
-        friend SDL_Event getEvent();
-        friend bool pollEvent();
-
         // SDL data
         SDL_Window *window;
         SDL_GLContext openglContext;
@@ -30,6 +27,12 @@ namespace PNT
         // Window data
         unsigned char windowID;
         windowData data;
+
+        // Event data
+        static inline SDL_Event event = SDL_Event();
+        friend SDL_Event getEvent();
+        friend bool pollEvent();
+
 
         // ImGui data
         ImGuiContext *ImGuiContext;
@@ -45,10 +48,8 @@ namespace PNT
         // other data
         static inline int instances;
         static inline std::vector<Window *> instanceList;
+        char instanceID;
     public:
-        // Universal window event data
-        static inline SDL_Event event = SDL_Event();
-
         // Returns the data struct of the window.
         windowData getWindowData()
         {
@@ -276,6 +277,10 @@ namespace PNT
         }
         ~Window()
         {
+            auto instanceID = std::find(instanceList.begin(), instanceList.end(), this);
+            instanceList.erase(instanceID);
+            instances--;
+
             ImGui::SetCurrentContext(ImGuiContext);
             ImGui_ImplOpenGL3_Shutdown();
             ImGui_ImplSDL3_Shutdown();
