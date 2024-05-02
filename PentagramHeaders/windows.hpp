@@ -20,6 +20,9 @@ namespace PNT
     class Window
     {
     private:
+        friend SDL_Event getEvent();
+        friend bool pollEvent();
+
         // SDL data
         SDL_Window *window;
         SDL_GLContext openglContext;
