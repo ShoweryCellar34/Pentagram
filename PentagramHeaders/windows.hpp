@@ -40,10 +40,9 @@ namespace PNT
         const char *glsl_version = "#version 460";
 
         // listener data
-        void (*startFrameListener)();
-        void (*endFrameListener)();
-        void (*eventListener)();
-        void (*errorListener)();
+        void (*startFrameListener)(Window *) = nullptr;
+        void (*endFrameListener)(Window *) = nullptr;
+        void (*eventListener)(Window *) = nullptr;
 
         // other data
         static inline int instances;
@@ -141,7 +140,7 @@ namespace PNT
         }
 
         // Sets the listener for the specified event (use nullptr to clear listener).
-        void setListener(unsigned char listenerID, void (*newListener)())
+        void setListener(unsigned char listenerID, void (*newListener)(Window *))
         {
             switch(listenerID)
             {
@@ -180,7 +179,7 @@ namespace PNT
             ImGui::NewFrame();
             if(startFrameListener != nullptr)
             {
-                startFrameListener();
+                startFrameListener(this);
             }
             return errorCode;
         }
@@ -199,7 +198,7 @@ namespace PNT
             }
             if(endFrameListener != nullptr)
             {
-                endFrameListener();
+                endFrameListener(this);
             }
             return errorCode;
         }
@@ -239,7 +238,7 @@ namespace PNT
                 }
                 if(eventListener != nullptr)
                 {
-                    eventListener();
+                    eventListener(this);
                 }
             }
         }
