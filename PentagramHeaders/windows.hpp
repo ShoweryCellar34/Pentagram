@@ -9,7 +9,7 @@ namespace PNT
 {
     struct windowData
     {
-        char *title = (char *)'\0';
+        std::string title = "";
         short width = -1, height = -1;
         short x = -1, y = -1;
         char vsyncMode = -1;
@@ -19,35 +19,6 @@ namespace PNT
 
     class Window
     {
-    private:
-        // SDL data
-        SDL_Window *window;
-        SDL_GLContext openglContext;
-
-        // Window data
-        unsigned char windowID;
-        windowData data;
-
-        // Event data
-        static inline SDL_Event event = SDL_Event();
-        friend SDL_Event getEvent();
-        friend bool pollEvent();
-
-
-        // ImGui data
-        ImGuiContext *ImGuiContext;
-        ImGuiIO io;
-        const char *glsl_version = "#version 460";
-
-        // listener data
-        void (*startFrameListener)(Window *) = nullptr;
-        void (*endFrameListener)(Window *) = nullptr;
-        void (*eventListener)(Window *) = nullptr;
-
-        // other data
-        static inline int instances;
-        static inline std::vector<Window *> instanceList;
-        char instanceID;
     public:
         // Returns the data struct of the window.
         windowData getWindowData()
@@ -58,7 +29,7 @@ namespace PNT
         // Sets the data struct of the window.
         void setWindowData(windowData newData)
         {
-            setTitle(newData.title);
+            if(!newData.title.empty()) setTitle(newData.title.c_str());
             setDimentions(newData.width, newData.height);
             setPosition(newData.x, newData.y);
             if(newData.vsyncMode != -1) setVsyncMode(newData.vsyncMode);
@@ -69,10 +40,8 @@ namespace PNT
         // Sets the title of the window, returns the sdl error code (0 is success).
         int setTitle(const char *newTitle)
         {
-            window;
             int errorCode = 0;
-            ptrToChar(data.title, newTitle);
-            errorCode = SDL_SetWindowTitle(window, newTitle == (char *)'\0' ? data.title : newTitle);
+            errorCode = SDL_SetWindowTitle(window, newTitle);
             if(errorCode != 0)
             {
                 log.log(2, SDL_GetError());
@@ -257,7 +226,7 @@ namespace PNT
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
             SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
-            window = SDL_CreateWindow(data.title, data.width, data.height, flags | SDL_WINDOW_OPENGL);
+            window = SDL_CreateWindow(data.title.c_str(), data.width, data.height, flags | SDL_WINDOW_OPENGL);
             windowID = SDL_GetWindowID(window);
             unsigned char currentDisplay = SDL_GetDisplayForWindow(window);
             SDL_SetWindowPosition(window, (SDL_GetCurrentDisplayMode(currentDisplay)->w / 2) - (data.width / 2), (SDL_GetCurrentDisplayMode(currentDisplay)->h / 2) - (data.height / 2) + 1);
@@ -288,7 +257,35 @@ namespace PNT
             SDL_GL_DeleteContext(openglContext);
 
             SDL_DestroyWindow(window);
-            delete[] data.title;
         }
+    private:
+        // SDL data
+        SDL_Window *window;
+        SDL_GLContext openglContext;
+
+        // Window data
+        unsigned char windowID;
+        windowData data;
+
+        // Event data
+        static inline SDL_Event event = SDL_Event();
+        friend SDL_Event getEvent();
+        friend bool pollEvent();
+
+
+        // ImGui data
+        ImGuiContext *ImGuiContext;
+        ImGuiIO io;
+        const char *glsl_version = "#version 460";
+
+        // listener data
+        void (*startFrameListener)(Window *) = nullptr;
+        void (*endFrameListener)(Window *) = nullptr;
+        void (*eventListener)(Window *) = nullptr;
+
+        // other data
+        static inline int instances;
+        static inline std::vector<Window *> instanceList;
+        char instanceID;
     };
 }
