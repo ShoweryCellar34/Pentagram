@@ -20,6 +20,55 @@ namespace PNT
     class Window
     {
     public:
+        // Constructor/Destructor
+        Window(const char *title = "Title", unsigned short width = 600, unsigned short height = 600, SDL_WindowFlags flags = SDL_WINDOW_OPENGL)
+        {
+            instances++;
+            instanceList.push_back(this);
+
+            data.title = (char *)title;
+            data.width = width;
+            data.height = height;
+
+            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
+            SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+
+            window = SDL_CreateWindow(data.title.c_str(), data.width, data.height, flags | SDL_WINDOW_OPENGL);
+            windowID = SDL_GetWindowID(window);
+            unsigned char currentDisplay = SDL_GetDisplayForWindow(window);
+            SDL_SetWindowPosition(window, (SDL_GetCurrentDisplayMode(currentDisplay)->w / 2) - (data.width / 2), (SDL_GetCurrentDisplayMode(currentDisplay)->h / 2) - (data.height / 2) + 1);
+
+            openglContext = SDL_GL_CreateContext(window);
+            gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress);
+
+            ImGuiContext = ImGui::CreateContext();
+            ImGui::SetCurrentContext(ImGuiContext);
+            ImGui_ImplSDL3_InitForOpenGL(window, openglContext);
+            ImGui_ImplOpenGL3_Init(glsl_version);
+            io = ImGui::GetIO();
+            io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+            io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+            io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+            io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+            ImGui::StyleColorsDark();
+        }
+        ~Window()
+        {
+            auto instanceID = std::find(instanceList.begin(), instanceList.end(), this);
+            instanceList.erase(instanceID);
+            instances--;
+
+            ImGui::SetCurrentContext(ImGuiContext);
+            ImGui_ImplOpenGL3_Shutdown();
+            ImGui_ImplSDL3_Shutdown();
+            ImGui::DestroyContext(ImGuiContext);
+
+            SDL_GL_DeleteContext(openglContext);
+
+            SDL_DestroyWindow(window);
+        }
+
         // Returns the data struct of the window.
         windowData getWindowData()
         {
@@ -210,53 +259,6 @@ namespace PNT
                     eventListener(this);
                 }
             }
-        }
-
-        // Constructor/Destructor
-        Window(const char *title = "Title", unsigned short width = 600, unsigned short height = 600, SDL_WindowFlags flags = SDL_WINDOW_OPENGL)
-        {
-            instances++;
-            instanceList.push_back(this);
-
-            data.title = (char *)title;
-            data.width = width;
-            data.height = height;
-
-            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
-            SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-
-            window = SDL_CreateWindow(data.title.c_str(), data.width, data.height, flags | SDL_WINDOW_OPENGL);
-            windowID = SDL_GetWindowID(window);
-            unsigned char currentDisplay = SDL_GetDisplayForWindow(window);
-            SDL_SetWindowPosition(window, (SDL_GetCurrentDisplayMode(currentDisplay)->w / 2) - (data.width / 2), (SDL_GetCurrentDisplayMode(currentDisplay)->h / 2) - (data.height / 2) + 1);
-
-            openglContext = SDL_GL_CreateContext(window);
-            gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress);
-
-            ImGuiContext = ImGui::CreateContext();
-            ImGui::SetCurrentContext(ImGuiContext);
-            ImGui_ImplSDL3_InitForOpenGL(window, openglContext);
-            ImGui_ImplOpenGL3_Init(glsl_version);
-            io = ImGui::GetIO();
-            io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-            io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
-            ImGui::StyleColorsDark();
-        }
-        ~Window()
-        {
-            auto instanceID = std::find(instanceList.begin(), instanceList.end(), this);
-            instanceList.erase(instanceID);
-            instances--;
-
-            ImGui::SetCurrentContext(ImGuiContext);
-            ImGui_ImplOpenGL3_Shutdown();
-            ImGui_ImplSDL3_Shutdown();
-            ImGui::DestroyContext(ImGuiContext);
-
-            SDL_GL_DeleteContext(openglContext);
-
-            SDL_DestroyWindow(window);
         }
     private:
         // SDL data
