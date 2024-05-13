@@ -43,14 +43,13 @@ namespace PNT
             gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress);
 
             ImGuiContext = ImGui::CreateContext();
-            ImGui::SetCurrentContext(ImGuiContext);
-            ImGui_ImplSDL3_InitForOpenGL(window, openglContext);
-            ImGui_ImplOpenGL3_Init(glsl_version);
-            io = ImGui::GetIO();
+            ImGuiIO &io = ImGui::GetIO();
             io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
             io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
-            io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
             io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+            io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+            ImGui_ImplSDL3_InitForOpenGL(window, openglContext);
+            ImGui_ImplOpenGL3_Init(glsl_version);
             ImGui::StyleColorsDark();
         }
         ~Window()
@@ -67,6 +66,90 @@ namespace PNT
             SDL_GL_DeleteContext(openglContext);
 
             SDL_DestroyWindow(window);
+        }
+
+        // Starts the opengl and imgui frame for the window, returns the sdl error code (0 is success)..
+        int startFrame()
+        {
+            int errorCode = 0;
+            errorCode = SDL_GL_MakeCurrent(window, openglContext);
+            if(errorCode != 0)
+            {
+                log.log(2, SDL_GetError());
+                return errorCode;
+            }
+            glClearColor(data.clearColor[0], data.clearColor[1], data.clearColor[2], data.clearColor[3]);
+            glClear(GL_COLOR_BUFFER_BIT);
+            ImGui::SetCurrentContext(ImGuiContext);
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplSDL3_NewFrame();
+            ImGui::NewFrame();
+            if(startFrameListener != nullptr)
+            {
+                startFrameListener(this);
+            }
+            return errorCode;
+        }
+
+        // Hides the window, returns the sdl error code (0 is success). 
+        int endFrame()
+        {
+            int errorCode = 0;
+            ImGui::Render();
+            ImGuiIO &io = ImGui::GetIO();
+            glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+            errorCode = SDL_GL_SwapWindow(window);
+            ImGui::UpdatePlatformWindows();
+            if(errorCode != 0)
+            {
+                log.log(2, SDL_GetError());
+            }
+            if(endFrameListener != nullptr)
+            {
+                endFrameListener(this);
+            }
+            return errorCode;
+        }
+
+        // Processes the current event, listener functionality supported (check setlistener() function for details).
+        void eventProcess()
+        {
+            if(event.window.windowID == windowID)
+            {
+                ImGui_ImplSDL3_ProcessEvent(&event);
+                switch(event.window.type)
+                {
+                case SDL_EVENT_WINDOW_RESIZED:
+                    data.width = event.window.data1;
+                    data.height = event.window.data2;
+                    break;
+
+                case SDL_EVENT_WINDOW_SHOWN:
+                    data.visiblity = true;
+                    break;
+
+                case SDL_EVENT_WINDOW_HIDDEN:
+                    data.visiblity = false;
+                    break;
+
+                case SDL_EVENT_WINDOW_CLOSE_REQUESTED:
+                    setVisiblity(false);
+                    break;
+
+                case SDL_EVENT_WINDOW_MOVED:
+                    data.x = event.window.data1;
+                    data.y = event.window.data2;
+                    break;
+
+                default:
+                    break;
+                }
+                if(eventListener != nullptr)
+                {
+                    eventListener(this);
+                }
+            }
         }
 
         // Returns the data struct of the window.
@@ -179,87 +262,6 @@ namespace PNT
             }
         }
 
-        // Starts the opengl and imgui frame for the window, returns the sdl error code (0 is success)..
-        int startFrame()
-        {
-            int errorCode = 0;
-            errorCode = SDL_GL_MakeCurrent(window, openglContext);
-            if(errorCode != 0)
-            {
-                log.log(2, SDL_GetError());
-                return errorCode;
-            }
-            glClearColor(data.clearColor[0], data.clearColor[1], data.clearColor[2], data.clearColor[3]);
-            glClear(GL_COLOR_BUFFER_BIT);
-            ImGui::SetCurrentContext(ImGuiContext);
-            ImGui_ImplOpenGL3_NewFrame();
-            ImGui_ImplSDL3_NewFrame();
-            ImGui::NewFrame();
-            if(startFrameListener != nullptr)
-            {
-                startFrameListener(this);
-            }
-            return errorCode;
-        }
-
-        // Hides the window, returns the sdl error code (0 is success). 
-        int endFrame()
-        {
-            int errorCode = 0;
-            ImGui::Render();
-            glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
-            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-            errorCode = SDL_GL_SwapWindow(window);
-            if(errorCode != 0)
-            {
-                log.log(2, SDL_GetError());
-            }
-            if(endFrameListener != nullptr)
-            {
-                endFrameListener(this);
-            }
-            return errorCode;
-        }
-
-        // Processes the current event, listener functionality supported (check setEventlistener() function for details).
-        void eventProcess()
-        {
-            if(event.window.windowID == windowID)
-            {
-                ImGui_ImplSDL3_ProcessEvent(&event);
-                switch(event.window.type)
-                {
-                case SDL_EVENT_WINDOW_RESIZED:
-                    data.width = event.window.data1;
-                    data.height = event.window.data2;
-                    break;
-
-                case SDL_EVENT_WINDOW_SHOWN:
-                    data.visiblity = true;
-                    break;
-
-                case SDL_EVENT_WINDOW_HIDDEN:
-                    data.visiblity = false;
-                    break;
-
-                case SDL_EVENT_WINDOW_CLOSE_REQUESTED:
-                    setVisiblity(false);
-                    break;
-
-                case SDL_EVENT_WINDOW_MOVED:
-                    data.x = event.window.data1;
-                    data.y = event.window.data2;
-                    break;
-
-                default:
-                    break;
-                }
-                if(eventListener != nullptr)
-                {
-                    eventListener(this);
-                }
-            }
-        }
     private:
         // SDL data
         SDL_Window *window;
@@ -277,7 +279,6 @@ namespace PNT
 
         // ImGui data
         ImGuiContext *ImGuiContext;
-        ImGuiIO io;
         const char *glsl_version = "#version 460";
 
         // listener data
