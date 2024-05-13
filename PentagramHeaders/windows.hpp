@@ -117,7 +117,6 @@ namespace PNT
         {
             if(event.window.windowID == windowID)
             {
-                ImGui_ImplSDL3_ProcessEvent(&event);
                 switch(event.window.type)
                 {
                 case SDL_EVENT_WINDOW_RESIZED:
@@ -145,22 +144,41 @@ namespace PNT
                 default:
                     break;
                 }
-                if(eventListener != nullptr)
-                {
-                    eventListener(this);
-                }
+                ImGui_ImplSDL3_ProcessEvent(&event);
+                ImGuiIO &io = ImGui::GetIO();
+                if(!io.WantCaptureKeyboard && keyboardEventListener != nullptr) keyboardEventListener(this);
+                if(!io.WantCaptureMouse && mouseEventListener != nullptr) mouseEventListener(this);
+            }
+        }
+
+        // Sets the listener for the specified event (use nullptr to clear listener).
+        void setListener(unsigned char listenerID, void (*newListener)(Window *)) {
+            switch(listenerID) {
+        	case PNT_LISTENER_FLAGS_STARTFRAME:
+                startFrameListener = newListener;
+                break;
+
+            case PNT_LISTENER_FLAGS_ENDFRAME:
+                endFrameListener = newListener;
+                break;
+
+            case PNT_LISTENER_FLAGS_KEYBOARDEVENT:
+                keyboardEventListener = newListener;
+                break;
+
+            case PNT_LISTENER_FLAGS_MOUSEEVENT:
+                mouseEventListener = newListener;
+                break;
+            default:
+                break;
             }
         }
 
         // Returns the data struct of the window.
-        windowData getWindowData()
-        {
-            return data;
-        }
+        windowData getWindowData() {return data;}
 
         // Sets the data struct of the window.
-        void setWindowData(windowData newData)
-        {
+        void setWindowData(windowData newData) {
             if(!newData.title.empty()) setTitle(newData.title.c_str());
             setDimentions(newData.width, newData.height);
             setPosition(newData.x, newData.y);
@@ -170,98 +188,54 @@ namespace PNT
         }
 
         // Sets the title of the window, returns the sdl error code (0 is success).
-        int setTitle(const char *newTitle)
-        {
+        int setTitle(const char *newTitle) {
             int errorCode = 0;
             errorCode = SDL_SetWindowTitle(window, newTitle);
-            if(errorCode != 0)
-            {
-                log.log(2, SDL_GetError());
-            }
+            if(errorCode != 0) log.log(2, SDL_GetError());
             return errorCode;
         }
 
         // Sets the width and height of the window (-1 = unchanged), returns the sdl error code (0 is success).
-        int setDimentions(unsigned short newWidth, unsigned short newHeight)
-        {
+        int setDimentions(unsigned short newWidth, unsigned short newHeight) {
             int errorCode = 0;
             errorCode = SDL_SetWindowSize(window, newWidth == -1 ? data.width : newWidth, newHeight == -1 ? data.height : newHeight);
-            if(errorCode != 0)
-            {
-                log.log(2, SDL_GetError());
-            }
+            if(errorCode != 0) log.log(2, SDL_GetError());
             return errorCode;
         }
 
         // Sets the x and y coordinates of the window (-1 = unchanged), returns the sdl error code (0 is success).
-        int setPosition(int newX, int newY)
-        {
+        int setPosition(int newX, int newY) {
             int errorCode = 0;
             errorCode = SDL_SetWindowPosition(window, newX == -1 ? data.x : newX, newY == -1 ? data.y : newY);
-            if(errorCode != 0)
-            {
-                log.log(2, SDL_GetError());
-            }
+            if(errorCode != 0) log.log(2, SDL_GetError());
             return errorCode;
         }
 
         // Sets the visiblity of the window, returns the sdl error code (0 is success).
-        int setVisiblity(bool newVisiblity)
-        {
+        int setVisiblity(bool newVisiblity) {
             int errorCode = 0;
             data.visiblity = newVisiblity;
             newVisiblity == true ? errorCode = SDL_RaiseWindow(window) : errorCode = SDL_HideWindow(window);
-            if(errorCode != 0)
-            {
-                log.log(2, SDL_GetError());
-            }
+            if(errorCode != 0) log.log(2, SDL_GetError());
             return errorCode;
         }
 
         // Sets the vsync mode of the window (0 = off, 1 = on, -1 = adaptive), returns the sdl error code (0 is success).
-        int setVsyncMode(char newVsyncMode)
-        {
+        int setVsyncMode(char newVsyncMode) {
             int errorCode;
             data.vsyncMode = newVsyncMode;
             errorCode = SDL_GL_SetSwapInterval(newVsyncMode);
-            if(errorCode != 0)
-            {
-                log.log(2, SDL_GetError());
-            }
+            if(errorCode != 0) log.log(2, SDL_GetError());
             return errorCode;
         }
 
         // Sets the opengl clear color for the window (-1 = unchanged).
-        void setClearColor(float red = -1, float green = -1, float blue = -1, float alpha = -1)
-        {
+        void setClearColor(float red = -1, float green = -1, float blue = -1, float alpha = -1) {
             if(red != -1) data.clearColor[0] = red;
             if(green != -1) data.clearColor[1] = green;
             if(blue != -1) data.clearColor[2] = blue;
             if(alpha != -1) data.clearColor[3] = alpha;
         }
-
-        // Sets the listener for the specified event (use nullptr to clear listener).
-        void setListener(unsigned char listenerID, void (*newListener)(Window *))
-        {
-            switch(listenerID)
-            {
-            case PNT_LISTENER_FLAGS_EVENT:
-                eventListener = newListener;
-                break;
-
-        	case PNT_LISTENER_FLAGS_STARTFRAME:
-                startFrameListener = newListener;
-                break;
-
-            case PNT_LISTENER_FLAGS_ENDFRAME:
-                endFrameListener = newListener;
-                break;
-
-            default:
-                break;
-            }
-        }
-
     private:
         // SDL data
         SDL_Window *window;
@@ -284,7 +258,8 @@ namespace PNT
         // listener data
         void (*startFrameListener)(Window *) = nullptr;
         void (*endFrameListener)(Window *) = nullptr;
-        void (*eventListener)(Window *) = nullptr;
+        void (*keyboardEventListener)(Window *) = nullptr;
+        void (*mouseEventListener)(Window *) = nullptr;
 
         // other data
         static inline int instances;
