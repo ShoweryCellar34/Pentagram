@@ -30,16 +30,15 @@ namespace PNT
             data.width = width;
             data.height = height;
 
-            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-            SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
-            SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+            glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-            window = SDL_CreateWindow(data.title.c_str(), data.width, data.height, flags | SDL_WINDOW_OPENGL);
-            windowID = SDL_GetWindowID(window);
+            window = glfwCreateWindow(width, height, title, NULL, NULL);
+            glfwMakeContextCurrent(window);
             unsigned char currentDisplay = SDL_GetDisplayForWindow(window);
             SDL_SetWindowPosition(window, (SDL_GetCurrentDisplayMode(currentDisplay)->w / 2) - (data.width / 2), (SDL_GetCurrentDisplayMode(currentDisplay)->h / 2) - (data.height / 2) + 1);
 
-            openglContext = SDL_GL_CreateContext(window);
             gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress);
 
             ImGuiContext = ImGui::CreateContext();
@@ -48,7 +47,7 @@ namespace PNT
             io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
             io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
             io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-            ImGui_ImplSDL3_InitForOpenGL(window, openglContext);
+            ImGui_ImplGlfw_InitForOpenGL(window, true);
             ImGui_ImplOpenGL3_Init(glsl_version);
             ImGui::StyleColorsDark();
         }
@@ -60,12 +59,10 @@ namespace PNT
 
             ImGui::SetCurrentContext(ImGuiContext);
             ImGui_ImplOpenGL3_Shutdown();
-            ImGui_ImplSDL3_Shutdown();
+            ImGui_ImplGlfw_Shutdown();
             ImGui::DestroyContext(ImGuiContext);
 
-            SDL_GL_DeleteContext(openglContext);
-
-            SDL_DestroyWindow(window);
+            glfwDestroyWindow(window);
         }
 
         // Starts the opengl and imgui frame for the window, returns the sdl error code (0 is success)..
@@ -238,8 +235,7 @@ namespace PNT
         }
     private:
         // SDL data
-        SDL_Window *window;
-        SDL_GLContext openglContext;
+        GLFWwindow *window;
 
         // Window data
         unsigned char windowID;
