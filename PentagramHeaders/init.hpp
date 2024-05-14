@@ -4,8 +4,15 @@
 
 namespace PNT
 {
+    // initulizes GLFW
     void init()
     {
-        SDL_Init(SDL_INIT_VIDEO);
+        glfwInit();
+    }
+
+    // deinitulizes GLFW
+    void deinit()
+    {
+        glfwTerminate();
     }
 }
