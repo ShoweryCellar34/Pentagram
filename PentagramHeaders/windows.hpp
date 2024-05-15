@@ -25,12 +25,12 @@ namespace PNT
     {
     public:
         // Constructor/Destructor
-        Window(const char *title = "Title", unsigned short width = 600, unsigned short height = 600)
+        Window(const char* title = "Title", unsigned short width = 600, unsigned short height = 600)
         {
             instances++;
             instanceList[window] = this;
 
-            data.title = (char *)title;
+            data.title = (char* )title;
             data.width = width;
             data.height = height;
 
@@ -44,7 +44,7 @@ namespace PNT
             gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 
             ImGuiContext = ImGui::CreateContext();
-            ImGuiIO &io = ImGui::GetIO();
+            ImGuiIO& io = ImGui::GetIO();
             io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
             io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
             io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
@@ -72,7 +72,7 @@ namespace PNT
         {
             glfwMakeContextCurrent(window);
             int width, height;
-            glfwGetFramebufferSize(window, &width, &height);
+            glfwGetFramebufferSize(window,& width,& height);
             glViewport(0, 0, width, height);
             glClearColor(data.clearColor[0], data.clearColor[1], data.clearColor[2], data.clearColor[3]);
             glClear(GL_COLOR_BUFFER_BIT);
@@ -90,7 +90,7 @@ namespace PNT
         void endFrame()
         {
             ImGui::Render();
-            ImGuiIO &io = ImGui::GetIO();
+            ImGuiIO& io = ImGui::GetIO();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
             glfwSwapBuffers(window);
             GLFWwindow* backupContext = glfwGetCurrentContext();
@@ -104,7 +104,7 @@ namespace PNT
         }
 
         // Sets the listener for the specified event (use nullptr to clear listener).
-        void setListener(unsigned char listenerID, void (*newListener)(Window *)) {
+        void setListener(unsigned char listenerID, void (*newListener)(Window* )) {
             switch(listenerID) {
         	case PNT_LISTENER_FLAGS_STARTFRAME:
                 startFrameListener = newListener;
@@ -140,7 +140,7 @@ namespace PNT
         }
 
         // Sets the title of the window.
-        void setTitle(const char *title) {
+        void setTitle(const char* title) {
             glfwSetWindowTitle(window, title);
         }
 
@@ -174,20 +174,20 @@ namespace PNT
         }
     private:
         // SDL data
-        GLFWwindow *window;
+        GLFWwindow* window;
 
         // Window data
         windowData data;
 
         // ImGui data
-        ImGuiContext *ImGuiContext;
-        const char *glsl_version = "#version 460";
+        ImGuiContext* ImGuiContext;
+        const char* glsl_version = "#version 460";
 
         // listener data
-        void (*startFrameListener)(Window *) = nullptr;
-        void (*endFrameListener)(Window *) = nullptr;
-        void (*keyboardEventListener)(Window *) = nullptr;
-        void (*mouseEventListener)(Window *) = nullptr;
+        void (*startFrameListener)(Window* ) = nullptr;
+        void (*endFrameListener)(Window* ) = nullptr;
+        void (*keyboardEventListener)(Window* ) = nullptr;
+        void (*mouseEventListener)(Window* ) = nullptr;
 
         // other data
         static inline int instances;
