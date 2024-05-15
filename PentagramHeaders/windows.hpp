@@ -7,9 +7,8 @@
 
 namespace PNT
 {
-
     void keyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-        std::find(Window::instanceList.begin(), Window::instanceList.end(), window)map
+        Window::instanceList.at(window)->keyboardEvent(key, scancode, action, mods);
     }
 
     struct windowData
@@ -29,7 +28,7 @@ namespace PNT
         Window(const char *title = "Title", unsigned short width = 600, unsigned short height = 600)
         {
             instances++;
-            instanceList.push_back(this);
+            instanceList[window] = this;
 
             data.title = (char *)title;
             data.width = width;
@@ -192,12 +191,12 @@ namespace PNT
 
         // other data
         static inline int instances;
-        static inline std::vector<Window *> instanceList;
+        static inline std::map<GLFWwindow*, Window*> instanceList;
         char instanceID;
 
         // Functions
         friend void keyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
-        void keyboardEvent(GLFWwindow* window, int key, int scancode, int action, int mods) {
+        void keyboardEvent(int key, int scancode, int action, int mods) {
 
         }
     };
