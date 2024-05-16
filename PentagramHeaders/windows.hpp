@@ -8,10 +8,10 @@
 namespace PNT {
     struct windowData {
         std::string title = "";
-        unsigned short width = -1, height = -1;
-        unsigned short x = -1, y = -1;
-        unsigned char vsyncMode = -1;
-        unsigned char visiblity = -1;
+        unsigned short width = 0, height = 0;
+        unsigned short x = 0, y = 0;
+        unsigned char visiblity = 0;
+        unsigned char vsyncMode = 0;
         float clearColor[4] = {0.0f, 0.0f, 0.0f, 0.0f};
     };
 
@@ -60,11 +60,10 @@ namespace PNT {
         }
 
         // Starts the opengl and imgui frame for the window, returns the sdl error code (0 is success)..
-        void startFrame()
-        {
+        void startFrame() {
             glfwMakeContextCurrent(window);
             int width, height;
-            glfwGetFramebufferSize(window,& width,& height);
+            glfwGetFramebufferSize(window, &width, &height);
             glViewport(0, 0, width, height);
             glClearColor(data.clearColor[0], data.clearColor[1], data.clearColor[2], data.clearColor[3]);
             glClear(GL_COLOR_BUFFER_BIT);
@@ -72,15 +71,13 @@ namespace PNT {
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
-            if(startFrameListener != nullptr)
-            {
-                startFrameListener(this);
+            if(userCallbacks[0] != nullptr) {
+                userCallbacks[0](this);
             }
         }
 
         // Hides the window, returns the sdl error code (0 is success). 
-        void endFrame()
-        {
+        void endFrame() {
             ImGui::Render();
             ImGuiIO& io = ImGui::GetIO();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -89,29 +86,29 @@ namespace PNT {
             ImGui::UpdatePlatformWindows();
             ImGui::RenderPlatformWindowsDefault();
             glfwMakeContextCurrent(backupContext);
-            if(endFrameListener != nullptr)
+            if(userCallbacks[1] != nullptr)
             {
-                endFrameListener(this);
+                userCallbacks[1](this);
             }
         }
 
-        // Sets the listener for the specified event (use nullptr to clear listener).
-        void setListener(unsigned char listenerID, void (*newListener)(Window* )) {
-            switch(listenerID) {
-        	case PNT_LISTENER_FLAGS_STARTFRAME:
-                startFrameListener = newListener;
+        // Sets the callback for the specified event (use nullptr to clear callback).
+        void setcallback(unsigned char callbackID, void (*newcallback)(Window* )) {
+            switch(callbackID) {
+        	case PNT_CALLBACK_FLAGS_STARTFRAME:
+                userCallbacks[0] = newcallback;
                 break;
 
-            case PNT_LISTENER_FLAGS_ENDFRAME:
-                endFrameListener = newListener;
+            case PNT_CALLBACK_FLAGS_ENDFRAME:
+                userCallbacks[1] = newcallback;
                 break;
 
-            case PNT_LISTENER_FLAGS_KEYBOARDEVENT:
-                keyboardEventListener = newListener;
+            case PNT_CALLBACK_FLAGS_KEYBOARDEVENT:
+                userCallbacks[2] = newcallback;
                 break;
 
-            case PNT_LISTENER_FLAGS_MOUSEEVENT:
-                mouseEventListener = newListener;
+            case PNT_CALLBACK_FLAGS_MOUSEEVENT:
+                userCallbacks[3] = newcallback;
                 break;
             default:
                 break;
@@ -174,11 +171,8 @@ namespace PNT {
         // ImGui data
         ImGuiContext* ImGuiContext;
 
-        // listener data
-        void (*startFrameListener)(Window* ) = nullptr;
-        void (*endFrameListener)(Window* ) = nullptr;
-        void (*keyboardEventListener)(Window* ) = nullptr;
-        void (*mouseEventListener)(Window* ) = nullptr;
+        // callback data
+        std::vector<void (*)(Window* )> userCallbacks = {nullptr, nullptr, nullptr, nullptr};
 
         // other data
         static inline int instances;
