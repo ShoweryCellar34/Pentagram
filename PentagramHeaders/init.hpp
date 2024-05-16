@@ -2,17 +2,14 @@
 
 #include <includes.hpp>
 
-namespace PNT
-{
+namespace PNT {
     // initulizes GLFW
-    void init()
-    {
+    void init() {
         glfwInit();
     }
 
     // deinitulizes GLFW
-    void deinit()
-    {
+    void deinit() {
         glfwTerminate();
     }
 }

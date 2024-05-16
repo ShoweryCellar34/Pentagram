@@ -5,14 +5,8 @@
 #include <enumerations.hpp>
 #include <utilities/ptrToChar.hpp>
 
-namespace PNT
-{
-    void keyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-        Window::instanceList.at(window)->keyboardEvent(key, scancode, action, mods);
-    }
-
-    struct windowData
-    {
+namespace PNT {
+    struct windowData {
         std::string title = "";
         short width = -1, height = -1;
         short x = -1, y = -1;
@@ -21,12 +15,11 @@ namespace PNT
         float clearColor[4] = {-1.0f, -1.0f, -1.0f, -1.0f};
     };
 
-    class Window
-    {
+    void keyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+    class Window {
     public:
         // Constructor/Destructor
-        Window(const char* title = "Title", unsigned short width = 600, unsigned short height = 600)
-        {
+        Window(const char* title = "Title", unsigned short width = 600, unsigned short height = 600) {
             instances++;
             instanceList[window] = this;
 
@@ -50,12 +43,11 @@ namespace PNT
             io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
             io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
             ImGui_ImplGlfw_InitForOpenGL(window, true);
-            ImGui_ImplOpenGL3_Init(glsl_version);
+            ImGui_ImplOpenGL3_Init("#version 460");
             ImGui::StyleColorsDark();
         }
-        ~Window()
-        {
-            auto instanceID = std::find(instanceList.begin(), instanceList.end(), this);
+        ~Window() {
+            auto instanceID = std::find(instanceList.begin(), instanceList.end(), window);
             instanceList.erase(instanceID);
             instances--;
 
@@ -181,7 +173,6 @@ namespace PNT
 
         // ImGui data
         ImGuiContext* ImGuiContext;
-        const char* glsl_version = "#version 460";
 
         // listener data
         void (*startFrameListener)(Window* ) = nullptr;
@@ -196,8 +187,10 @@ namespace PNT
 
         // Functions
         friend void keyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
-        void keyboardEvent(int key, int scancode, int action, int mods) {
-
-        }
+        void keyboardEvent(int key, int scancode, int action, int mods) {}
     };
+
+    void keyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+        Window::instanceList.at(window)->keyboardEvent(key, scancode, action, mods);
+    }
 }
