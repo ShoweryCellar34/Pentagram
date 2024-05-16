@@ -8,11 +8,11 @@
 namespace PNT {
     struct windowData {
         std::string title = "";
-        short width = -1, height = -1;
-        short x = -1, y = -1;
-        char vsyncMode = -1;
-        char visiblity = -1;
-        float clearColor[4] = {-1.0f, -1.0f, -1.0f, -1.0f};
+        unsigned short width = -1, height = -1;
+        unsigned short x = -1, y = -1;
+        unsigned char vsyncMode = -1;
+        unsigned char visiblity = -1;
+        float clearColor[4] = {0.0f, 0.0f, 0.0f, 0.0f};
     };
 
     void keyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
@@ -23,7 +23,7 @@ namespace PNT {
             instances++;
             instanceList[window] = this;
 
-            data.title = (char* )title;
+            data.title = title;
             data.width = width;
             data.height = height;
 
