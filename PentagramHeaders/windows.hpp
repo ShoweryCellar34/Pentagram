@@ -6,7 +6,9 @@
 #include <utilities/ptrToChar.hpp>
 
 namespace PNT {
+    class Window;
     struct windowData {
+        std::vector<std::function<void(Window*)>> userCallbacks = {nullptr};
         std::string title = "";
         unsigned short width = 0, height = 0;
         unsigned short x = 0, y = 0;
@@ -71,8 +73,8 @@ namespace PNT {
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
-            if(userCallbacks[0] != nullptr) {
-                userCallbacks[0](this);
+            if(data.userCallbacks[0] != nullptr) {
+                data.userCallbacks[0](this);
             }
         }
 
@@ -86,29 +88,29 @@ namespace PNT {
             ImGui::UpdatePlatformWindows();
             ImGui::RenderPlatformWindowsDefault();
             glfwMakeContextCurrent(backupContext);
-            if(userCallbacks[1] != nullptr)
+            if(data.userCallbacks[1] != nullptr)
             {
-                userCallbacks[1](this);
+                data.userCallbacks[1](this);
             }
         }
 
         // Sets the callback for the specified event (use nullptr to clear callback).
-        void setcallback(unsigned char callbackID, void (*newcallback)(Window* )) {
+        void setCallback(unsigned char callbackID, void (*newcallback)(Window*)) {
             switch(callbackID) {
         	case PNT_CALLBACK_FLAGS_STARTFRAME:
-                userCallbacks[0] = newcallback;
+                data.userCallbacks[0] = newcallback;
                 break;
 
             case PNT_CALLBACK_FLAGS_ENDFRAME:
-                userCallbacks[1] = newcallback;
+                data.userCallbacks[1] = newcallback;
                 break;
 
             case PNT_CALLBACK_FLAGS_KEYBOARDEVENT:
-                userCallbacks[2] = newcallback;
+                data.userCallbacks[2] = newcallback;
                 break;
 
             case PNT_CALLBACK_FLAGS_MOUSEEVENT:
-                userCallbacks[3] = newcallback;
+                data.userCallbacks[3] = newcallback;
                 break;
             default:
                 break;
@@ -120,6 +122,7 @@ namespace PNT {
 
         // Sets the data struct of the window.
         void setWindowData(windowData newData) {
+            setCallback(PNT_CALLBACK_FLAGS_STARTFRAME, data.userCallbacks[0].target());
             setTitle(newData.title.c_str());
             setDimentions(newData.width, newData.height);
             setPosition(newData.x, newData.y);
@@ -172,7 +175,7 @@ namespace PNT {
         ImGuiContext* ImGuiContext;
 
         // callback data
-        std::vector<void (*)(Window* )> userCallbacks = {nullptr, nullptr, nullptr, nullptr};
+        
 
         // other data
         static inline int instances;
