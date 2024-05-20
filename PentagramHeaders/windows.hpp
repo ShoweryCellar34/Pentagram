@@ -8,7 +8,7 @@
 namespace PNT {
     class Window;
     struct windowData {
-        std::vector<std::function<void(Window*)>> userCallbacks = {nullptr};
+        std::vector<std::function<void(PNT::Window*)>> userCallbacks = {nullptr};
         std::string title = "";
         unsigned short width = 0, height = 0;
         unsigned short x = 0, y = 0;
@@ -122,7 +122,7 @@ namespace PNT {
 
         // Sets the data struct of the window.
         void setWindowData(windowData newData) {
-            setCallback(PNT_CALLBACK_FLAGS_STARTFRAME, data.userCallbacks[0].target());
+            setCallback(PNT_CALLBACK_FLAGS_STARTFRAME, data.userCallbacks[0].target<void>());
             setTitle(newData.title.c_str());
             setDimentions(newData.width, newData.height);
             setPosition(newData.x, newData.y);
