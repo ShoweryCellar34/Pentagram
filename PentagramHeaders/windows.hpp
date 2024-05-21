@@ -182,7 +182,7 @@ namespace PNT {
 
         // other data
         static inline int instances;
-        static inline std::map<GLFWwindow*, Window*> instanceList;
+        static inline std::unordered_map<GLFWwindow*, Window*> instanceList;
         char instanceID;
 
         // Functions
@@ -190,7 +190,6 @@ namespace PNT {
         void keyboardEvent(int key, int scancode, int action, int mods) {}
     };
 
-    void keyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-        Window::instanceList.at(window)->keyboardEvent(key, scancode, action, mods);
-    }
+    void keyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+                                        {Window::instanceList.at(window)->keyboardEvent(key, scancode, action, mods);}
 }
