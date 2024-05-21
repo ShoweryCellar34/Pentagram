@@ -73,8 +73,8 @@ namespace PNT {
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
-            if(data.userCallbacks[0] != nullptr) {
-                data.userCallbacks[0](this);
+            if(*(data.userCallbacks[1].target<void(*)(Window*)>()) != nullptr) {
+                (*(data.userCallbacks[1].target<void(*)(Window*)>()))(this);
             }
         }
 
@@ -88,9 +88,9 @@ namespace PNT {
             ImGui::UpdatePlatformWindows();
             ImGui::RenderPlatformWindowsDefault();
             glfwMakeContextCurrent(backupContext);
-            if(data.userCallbacks[1] != nullptr)
+            if(*(data.userCallbacks[1].target<void(*)(Window*)>()) != nullptr)
             {
-                data.userCallbacks[1](this);
+                (*(data.userCallbacks[1].target<void(*)(Window*)>()))(this);
             }
         }
 
@@ -122,7 +122,10 @@ namespace PNT {
 
         // Sets the data struct of the window.
         void setWindowData(windowData newData) {
-            setCallback(PNT_CALLBACK_FLAGS_STARTFRAME, data.userCallbacks[0].target<void>());
+            setCallback(PNT_CALLBACK_FLAGS_STARTFRAME, *(data.userCallbacks[0].target<void(*)(Window*)>()));
+            setCallback(PNT_CALLBACK_FLAGS_ENDFRAME, *(data.userCallbacks[1].target<void(*)(Window*)>()));
+            setCallback(PNT_CALLBACK_FLAGS_KEYBOARDEVENT, *(data.userCallbacks[2].target<void(*)(Window*)>()));
+            setCallback(PNT_CALLBACK_FLAGS_MOUSEEVENT, *(data.userCallbacks[3].target<void(*)(Window*)>()));
             setTitle(newData.title.c_str());
             setDimentions(newData.width, newData.height);
             setPosition(newData.x, newData.y);

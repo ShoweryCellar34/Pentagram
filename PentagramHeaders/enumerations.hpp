@@ -13,7 +13,7 @@ enum vsyncFlags : char {
     PNT_VSYNC_FLAGS_ON,
 };
 
-enum listenerFlags : unsigned char {
+enum callbackFlags : unsigned char {
     PNT_CALLBACK_FLAGS_STARTFRAME,
     PNT_CALLBACK_FLAGS_ENDFRAME,
     PNT_CALLBACK_FLAGS_KEYBOARDEVENT,
