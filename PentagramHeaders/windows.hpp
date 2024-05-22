@@ -17,7 +17,7 @@ namespace PNT {
         float clearColor[4] = {0.0f, 0.0f, 0.0f, 0.0f};
     };
 
-    void keyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+    void keyCallbackManager(GLFWwindow* window, int key, int scancode, int action, int mods);
     class Window {
     public:
         // Constructor/Destructor
@@ -32,18 +32,19 @@ namespace PNT {
             glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
             glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+            glfwSetKeyCallback(window, keyCallbackManager);
 
             window = glfwCreateWindow(width, height, title, NULL, NULL);
             glfwMakeContextCurrent(window);
-            glfwSetKeyCallback(window, keyboardCallback);
+            glfwSetKeyCallback(window, keyCallbackManager);
             gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 
             ImGuiContext = ImGui::CreateContext();
-            ImGuiIO& io = ImGui::GetIO();
-            io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-            io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
-            io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
-            io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+            IO = &ImGui::GetIO();
+            IO->ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+            IO->ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+            IO->ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+            IO->ConfigFlags |= ImGuiConfigFlags_DockingEnable;
             ImGui_ImplGlfw_InitForOpenGL(window, true);
             ImGui_ImplOpenGL3_Init("#version 460");
             ImGui::StyleColorsDark();
@@ -176,9 +177,7 @@ namespace PNT {
 
         // ImGui data
         ImGuiContext* ImGuiContext;
-
-        // callback data
-        
+        ImGuiIO* IO;
 
         // other data
         static inline int instances;
@@ -186,10 +185,16 @@ namespace PNT {
         char instanceID;
 
         // Functions
-        friend void keyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
-        void keyboardEvent(int key, int scancode, int action, int mods) {}
+        friend void keyCallbackManager(GLFWwindow* window, int key, int scancode, int action, int mods);
+        void keyEvent(int key, int scancode, int action, int mods) {
+            if(!IO->WantCaptureKeyboard) {
+                data.userCallbacks[0](this);
+            }
+        }
     };
 
-    void keyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
-                                        {Window::instanceList.at(window)->keyboardEvent(key, scancode, action, mods);}
+    void keyCallbackManager(GLFWwindow* glfwWindow, int key, int scancode, int action, int mods) {
+        Window* window = Window::instanceList.at(glfwWindow);
+        window->keyEvent(key, scancode, action, mods);
+    }
 }
