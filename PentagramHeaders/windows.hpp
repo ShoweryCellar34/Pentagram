@@ -8,8 +8,8 @@
 namespace PNT {
     class Window;
     struct windowData {
-        std::vector<std::function<void(PNT::Window*)>> userCallbacks = {nullptr};
-        std::vector<std::function<void(PNT::Window*)>> userEventCallbacks = {nullptr};
+        std::vector<void(*)(Window*)> userCallbacks = {nullptr};
+        std::vector<void*> userEventCallbacks = {nullptr};
         std::string title = "";
         unsigned short width = 0, height = 0;
         unsigned short x = 0, y = 0;
@@ -18,8 +18,8 @@ namespace PNT {
         float clearColor[4] = {0.0f, 0.0f, 0.0f, 0.0f};
 
         windowData() {
-            userCallbacks.reserve(PNT_CALLBACK_FLAGS_COUNT);
-            userEventCallbacks.reserve(PNT_EVENT_CALLBACK_FLAGS_COUNT);
+            userCallbacks.reserve(PNT_CALLBACK_FLAGS_COUNT - 1);
+            userEventCallbacks.reserve(PNT_EVENT_CALLBACK_FLAGS_COUNT - 1);
         }
     };
 
@@ -27,6 +27,7 @@ namespace PNT {
     void scrollCallbackManager(GLFWwindow*, double, double);
     void cursorposCallbackManager(GLFWwindow*, double, double);
     void mousebuttonCallbackManager(GLFWwindow*, int, int, int);
+    int* mouse;
     class Window {
     public:
         // Constructor/Destructor
@@ -86,8 +87,8 @@ namespace PNT {
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
-            if(*(data.userCallbacks[0].target<void(*)(Window*)>()) != nullptr) {
-                (*(data.userCallbacks[0].target<void(*)(Window*)>()))(this);
+            if(data.userCallbacks[0] != nullptr) {
+                data.userCallbacks[0](this);
             }
         }
 
@@ -101,9 +102,9 @@ namespace PNT {
             ImGui::UpdatePlatformWindows();
             ImGui::RenderPlatformWindowsDefault();
             glfwMakeContextCurrent(backupContext);
-            if(*(data.userCallbacks[1].target<void(*)(Window*)>()) != nullptr)
+            if(data.userCallbacks[1] != nullptr)
             {
-                (*(data.userCallbacks[1].target<void(*)(Window*)>()))(this);
+                data.userCallbacks[1](this);
             }
         }
 
@@ -124,7 +125,7 @@ namespace PNT {
         }
 
         // Sets the callback for the specified input event (use nullptr to clear callback).
-        void setEventCallback(unsigned char callbackID, void (*newcallback)(Window*)) {
+        void setEventCallback(unsigned char callbackID, void(*newcallback)(Window*)) {
             switch(callbackID) {
             case PNT_EVENT_CALLBACK_FLAGS_KEYBOARD:
                 data.userEventCallbacks[0] = newcallback;
@@ -152,11 +153,8 @@ namespace PNT {
 
         // Sets the data struct of the window.
         void setWindowData(windowData newData) {
-            setCallback(PNT_CALLBACK_FLAGS_STARTFRAME, *(data.userCallbacks[0].target<void(*)(Window*)>()));
-            setCallback(PNT_CALLBACK_FLAGS_ENDFRAME, *(data.userCallbacks[1].target<void(*)(Window*)>()));
-            setEventCallback(PNT_EVENT_CALLBACK_FLAGS_KEYBOARD, *(data.userEventCallbacks[0].target<void(*)(Window*)>()));
-            setEventCallback(PNT_EVENT_CALLBACK_FLAGS_SCROLL, *(data.userEventCallbacks[1].target<void(*)(Window*)>()));
-            setEventCallback(PNT_EVENT_CALLBACK_FLAGS_MOUSEBUTTON, *(data.userEventCallbacks[2].target<void(*)(Window*)>()));
+            for(short i = 0; i <= data.userCallbacks.size(); i++) {data.userCallbacks[i] = newData.userCallbacks[i];}
+            for(short i = 0; i <= data.userEventCallbacks.size(); i++) {data.userEventCallbacks[i] = newData.userEventCallbacks[i];}
             setTitle(newData.title.c_str());
             setDimentions(newData.width, newData.height);
             setPosition(newData.x, newData.y);
