@@ -58,8 +58,12 @@ namespace PNT {
 
             window = glfwCreateWindow(width, height, title, NULL, NULL);
             glfwMakeContextCurrent(window);
-            glfwSetKeyCallback(window, keyCallbackManager);
             gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+
+            glfwSetKeyCallback(window, keyCallbackManager);
+            glfwSetScrollCallback(window, scrollCallbackManager);
+            glfwSetCursorPosCallback(window, cursorposCallbackManager);
+            glfwSetMouseButtonCallback(window, mousebuttonCallbackManager);
 
             ImGuiContext = ImGui::CreateContext();
             IO = &ImGui::GetIO();
@@ -198,18 +202,18 @@ namespace PNT {
 
     void keyCallbackManager(GLFWwindow* glfwWindow, int key, int scancode, int action, int mods) {
         Window* window = Window::instanceList.at(glfwWindow);
-        if(!window->IO->WantCaptureKeyboard) {window->data.userEventCallback(window);}
+        if(!window->IO->WantCaptureKeyboard) {window->data.userEventCallback(window, createKeyEvent(key, scancode, action, mods));}
     }
     void scrollCallbackManager(GLFWwindow* glfwWindow, double xoffset, double yoffset) {
         Window* window = Window::instanceList.at(glfwWindow);
-        if(!window->IO->WantCaptureMouse) {window->data.userEventCallback(window);}
+        if(!window->IO->WantCaptureMouse) {window->data.userEventCallback(window, createScrollEvent(xoffset, yoffset));}
     }
     void cursorposCallbackManager(GLFWwindow* glfwWindow, double xpos, double ypos) {
         Window* window = Window::instanceList.at(glfwWindow);
-        if(!window->IO->WantCaptureMouse) {window->data.userEventCallback(window);}
+        if(!window->IO->WantCaptureMouse) {window->data.userEventCallback(window, createCursorposEvent(xpos, ypos));}
     }
     void mousebuttonCallbackManager(GLFWwindow* glfwWindow, int button, int action, int mods) {
         Window* window = Window::instanceList.at(glfwWindow);
-        if(!window->IO->WantCaptureMouse) {window->data.userEventCallback(window);}
+        if(!window->IO->WantCaptureMouse) {window->data.userEventCallback(window, createMousebuttonEvent(button, action, mods));}
     }
 }
