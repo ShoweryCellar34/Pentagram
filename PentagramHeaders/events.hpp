@@ -10,6 +10,10 @@ namespace PNT {
         int mods;
     };
 
+    struct charEvent {
+        unsigned int codepoint;
+    };
+
     struct scrollEvent {
         double xoffset;
         double yoffset;
@@ -30,6 +34,7 @@ namespace PNT {
     struct windowEvent {
         unsigned short eventType;
         keyEvent keyboardEvent;
+        charEvent charEvent;
         scrollEvent scrollEvent;
         cursorposEvent cursorposEvent;
         mousebuttonEvent mousebuttonEvent;
@@ -38,6 +43,7 @@ namespace PNT {
     windowEvent createKeyEvent(int key, int scancode, int action, int mods) {
         windowEvent event;
 
+        event.eventType = PNT_EVENT_TYPE_KEYBOARD;
         event.keyboardEvent.key = key;
         event.keyboardEvent.scancode = scancode;
         event.keyboardEvent.action = action;
@@ -46,9 +52,19 @@ namespace PNT {
         return event;
     }
 
+    windowEvent createCharEvent(unsigned int codepoint) {
+        windowEvent event;
+
+        event.eventType = PNT_EVENT_TYPE_CHAR;
+        event.charEvent.codepoint = codepoint;
+
+        return event;
+    }
+
     windowEvent createScrollEvent(double xoffset, double yoffset) {
         windowEvent event;
 
+        event.eventType = PNT_EVENT_TYPE_SCROLL;
         event.scrollEvent.xoffset = xoffset;
         event.scrollEvent.yoffset = yoffset;
 
@@ -58,6 +74,7 @@ namespace PNT {
     windowEvent createCursorposEvent(double xpos, double ypos) {
         windowEvent event;
 
+        event.eventType = PNT_EVENT_TYPE_CURSORPOS;
         event.cursorposEvent.xpos = xpos;
         event.cursorposEvent.ypos = ypos;
 
@@ -67,6 +84,7 @@ namespace PNT {
     windowEvent createMousebuttonEvent(int button, int action, int mods) {
         windowEvent event;
 
+        event.eventType = PNT_EVENT_TYPE_MOUSEBUTTON;
         event.mousebuttonEvent.button = button;
         event.mousebuttonEvent.action = action;
         event.mousebuttonEvent.mods = mods;

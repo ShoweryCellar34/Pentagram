@@ -10,7 +10,8 @@ namespace PNT {
     class Window;
 
     struct windowData {
-        std::vector<void(*)(Window*)> userCallbacks = {nullptr};
+        void(*startFrameCallback)(Window*) = nullptr;
+        void(*endFrameCallback)(Window*) = nullptr;
         void(*userEventCallback)(Window*, windowEvent) = nullptr;
         std::string title = "";
         unsigned short width = 0, height = 0;
@@ -18,8 +19,6 @@ namespace PNT {
         unsigned char visiblity = 0;
         unsigned char vsyncMode = 0;
         float clearColor[4] = {0.0f, 0.0f, 0.0f, 0.0f};
-
-        windowData() {userCallbacks.reserve(PNT_CALLBACK_FLAGS_COUNT - 1);}
     };
 
     // Processes all pending events.
@@ -27,17 +26,21 @@ namespace PNT {
         glfwPollEvents();
     }
 
-    void keyCallbackManager(GLFWwindow* window, int key, int scancode, int action, int mods);
-    void scrollCallbackManager(GLFWwindow*, double, double);
-    void cursorposCallbackManager(GLFWwindow*, double, double);
-    void mousebuttonCallbackManager(GLFWwindow*, int, int, int);
+    class callbackManagers {
+    private:
+        friend class Window;
+
+        static void keyCallbackManager(GLFWwindow* glfwWindow, int key, int scancode, int action, int mods);
+        static void scrollCallbackManager(GLFWwindow* glfwWindow, double xoffset, double yoffset);
+        static void cursorposCallbackManager(GLFWwindow* glfwWindow, double xpos, double ypos);
+        static void mousebuttonCallbackManager(GLFWwindow* glfwWindow, int button, int action, int mods);
+        static void charCallbackManager(GLFWwindow* glfwWindow, unsigned int codepoint);
+    };
+
     class Window {
     private:
         // Functions
-        friend void keyCallbackManager(GLFWwindow* window, int key, int scancode, int action, int mods);
-        friend void scrollCallbackManager(GLFWwindow*, double, double);
-        friend void cursorposCallbackManager(GLFWwindow*, double, double);
-        friend void mousebuttonCallbackManager(GLFWwindow*, int, int, int);
+        friend class callbackManagers;
     public:
         // Constructor/Destructor
         Window(const char* title = "Title", unsigned short width = 600, unsigned short height = 600) {
@@ -51,19 +54,31 @@ namespace PNT {
             glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
             glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-            glfwSetKeyCallback(window, keyCallbackManager);
-            glfwSetScrollCallback(window, scrollCallbackManager);
-            glfwSetCursorPosCallback(window, cursorposCallbackManager);
-            glfwSetMouseButtonCallback(window, mousebuttonCallbackManager);
 
             window = glfwCreateWindow(width, height, title, NULL, NULL);
             glfwMakeContextCurrent(window);
             gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 
-            glfwSetKeyCallback(window, keyCallbackManager);
-            glfwSetScrollCallback(window, scrollCallbackManager);
-            glfwSetCursorPosCallback(window, cursorposCallbackManager);
-            glfwSetMouseButtonCallback(window, mousebuttonCallbackManager);
+            glfwSetKeyCallback(window, callbackManagers::keyCallbackManager);
+            glfwSetCharCallback(window, callbackManagers::charCallbackManager);
+            //glfwSetDropCallback(window, callbackManagers::);
+            //glfwSetErrorCallback(callbackManagers::);
+            glfwSetScrollCallback(window, callbackManagers::scrollCallbackManager);
+            //glfwSetMonitorCallback(callbackManagers::);
+            //glfwSetCharModsCallback(window, callbackManagers::);
+            //glfwSetJoystickCallback(callbackManagers::);
+            glfwSetCursorPosCallback(window, callbackManagers::cursorposCallbackManager);
+            //glfwSetWindowPosCallback(window, callbackManagers::);
+            //glfwSetWindowSizeCallback(window, callbackManagers::);
+            //glfwSetCursorEnterCallback(window, callbackManagers::);
+            glfwSetMouseButtonCallback(window, callbackManagers::mousebuttonCallbackManager);
+            //glfwSetWindowCloseCallback(window, callbackManagers::);
+            //glfwSetWindowFocusCallback(window, callbackManagers::);
+            //glfwSetWindowIconifyCallback(window, callbackManagers::);
+            //glfwSetWindowRefreshCallback(window, callbackManagers::);
+            //glfwSetWindowMaximizeCallback(window, callbackManagers::);
+            //glfwSetFramebufferSizeCallback(window, callbackManagers::);
+            //glfwSetWindowContentScaleCallback(window, callbackManagers::);
 
             ImGuiContext = ImGui::CreateContext();
             IO = &ImGui::GetIO();
@@ -76,8 +91,7 @@ namespace PNT {
             ImGui::StyleColorsDark();
         }
         ~Window() {
-            auto instanceID = std::find(instanceList.begin(), instanceList.end(), window);
-            instanceList.erase(instanceID);
+            instanceList.erase(window);
             instances--;
 
             ImGui::SetCurrentContext(ImGuiContext);
@@ -100,7 +114,7 @@ namespace PNT {
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
-            if(data.userCallbacks[0] != nullptr) {data.userCallbacks[0](this);}
+            if(data.startFrameCallback != nullptr) {data.startFrameCallback(this);}
         }
 
         // Hides the window, returns the sdl error code (0 is success). 
@@ -113,18 +127,18 @@ namespace PNT {
             ImGui::UpdatePlatformWindows();
             ImGui::RenderPlatformWindowsDefault();
             glfwMakeContextCurrent(backupContext);
-            if(data.userCallbacks[1] != nullptr) {data.userCallbacks[1](this);}
+            if(data.endFrameCallback != nullptr) {data.endFrameCallback(this);}
         }
 
         // Sets the callback for the specified window event (use nullptr to clear callback).
         void setCallback(unsigned char callbackID, void (*newcallback)(Window*)) {
             switch(callbackID) {
         	case PNT_CALLBACK_FLAGS_STARTFRAME:
-                data.userCallbacks[0] = newcallback;
+                data.startFrameCallback = newcallback;
                 break;
 
             case PNT_CALLBACK_FLAGS_ENDFRAME:
-                data.userCallbacks[1] = newcallback;
+                data.endFrameCallback = newcallback;
                 break;
 
             default:
@@ -140,7 +154,8 @@ namespace PNT {
 
         // Sets the data struct of the window.
         void setWindowData(windowData newData) {
-            for(short i = 0; i <= data.userCallbacks.size(); i++) {data.userCallbacks[i] = newData.userCallbacks[i];}
+            data.startFrameCallback = newData.startFrameCallback;
+            data.endFrameCallback = newData.endFrameCallback;
             data.userEventCallback = newData.userEventCallback;
             setTitle(newData.title.c_str());
             setDimentions(newData.width, newData.height);
@@ -197,23 +212,26 @@ namespace PNT {
         // other data
         static inline int instances;
         static inline std::unordered_map<GLFWwindow*, Window*> instanceList;
-        char instanceID;
     };
 
-    void keyCallbackManager(GLFWwindow* glfwWindow, int key, int scancode, int action, int mods) {
+    void callbackManagers::keyCallbackManager(GLFWwindow* glfwWindow, int key, int scancode, int action, int mods) {
         Window* window = Window::instanceList.at(glfwWindow);
         if(!window->IO->WantCaptureKeyboard) {window->data.userEventCallback(window, createKeyEvent(key, scancode, action, mods));}
     }
-    void scrollCallbackManager(GLFWwindow* glfwWindow, double xoffset, double yoffset) {
+    void callbackManagers::scrollCallbackManager(GLFWwindow* glfwWindow, double xoffset, double yoffset) {
         Window* window = Window::instanceList.at(glfwWindow);
         if(!window->IO->WantCaptureMouse) {window->data.userEventCallback(window, createScrollEvent(xoffset, yoffset));}
     }
-    void cursorposCallbackManager(GLFWwindow* glfwWindow, double xpos, double ypos) {
+    void callbackManagers::cursorposCallbackManager(GLFWwindow* glfwWindow, double xpos, double ypos) {
         Window* window = Window::instanceList.at(glfwWindow);
         if(!window->IO->WantCaptureMouse) {window->data.userEventCallback(window, createCursorposEvent(xpos, ypos));}
     }
-    void mousebuttonCallbackManager(GLFWwindow* glfwWindow, int button, int action, int mods) {
+    void callbackManagers::mousebuttonCallbackManager(GLFWwindow* glfwWindow, int button, int action, int mods) {
         Window* window = Window::instanceList.at(glfwWindow);
         if(!window->IO->WantCaptureMouse) {window->data.userEventCallback(window, createMousebuttonEvent(button, action, mods));}
+    }
+    void callbackManagers::charCallbackManager(GLFWwindow* glfwWindow, unsigned int codepoint) {
+        Window* window = Window::instanceList.at(glfwWindow);
+        if(!window->IO->WantCaptureMouse) {window->data.userEventCallback(window, createCharEvent(codepoint));}
     }
 }
