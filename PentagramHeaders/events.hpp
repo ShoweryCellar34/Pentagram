@@ -14,6 +14,19 @@ namespace PNT {
         unsigned int codepoint;
     };
 
+    struct dropEvent {
+        int path_count;
+        const char* paths[0];
+
+        void setData(int path_count, const char* paths[]) {
+            delete paths;
+            const char* newPaths = new const char* [path_count];
+            for(int i; i < path_count; i++) {
+                this->paths[i] = 
+            }
+        }
+    };
+
     struct scrollEvent {
         double xoffset;
         double yoffset;
@@ -35,6 +48,7 @@ namespace PNT {
         unsigned short eventType;
         keyEvent keyboardEvent;
         charEvent charEvent;
+        dropEvent dropEvent;
         scrollEvent scrollEvent;
         cursorposEvent cursorposEvent;
         mousebuttonEvent mousebuttonEvent;
@@ -57,6 +71,16 @@ namespace PNT {
 
         event.eventType = PNT_EVENT_TYPE_CHAR;
         event.charEvent.codepoint = codepoint;
+
+        return event;
+    }
+
+    windowEvent createDropEvent(int path_count, const char* paths[]) {
+        windowEvent event;
+
+        event.eventType = PNT_EVENT_TYPE_DROP;
+        event.dropEvent.path_count = path_count;
+        event.dropEvent
 
         return event;
     }

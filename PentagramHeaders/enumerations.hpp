@@ -22,6 +22,7 @@ enum callbackFlags : unsigned char {
 enum eventCallbackFlags : unsigned char {
     PNT_EVENT_TYPE_KEYBOARD,
     PNT_EVENT_TYPE_CHAR,
+    PNT_EVENT_TYPE_DROP,
     PNT_EVENT_TYPE_SCROLL,
     PNT_EVENT_TYPE_CURSORPOS,
     PNT_EVENT_TYPE_MOUSEBUTTON
