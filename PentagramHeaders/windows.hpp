@@ -30,12 +30,13 @@ namespace PNT {
     private:
         friend class Window;
 
-        static void keyCallbackManager(GLFWwindow* glfwWindow, int key, int scancode, int action, int mods);
-        static void charCallbackManager(GLFWwindow* glfwWindow, unsigned int codepoint);
-        static void dropCallbackManager(GLFWwindow* window, int path_count, const char* paths[]);
-        static void scrollCallbackManager(GLFWwindow* glfwWindow, double xoffset, double yoffset);
-        static void cursorposCallbackManager(GLFWwindow* glfwWindow, double xpos, double ypos);
-        static void mousebuttonCallbackManager(GLFWwindow* glfwWindow, int button, int action, int mods);
+        static void keyCallbackManager(GLFWwindow*, int, int, int, int);
+        static void charCallbackManager(GLFWwindow*, unsigned int);
+        static void dropCallbackManager(GLFWwindow*, int, const char* []);
+        static void scrollCallbackManager(GLFWwindow*, double, double);
+        static void cursorPosCallbackManager(GLFWwindow*, double, double);
+        static void mousebuttonCallbackManager(GLFWwindow*, int, int, int);
+        static void windowposCallbackManager(GLFWwindow*, int, int);
     };
 
     class Window {
@@ -45,7 +46,7 @@ namespace PNT {
         friend void deinit();
     public:
         // Constructor/Destructor
-        Window(const char* title = "Title", unsigned short width = 600, unsigned short height = 600) {
+        Window(const char* title = "Title", unsigned short width = 600, unsigned short height = 600, unsigned int ImGuiFlags = ImGuiConfigFlags_ViewportsEnable & ImGuiConfigFlags_DockingEnable) {
             instances++;
 
             data.title = title;
@@ -69,8 +70,8 @@ namespace PNT {
             //glfwSetMonitorCallback(callbackManagers::);
             //glfwSetCharModsCallback(window, callbackManagers::);
             //glfwSetJoystickCallback(callbackManagers::);
-            glfwSetCursorPosCallback(window, callbackManagers::cursorposCallbackManager);
-            //glfwSetWindowPosCallback(window, callbackManagers::);
+            glfwSetCursorPosCallback(window, callbackManagers::cursorPosCallbackManager);
+            glfwSetWindowPosCallback(window, callbackManagers::windowposCallbackManager);
             //glfwSetWindowSizeCallback(window, callbackManagers::);
             //glfwSetCursorEnterCallback(window, callbackManagers::);
             glfwSetMouseButtonCallback(window, callbackManagers::mousebuttonCallbackManager);
@@ -84,10 +85,7 @@ namespace PNT {
 
             ImGuiContext = ImGui::CreateContext();
             IO = &ImGui::GetIO();
-            IO->ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-            IO->ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
-            IO->ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
-            IO->ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+            IO->ConfigFlags |= ImGuiFlags;
             ImGui_ImplGlfw_InitForOpenGL(window, true);
             ImGui_ImplOpenGL3_Init("#version 460");
             ImGui::StyleColorsDark();
@@ -149,6 +147,9 @@ namespace PNT {
 
         // Sets the event callback of the window (use nullptr to clear callback).
         void setEventCallback(void(*newcallback)(Window*, windowEvent)) {data.userEventCallback = newcallback;}
+
+        // Check if the currect window shoul close.
+        bool shouldClose() {return glfwWindowShouldClose(window);}
 
         // Returns the data struct of the window.
         windowData getWindowData() {return data;}
@@ -221,19 +222,23 @@ namespace PNT {
     }
     void callbackManagers::charCallbackManager(GLFWwindow* glfwWindow, unsigned int codepoint) {
         Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));
-        if(!window->IO->WantCaptureMouse) {window->data.userEventCallback(window, createCharEvent(codepoint));}
+        if(!window->IO->WantCaptureKeyboard) {window->data.userEventCallback(window, createCharEvent(codepoint));}
     }
     void callbackManagers::dropCallbackManager(GLFWwindow* glfwWindow, int path_count, const char* paths[]) {
         Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));
-        if(!window->IO->WantCaptureMouse) {window->data.userEventCallback(window, createDropEvent(path_count, paths));}
+        window->data.userEventCallback(window, createDropEvent(path_count, paths));
     }
     void callbackManagers::scrollCallbackManager(GLFWwindow* glfwWindow, double xoffset, double yoffset) {
         Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));
         if(!window->IO->WantCaptureMouse) {window->data.userEventCallback(window, createScrollEvent(xoffset, yoffset));}
     }
-    void callbackManagers::cursorposCallbackManager(GLFWwindow* glfwWindow, double xpos, double ypos) {
+    void callbackManagers::cursorPosCallbackManager(GLFWwindow* glfwWindow, double xpos, double ypos) {
         Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));
         if(!window->IO->WantCaptureMouse) {window->data.userEventCallback(window, createCursorposEvent(xpos, ypos));}
+    }
+    void callbackManagers::windowposCallbackManager(GLFWwindow* glfwWindow, int xpos, int ypos) {
+        Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));
+        window->data.userEventCallback(window, createWindowposEvent(xpos, ypos));
     }
     void callbackManagers::mousebuttonCallbackManager(GLFWwindow* glfwWindow, int button, int action, int mods) {
         Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));

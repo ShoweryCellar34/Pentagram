@@ -16,15 +16,7 @@ namespace PNT {
 
     struct dropEvent {
         int path_count;
-        const char* paths[0];
-
-        void setData(int path_count, const char* paths[]) {
-            delete paths;
-            const char* newPaths = new const char* [path_count];
-            for(int i; i < path_count; i++) {
-                this->paths[i] = 
-            }
-        }
+        char* paths;
     };
 
     struct scrollEvent {
@@ -80,7 +72,7 @@ namespace PNT {
 
         event.eventType = PNT_EVENT_TYPE_DROP;
         event.dropEvent.path_count = path_count;
-        event.dropEvent
+        event.dropEvent.paths = (char*)paths;
 
         return event;
     }
