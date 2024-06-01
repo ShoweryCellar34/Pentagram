@@ -29,6 +29,11 @@ namespace PNT {
         double ypos;
     };
 
+    struct windowposEvent {
+        int xpos;
+        int ypos;
+    };
+
     struct mousebuttonEvent {
         int button;
         int action;
@@ -43,6 +48,7 @@ namespace PNT {
         dropEvent dropEvent;
         scrollEvent scrollEvent;
         cursorposEvent cursorposEvent;
+        windowposEvent windowposEvent;
         mousebuttonEvent mousebuttonEvent;
     };
 
@@ -93,6 +99,16 @@ namespace PNT {
         event.eventType = PNT_EVENT_TYPE_CURSORPOS;
         event.cursorposEvent.xpos = xpos;
         event.cursorposEvent.ypos = ypos;
+
+        return event;
+    }
+
+    windowEvent createWindowposEvent(int xpos, int ypos) {
+        windowEvent event;
+
+        event.eventType = PNT_EVENT_TYPE_WINDOWPOS;
+        event.windowposEvent.xpos = xpos;
+        event.windowposEvent.ypos = ypos;
 
         return event;
     }
