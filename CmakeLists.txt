@@ -27,6 +27,9 @@ add_subdirectory(stb)
 target_include_directories(Pentagram PUBLIC stb)
 target_link_libraries(Pentagram PUBLIC stb)
 
+add_subdirectory(spdlog)
+target_link_libraries(Pentagram PUBLIC spdlog::spdlog_header_only)
+
 add_subdirectory(PentagramHeaders)
 target_include_directories(Pentagram PUBLIC PentagramHeaders)
 target_link_libraries(Pentagram PUBLIC PentagramHeaders)

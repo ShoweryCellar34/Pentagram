@@ -4,7 +4,5 @@
 
 #include <init.hpp>
 #include <windows.hpp>
-#include <events.hpp>
-#include <logger.hpp>
-
+#include <event.hpp>
 #include <enumerations.hpp>

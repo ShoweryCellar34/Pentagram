@@ -15,6 +15,8 @@
 
 #include <stb_image.h>
 
+#include <spdlog/include/spdlog/spdlog.h>
+
 #include <iostream>
 #include <fstream>
 #include <filesystem>

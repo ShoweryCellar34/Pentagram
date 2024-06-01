@@ -1,10 +1,8 @@
 #pragma once
 
 #include <includes.hpp>
-#include <logger.hpp>
 #include <enumerations.hpp>
-#include <events.hpp>
-#include <utilities/ptrToChar.hpp>
+#include <event.hpp>
 
 namespace PNT {
     class Window;
@@ -20,11 +18,6 @@ namespace PNT {
         unsigned char vsyncMode = 0;
         float clearColor[4] = {0.0f, 0.0f, 0.0f, 0.0f};
     };
-
-    // Processes all pending events.
-    void processEvents() {
-        glfwPollEvents();
-    }
 
     class callbackManagers {
     private:
@@ -46,7 +39,7 @@ namespace PNT {
         friend void deinit();
     public:
         // Constructor/Destructor
-        Window(const char* title = "Title", unsigned short width = 600, unsigned short height = 600, unsigned int xpos = 100, unsigned int ypos = 100, unsigned int ImGuiFlags = ImGuiConfigFlags_ViewportsEnable & ImGuiConfigFlags_DockingEnable) {
+        Window(const char* title = "Title", unsigned short width = 600, unsigned short height = 600, unsigned int xpos = 100, unsigned int ypos = 100, unsigned int ImGuiFlags = ImGuiConfigFlags_ViewportsEnable | ImGuiConfigFlags_DockingEnable) {
             instances++;
 
             data.title = title;
@@ -220,11 +213,11 @@ namespace PNT {
 
     void callbackManagers::keyCallbackManager(GLFWwindow* glfwWindow, int key, int scancode, int action, int mods) {
         Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));
-        if(!window->IO->WantCaptureKeyboard) {window->data.eventCallback(window, createKeyEvent(key, scancode, action, mods));}
+        if(!window->IO->WantCaptureKeyboard && window->data.eventCallback != nullptr) {window->data.eventCallback(window, createKeyEvent(key, scancode, action, mods));}
     }
     void callbackManagers::charCallbackManager(GLFWwindow* glfwWindow, unsigned int codepoint) {
         Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));
-        if(!window->IO->WantCaptureKeyboard) {window->data.eventCallback(window, createCharEvent(codepoint));}
+        if(!window->IO->WantCaptureKeyboard && window->data.eventCallback != nullptr) {window->data.eventCallback(window, createCharEvent(codepoint));}
     }
     void callbackManagers::dropCallbackManager(GLFWwindow* glfwWindow, int path_count, const char* paths[]) {
         Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));

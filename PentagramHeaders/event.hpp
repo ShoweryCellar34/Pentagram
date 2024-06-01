@@ -3,37 +3,34 @@
 #include <includes.hpp>
 
 namespace PNT {
+    // Processes all pending events.
+    void processEvents() {glfwPollEvents();}
+
     struct keyEvent {
         int key;
         int scancode;
         int action;
         int mods;
     };
-
     struct charEvent {
         unsigned int codepoint;
     };
-
     struct dropEvent {
         int path_count;
         char* paths;
     };
-
     struct scrollEvent {
         double xoffset;
         double yoffset;
     };
-
     struct cursorposEvent {
         double xpos;
         double ypos;
     };
-
     struct windowposEvent {
         int xpos;
         int ypos;
     };
-
     struct mousebuttonEvent {
         int button;
         int action;
