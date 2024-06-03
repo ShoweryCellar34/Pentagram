@@ -31,6 +31,10 @@ namespace PNT {
         int xpos;
         int ypos;
     };
+    struct windowsizeEvent {
+        int width;
+        int height;
+    };
     struct mousebuttonEvent {
         int button;
         int action;
@@ -46,6 +50,7 @@ namespace PNT {
         scrollEvent scrollEvent;
         cursorposEvent cursorposEvent;
         windowposEvent windowposEvent;
+        windowsizeEvent windowsizeEvent;
         mousebuttonEvent mousebuttonEvent;
     };
 
@@ -60,7 +65,6 @@ namespace PNT {
 
         return event;
     }
-
     windowEvent createCharEvent(unsigned int codepoint) {
         windowEvent event;
 
@@ -69,7 +73,6 @@ namespace PNT {
 
         return event;
     }
-
     windowEvent createDropEvent(int path_count, const char* paths[]) {
         windowEvent event;
 
@@ -79,7 +82,6 @@ namespace PNT {
 
         return event;
     }
-
     windowEvent createScrollEvent(double xoffset, double yoffset) {
         windowEvent event;
 
@@ -89,7 +91,6 @@ namespace PNT {
 
         return event;
     }
-
     windowEvent createCursorposEvent(double xpos, double ypos) {
         windowEvent event;
 
@@ -99,7 +100,6 @@ namespace PNT {
 
         return event;
     }
-
     windowEvent createWindowposEvent(int xpos, int ypos) {
         windowEvent event;
 
@@ -109,7 +109,15 @@ namespace PNT {
 
         return event;
     }
+    windowEvent createWindowsizeEvent(int width, int height) {
+        windowEvent event;
 
+        event.eventType = PNT_EVENT_TYPE_WINDOWSIZE;
+        event.windowsizeEvent.width = width;
+        event.windowsizeEvent.height = height;
+
+        return event;
+    }
     windowEvent createMousebuttonEvent(int button, int action, int mods) {
         windowEvent event;
 

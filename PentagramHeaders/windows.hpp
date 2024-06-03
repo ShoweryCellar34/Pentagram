@@ -28,8 +28,9 @@ namespace PNT {
         static void dropCallbackManager(GLFWwindow*, int, const char* []);
         static void scrollCallbackManager(GLFWwindow*, double, double);
         static void cursorPosCallbackManager(GLFWwindow*, double, double);
-        static void mousebuttonCallbackManager(GLFWwindow*, int, int, int);
         static void windowposCallbackManager(GLFWwindow*, int, int);
+        static void windowsizeCallbackManager(GLFWwindow* glfwWindow, int, int);
+        static void mousebuttonCallbackManager(GLFWwindow*, int, int, int);
     };
 
     class Window {
@@ -39,7 +40,7 @@ namespace PNT {
         friend void deinit();
     public:
         // Constructor/Destructor
-        Window(const char* title = "Title", unsigned short width = 600, unsigned short height = 600, unsigned int xpos = 100, unsigned int ypos = 100, unsigned int ImGuiFlags = ImGuiConfigFlags_ViewportsEnable | ImGuiConfigFlags_DockingEnable) {
+        Window(const char* title = "Title", unsigned short width = 600, unsigned short height = 600, unsigned int xpos = 100, unsigned int ypos = 100, unsigned int ImGuiFlags = ImGuiConfigFlags_None) {
             instances++;
 
             data.title = title;
@@ -66,7 +67,7 @@ namespace PNT {
             //glfwSetJoystickCallback(callbackManagers::);
             glfwSetCursorPosCallback(window, callbackManagers::cursorPosCallbackManager);
             glfwSetWindowPosCallback(window, callbackManagers::windowposCallbackManager);
-            //glfwSetWindowSizeCallback(window, callbackManagers::);
+            glfwSetWindowSizeCallback(window, callbackManagers::windowsizeCallbackManager);
             //glfwSetCursorEnterCallback(window, callbackManagers::);
             glfwSetMouseButtonCallback(window, callbackManagers::mousebuttonCallbackManager);
             //glfwSetWindowCloseCallback(window, callbackManagers::);
@@ -236,6 +237,12 @@ namespace PNT {
         window->data.xpos = xpos;
         window->data.ypos = ypos;
         if(window->data.eventCallback != nullptr) window->data.eventCallback(window, createWindowposEvent(xpos, ypos));
+    }
+    void callbackManagers::windowsizeCallbackManager(GLFWwindow* glfwWindow, int width, int height) {
+        Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));
+        window->data.width = width;
+        window->data.height = height;
+        if(window->data.eventCallback != nullptr) window->data.eventCallback(window, createWindowsizeEvent(width, height));
     }
     void callbackManagers::mousebuttonCallbackManager(GLFWwindow* glfwWindow, int button, int action, int mods) {
         Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));
