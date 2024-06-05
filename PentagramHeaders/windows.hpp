@@ -14,7 +14,8 @@ namespace PNT {
         std::string title = "";
         unsigned short width = 0, height = 0;
         unsigned short xpos = 0, ypos = 0;
-        unsigned char visiblity = 0;
+        bool hidden = false;
+        bool iconified = false;
         unsigned char vsyncMode = 0;
         float clearColor[4] = {0.0f, 0.0f, 0.0f, 0.0f};
     };
@@ -29,8 +30,9 @@ namespace PNT {
         static void scrollCallbackManager(GLFWwindow*, double, double);
         static void cursorPosCallbackManager(GLFWwindow*, double, double);
         static void windowposCallbackManager(GLFWwindow*, int, int);
-        static void windowsizeCallbackManager(GLFWwindow* glfwWindow, int, int);
+        static void windowsizeCallbackManager(GLFWwindow*, int, int);
         static void mousebuttonCallbackManager(GLFWwindow*, int, int, int);
+        static void iconifyCallbackManager(GLFWwindow*, int);
     };
 
     class Window {
@@ -72,7 +74,7 @@ namespace PNT {
             glfwSetMouseButtonCallback(window, callbackManagers::mousebuttonCallbackManager);
             //glfwSetWindowCloseCallback(window, callbackManagers::);
             //glfwSetWindowFocusCallback(window, callbackManagers::);
-            //glfwSetWindowIconifyCallback(window, callbackManagers::);
+            glfwSetWindowIconifyCallback(window, callbackManagers::iconifyCallbackManager);
             //glfwSetWindowRefreshCallback(window, callbackManagers::);
             //glfwSetWindowMaximizeCallback(window, callbackManagers::);
             //glfwSetFramebufferSizeCallback(window, callbackManagers::);
@@ -158,7 +160,8 @@ namespace PNT {
             setDimentions(newData.width, newData.height);
             setPosition(newData.xpos, newData.ypos);
             setVsyncMode(newData.vsyncMode);
-            setVisiblity(newData.visiblity);
+            newData.hidden ? show() : hide();
+            newData.iconified ? minimize() : maximize();
             setClearColor(newData.clearColor[0], newData.clearColor[1], newData.clearColor[2], newData.clearColor[3]);
         }
 
@@ -166,6 +169,10 @@ namespace PNT {
         void setTitle(const char* title) {
             data.title = title;
             glfwSetWindowTitle(window, title);
+        }
+
+        void setIcon() {
+            //stbi_load()
         }
 
         // Sets the width and height of the window.
@@ -180,9 +187,16 @@ namespace PNT {
         }
 
         // Sets the visiblity of the window.
-        void setVisiblity(bool visiblity) {
-            visiblity == true ? glfwShowWindow(window) : glfwHideWindow(window);
+        void hide() {
+            glfwHideWindow(window);
         }
+        void show() {
+            glfwShowWindow(window);
+        }
+
+        // Minimizes and maximizes the window.
+        void minimize() {glfwIconifyWindow(window);}
+        void maximize() {glfwRestoreWindow(window);}
 
         // Sets the vsync mode of the window (0 = off, 1 = on, -1 = adaptive).
         void setVsyncMode(char vsyncMode) {
@@ -191,11 +205,11 @@ namespace PNT {
         }
 
         // Sets the opengl clear color for the window.
-        void setClearColor(float red = -1, float green = -1, float blue = -1, float alpha = -1) {
-            if(red != -1) data.clearColor[0] = red;
-            if(green != -1) data.clearColor[1] = green;
-            if(blue != -1) data.clearColor[2] = blue;
-            if(alpha != -1) data.clearColor[3] = alpha;
+        void setClearColor(float red, float green, float blue, float alpha) {
+            data.clearColor[0] = red;
+            data.clearColor[1] = green;
+            data.clearColor[2] = blue;
+            data.clearColor[3] = alpha;
         }
     private:
         // GLFW window.
@@ -247,5 +261,10 @@ namespace PNT {
     void callbackManagers::mousebuttonCallbackManager(GLFWwindow* glfwWindow, int button, int action, int mods) {
         Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));
         if(!window->IO->WantCaptureMouse && window->data.eventCallback != nullptr) {window->data.eventCallback(window, createMousebuttonEvent(button, action, mods));}
+    }
+    void callbackManagers::iconifyCallbackManager(GLFWwindow* glfwWindow, int iconified) {
+        Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));
+        window->data.iconified = iconified;
+        if(window->data.eventCallback != nullptr) window->data.eventCallback(window, createIconifyEvent(iconified));
     }
 }

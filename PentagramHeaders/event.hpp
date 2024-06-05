@@ -52,6 +52,7 @@ namespace PNT {
         windowposEvent windowposEvent;
         windowsizeEvent windowsizeEvent;
         mousebuttonEvent mousebuttonEvent;
+        bool iconified;
     };
 
     windowEvent createKeyEvent(int key, int scancode, int action, int mods) {
@@ -125,6 +126,14 @@ namespace PNT {
         event.mousebuttonEvent.button = button;
         event.mousebuttonEvent.action = action;
         event.mousebuttonEvent.mods = mods;
+
+        return event;
+    }
+    windowEvent createIconifyEvent(bool iconified) {
+        windowEvent event;
+
+        event.eventType = PNT_EVENT_TYPE_ICONIFY;
+        event.iconified = iconified;
 
         return event;
     }
