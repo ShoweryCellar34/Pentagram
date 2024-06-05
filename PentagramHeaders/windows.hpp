@@ -3,6 +3,7 @@
 #include <includes.hpp>
 #include <enumerations.hpp>
 #include <event.hpp>
+#include <image.hpp>
 
 namespace PNT {
     class Window;
@@ -12,6 +13,7 @@ namespace PNT {
         void(*endFrameCallback)(Window*) = nullptr;
         void(*eventCallback)(Window*, windowEvent) = nullptr;
         std::string title = "";
+        image icon;
         unsigned short width = 0, height = 0;
         unsigned short xpos = 0, ypos = 0;
         bool hidden = false;
@@ -171,8 +173,13 @@ namespace PNT {
             glfwSetWindowTitle(window, title);
         }
 
-        void setIcon() {
-            //stbi_load()
+        void setIcon(image image) {
+            data.icon = image;
+            GLFWimage glfwImage;
+            glfwImage.width = image.width;
+            glfwImage.height = image.height;
+            glfwImage.pixels = image.pixels;
+            glfwSetWindowIcon(window, 1, &glfwImage);
         }
 
         // Sets the width and height of the window.
