@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.27)
+cmake_minimum_required(VERSION 3.10)
 project(PentagramHeaders DESCRIPTION "Headers for a app framework" LANGUAGES CXX HOMEPAGE_URL "https://github.com/ShoweryCellar34/Pentagram")
 file(GLOB HEADERS *.hpp)
 add_library(PentagramHeaders STATIC ${HEADERS})
