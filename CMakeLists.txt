@@ -30,3 +30,5 @@ target_include_directories(Pentagram PUBLIC "stb/")
 add_subdirectory(PentagramHeaders)
 target_include_directories(Pentagram PUBLIC PentagramHeaders)
 target_link_libraries(Pentagram PUBLIC PentagramHeaders)
+
+find_package(OpenGL REQUIRED)
