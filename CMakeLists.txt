@@ -3,8 +3,6 @@ project(Pentagram DESCRIPTION "A framwork for building apps" LANGUAGES CXX HOMEP
 add_library(Pentagram STATIC)
 set_target_properties(Pentagram PROPERTIES LINKER_LANGUAGE CXX)
 
-
-
 set(GLFW_LIBRARY_TYPE "STATIC" CACHE STRING "Library type override for GLFW (SHARED, STATIC, OBJECT, or empty to follow BUILD_SHARED_LIBS)")
 add_subdirectory(glfw)
 target_include_directories(Pentagram PUBLIC glfw)
@@ -25,7 +23,7 @@ target_include_directories(Pentagram PUBLIC glad)
 target_link_libraries(Pentagram PUBLIC glad)
 
 add_subdirectory(spdlog)
-target_link_libraries(Pentagram PUBLIC spdlog::spdlog_header_only)
+target_link_libraries(Pentagram PUBLIC spdlog)
 
 target_include_directories(Pentagram PUBLIC "stb/")
 
