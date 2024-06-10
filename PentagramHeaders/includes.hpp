@@ -8,7 +8,7 @@
 #include <glm/ext.hpp>
 
 #include <imgui.h>
-#include <cpp/imgui_stdlib.h>
+#include <misc/cpp/imgui_stdlib.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 

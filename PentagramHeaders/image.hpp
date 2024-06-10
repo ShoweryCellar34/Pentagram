@@ -7,9 +7,10 @@ namespace PNT {
         int width, height, channels;
         unsigned char* pixels;
 
-        bool validate() {return pixels == nullptr ? 0 : 1;}
+        bool valid() {return pixels == nullptr ? 0 : 1;}
+        void setData(const char* path) {pixels = stbi_load(path, &width, &height, &channels, 0);}
 
         image() {}
-        image(const char* path) {pixels = stbi_load("sky.jpg", &width, &height, &channels, 0);}
+        image(const char* path) {setData(path);}
     };
 }
