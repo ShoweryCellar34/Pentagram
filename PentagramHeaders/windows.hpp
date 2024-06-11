@@ -173,13 +173,19 @@ namespace PNT {
             glfwSetWindowTitle(window, title);
         }
 
-        void setIcon(image image) {
-            data.icon = image;
-            GLFWimage glfwImage;
-            glfwImage.width = image.width;
-            glfwImage.height = image.height;
-            glfwImage.pixels = image.pixels;
-            glfwSetWindowIcon(window, 1, &glfwImage);
+        bool setIcon(image image) {
+            if(image.valid()) {
+                data.icon = image;
+                GLFWimage glfwImage;
+                glfwImage.width = image.width;
+                glfwImage.height = image.height;
+                glfwImage.pixels = image.pixels;
+                glfwSetWindowIcon(window, 1, &glfwImage);
+                return 0;
+            } else {
+                glfwSetWindowIcon(window, 0, nullptr);
+                return 1;
+            }
         }
 
         // Sets the width and height of the window.
