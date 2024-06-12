@@ -10,7 +10,10 @@ namespace PNT {
         bool valid() {return pixels == nullptr ? 0 : 1;}
         void setData(const char* path) {pixels = stbi_load(path, &width, &height, &channels, 0);}
 
-        image() {}
+        image() {
+            width = 0, height = 0, channels = 0;
+            pixels = nullptr;
+        }
         image(const char* path) {setData(path);}
     };
 }
