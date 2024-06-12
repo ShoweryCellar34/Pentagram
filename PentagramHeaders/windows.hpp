@@ -1,9 +1,9 @@
 #pragma once
 
-#include <includes.hpp>
-#include <enumerations.hpp>
-#include <event.hpp>
-#include <image.hpp>
+#include "includes.hpp"
+#include "enumerations.hpp"
+#include "event.hpp"
+#include "image.hpp"
 
 namespace PNT {
     class Window;
