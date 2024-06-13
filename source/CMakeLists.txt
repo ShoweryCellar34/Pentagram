@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.13)
+project(Source LANGUAGES CXX C)
+file(GLOB Sources *.hpp)
+add_library(Source STATIC ${Sources})
+target_include_directories(Source PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+set_target_properties(Source PROPERTIES LINKER_LANGUAGE CXX)

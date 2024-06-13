@@ -1,15 +1,15 @@
 [submodule "glm"]
-	path = glm
+	path = vendors/glm
 	url = https://github.com/g-truc/glm.git
 [submodule "glfw"]
-	path = glfw
+	path = vendors/glfw
 	url = https://github.com/glfw/glfw.git
 [submodule "spdlog"]
-	path = spdlog
+	path = vendors/spdlog
 	url = https://github.com/gabime/spdlog.git
 [submodule "stb"]
-	path = stb
+	path = vendors/stb
 	url = https://github.com/nothings/stb.git
 [submodule "imgui"]
-	path = imgui
+	path = vendors/imgui
 	url = https://github.com/ocornut/imgui.git
