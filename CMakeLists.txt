@@ -9,7 +9,7 @@ add_subdirectory(vendors/glm)
 add_subdirectory(vendors/spdlog)
 
 file(GLOB pentagram source/*.hpp)
-file(GLOB imgui vendors/imgui/*.cpp vendors/imgui/misc/cpp/imgui_stdlib.cpp vendors/imgui/misc/cpp/imgui_impl_glfw.cpp vendors/imgui/misc/cpp/imgui_impl_opengl3.cpp)
+file(GLOB imgui vendors/imgui/*.cpp vendors/imgui/misc/cpp/imgui_stdlib.cpp vendors/imgui/backend/imgui_impl_glfw.cpp vendors/imgui/backend/imgui_impl_opengl3.cpp)
 
 target_link_libraries(Pentagram spdlog::spdlog glm::glm glfw)
 target_sources(Pentagram PRIVATE ${pentagram} ${imgui} vendors/glad/glad.c)
