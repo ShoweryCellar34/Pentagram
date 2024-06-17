@@ -177,9 +177,9 @@ namespace PNT {
             if(image.valid()) {
                 data.icon = image;
                 GLFWimage glfwImage;
-                glfwImage.width = image.width;
-                glfwImage.height = image.height;
-                glfwImage.pixels = image.pixels;
+                glfwImage.width = image.getWidth();
+                glfwImage.height = image.getHeight();
+                glfwImage.pixels = image.getPixels();
                 glfwSetWindowIcon(window, 1, &glfwImage);
                 return 0;
             } else {

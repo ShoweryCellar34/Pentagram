@@ -3,17 +3,50 @@
 #include "includes.hpp"
 
 namespace PNT {
-    struct image {
+    class image {
+    private:
+        unsigned int textureID;
         int width, height, channels;
         unsigned char* pixels;
 
+    public:
+        // Returns true if image not null (null meaning invalid), and false if image is null.
         bool valid() {return pixels == nullptr ? 0 : 1;}
-        void setData(const char* path, int channels) {pixels = stbi_load(path, &width, &height, &this->channels, channels);}
+        // Loads an image from disk.
+        void load(const char* path, int channels) {pixels = stbi_load(path, &width, &height, &this->channels, channels);}
+        // Resizes the image to specified dimentions.
+        void resize(int width, int height) {stbir_resize_uint8_srgb(pixels, this->width, this->height, 0, pixels, width, height, 0, (stbir_pixel_layout)channels);}
+        // Creats an ImGui draw call for the image (Requires loadOnGPU() to be called). 
+        void ImGuiDraw() {ImGui::Image((void*)(intptr_t)textureID, ImVec2(width, height));}
+        // Loads the image to the GPU.
+        void loadOnGPU() {
+            glGenTextures(1, &textureID);
+            glBindTexture(GL_TEXTURE_2D, textureID);
+
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+        }
+        // Deletes the GPU texture.
+        void unloadOnGPU() {glDeleteTextures(1, &textureID);}
+
+        // Returns the GPU texture ID (0 is none).
+        int getTextureID() {return textureID;}
+        // Returns the width of the image.
+        int getWidth() {return width;}
+        // Returns the height of the image.
+        int getHeight() {return height;}
+        // Returns the pixel data for the image (NOT A COPY).
+        unsigned char* getPixels() {return pixels;}
 
         image() {
             width = 0, height = 0, channels = 0;
             pixels = nullptr;
         }
-        image(const char* path, short channels) {setData(path, channels);}
+        image(const char* path, short channels) {load(path, channels);}
+        ~image() {stbi_image_free(pixels);}
     };
 }
