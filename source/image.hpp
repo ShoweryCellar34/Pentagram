@@ -15,16 +15,19 @@ namespace PNT {
         // Loads an image from disk.
         void load(const char* path, int channels) {pixels = stbi_load(path, &width, &height, &this->channels, channels);}
         // Resizes the image to specified dimentions.
-        void resize(int width, int height) {stbir_resize_uint8_srgb(pixels, this->width, this->height, 0, pixels, width, height, 0, (stbir_pixel_layout)channels);}
+        void resize(int width, int height) {
+            delete[] pixels;
+            pixels = stbir_resize_uint8_srgb(pixels, this->width, this->height, 0, pixels, width, height, 0, (stbir_pixel_layout)channels);
+        }
         // Creats an ImGui draw call for the image (Requires loadOnGPU() to be called). 
-        void ImGuiDraw() {ImGui::Image((void*)(intptr_t)textureID, ImVec2(width, height));}
+        void ImGuiDraw(int width, int height) {ImGui::Image((void*)(intptr_t)textureID, ImVec2(width, height));}
         // Loads the image to the GPU.
         void loadOnGPU() {
             glGenTextures(1, &textureID);
             glBindTexture(GL_TEXTURE_2D, textureID);
 
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
