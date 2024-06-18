@@ -1,6 +1,6 @@
 #pragma once
 
-#include "includes.hpp"
+#include <includes.hpp>
 
 namespace PNT {
     class image {
@@ -14,14 +14,9 @@ namespace PNT {
         bool valid() {return pixels == nullptr ? 0 : 1;}
         // Loads an image from disk.
         void load(const char* path, int channels) {pixels = stbi_load(path, &width, &height, &this->channels, channels);}
-        // Resizes the image to specified dimentions.
-        void resize(int width, int height) {
-            delete[] pixels;
-            pixels = stbir_resize_uint8_srgb(pixels, this->width, this->height, 0, pixels, width, height, 0, (stbir_pixel_layout)channels);
-        }
         // Creats an ImGui draw call for the image (Requires loadOnGPU() to be called). 
         void ImGuiDraw(int width, int height) {ImGui::Image((void*)(intptr_t)textureID, ImVec2(width, height));}
-        // Loads the image to the GPU.
+        // Loads the image on to the GPU.
         void loadOnGPU() {
             glGenTextures(1, &textureID);
             glBindTexture(GL_TEXTURE_2D, textureID);
@@ -33,7 +28,7 @@ namespace PNT {
 
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
         }
-        // Deletes the GPU texture.
+        // Unloads the image off GPU texture.
         void unloadOnGPU() {glDeleteTextures(1, &textureID);}
 
         // Returns the GPU texture ID (0 is none).
