@@ -29,7 +29,7 @@ namespace PNT {
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
         }
         // Unloads the image off GPU texture.
-        void unloadOnGPU() {glDeleteTextures(1, &textureID);}
+        void unloadOffGPU() {glDeleteTextures(1, &textureID);}
 
         // Returns the GPU texture ID (0 is none).
         int getTextureID() {return textureID;}
@@ -37,7 +37,7 @@ namespace PNT {
         int getWidth() {return width;}
         // Returns the height of the image.
         int getHeight() {return height;}
-        // Returns the pixel data for the image (NOT A COPY).
+        // Returns the pixel data for the image (DO NOT MODIFY).
         unsigned char* getPixels() {return pixels;}
 
         image() {
@@ -45,6 +45,9 @@ namespace PNT {
             pixels = nullptr;
         }
         image(const char* path, short channels) {load(path, channels);}
-        ~image() {stbi_image_free(pixels);}
+        ~image() {
+            unloadOffGPU();
+            stbi_image_free(pixels);
+        }
     };
 }
