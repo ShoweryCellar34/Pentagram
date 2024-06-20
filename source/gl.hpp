@@ -7,7 +7,7 @@ namespace PNT {
     private:
         unsigned int ID = 0;
         unsigned int type = 0;
-        char* source;
+        char* source = nullptr;
     public:
         // Returns the shader ID.
         unsigned int getID() {return ID;}

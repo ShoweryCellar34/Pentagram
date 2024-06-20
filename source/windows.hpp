@@ -173,13 +173,13 @@ namespace PNT {
             glfwSetWindowTitle(window, title);
         }
 
-        bool setIcon(image image) {
-            if(image.valid()) {
-                data.icon = image;
+        bool setIcon(image* image) {
+            if(image->valid()) {
+                data.icon = *image;
                 GLFWimage glfwImage;
-                glfwImage.width = image.getWidth();
-                glfwImage.height = image.getHeight();
-                glfwImage.pixels = image.getPixels();
+                glfwImage.width = image->getDimentions().first;
+                glfwImage.height = image->getDimentions().second;
+                glfwImage.pixels = image->getPixels();
                 glfwSetWindowIcon(window, 1, &glfwImage);
                 return 0;
             } else {
