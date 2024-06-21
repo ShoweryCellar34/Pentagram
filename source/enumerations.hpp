@@ -13,12 +13,6 @@ enum vsyncFlags : int8_t {
     PNT_VSYNC_FLAGS_ON,
 };
 
-enum callbackFlags : uint8_t {
-    PNT_CALLBACK_FLAGS_STARTFRAME,
-    PNT_CALLBACK_FLAGS_ENDFRAME,
-    PNT_CALLBACK_FLAGS_COUNT,
-};
-
 enum eventCallbackFlags : uint8_t {
     PNT_EVENT_TYPE_KEYBOARD,
     PNT_EVENT_TYPE_CHAR,
