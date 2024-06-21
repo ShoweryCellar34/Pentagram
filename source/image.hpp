@@ -67,25 +67,19 @@ namespace PNT {
         /// @brief Get the image dimentions.
         /// @return Returns the width and height in their respective order.
         std::pair<int, int> getDimentions() {return std::make_pair(width, height);}
-        // 
 
         /// @brief Gets the image pixels.
         /// @return Returns the pixel data for the image (DO NOT MODIFY).
         unsigned char* getPixels() {return pixels;}
 
+        /// @brief Gets the path the image was loaded from.
+        /// @return Returns the image path (DO NOT MODIFY).
+        const char* getPath() {return path.c_str();}
+
         /// @brief Image object constructor.
         /// @param path Image path on disk.
         image() {}
-        image(const char* path) {
-            load(path);
-        }
-        image(image& original) {
-            width = original.width;
-            height = original.height;
-            channels = original.channels;
-            load(original.path.c_str());
-            if(original.textureID) {loadOnGPU();}
-        }
+        image(const char* path) {load(path);}
         ~image() {
             unloadOffGPU();
             stbi_image_free(pixels);
