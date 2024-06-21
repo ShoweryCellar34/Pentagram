@@ -40,6 +40,7 @@ namespace PNT {
         // Functions
         friend class callbackManagers;
         friend void deinit();
+
     public:
         // Constructor/Destructor
         Window(const char* title = "Title", unsigned short width = 600, unsigned short height = 600, unsigned int xpos = 100, unsigned int ypos = 100, unsigned int ImGuiFlags = ImGuiConfigFlags_None) {
@@ -142,8 +143,6 @@ namespace PNT {
             return data;
         }
 
-        // 
-
         /// @brief Sets the data struct of the window.
         /// @param newData The desired PNT::windowData for the window.
         void setWindowData(windowData newData) {
@@ -190,8 +189,6 @@ namespace PNT {
         void setDimentions(unsigned short width, unsigned short height) {
             glfwSetWindowSize(window, width, height);
         }
-
-        // 
 
         /// @brief Sets the position of the window.
         /// @param xpos The desired x window position.

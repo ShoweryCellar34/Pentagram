@@ -8,13 +8,23 @@ namespace PNT {
         unsigned int ID = 0;
         unsigned int type = 0;
         char* source = nullptr;
+
     public:
-        // Returns the shader ID.
-        unsigned int getID() {return ID;}
-        // Returns the type of shader.
-        unsigned int getType() {return type;}
-        // Returns the shader source (DO NOT MODIFY).
-        char* getSource() {return source;}
+        /// @brief Gets the shader ID.
+        /// @return Shader ID.
+        unsigned int getID() {
+            return ID;
+        }
+        /// @brief Gets the shader type.
+        /// @return Shader type.
+        unsigned int getType() {
+            return type;
+        }
+        /// @brief Gets the shader source.
+        /// @return The shader source code (DO NOT MODIFY).
+        char* getSource() {
+            return source;
+        }
 
         void setData(char* source, unsigned int type) {
 

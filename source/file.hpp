@@ -3,7 +3,7 @@
 #include "includes.hpp"
 
 namespace PNT {
-    // Returns the contents of the specified file.
+    /// @brief Returns the contents of the specified file.
     std::string fileToString(std::string filePath) {
         std::string output;
         std::string line;

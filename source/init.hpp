@@ -4,7 +4,6 @@
 #include "windows.hpp"
 
 namespace PNT {
-
     /// @brief Starts Pentagram.
     void init() {glfwInit();}
 
