@@ -130,7 +130,7 @@ namespace PNT {
             glfwMakeContextCurrent(backupContext);
         }
 
-        /// @brief Sets the event callback of the window.
+        /// @brief Sets the event callback of the window that will be call every time there is an event.
         /// @param newEventCallback The desired function pointer for the event callback with signature "PNT::Window*, PNT::windowEvent" (use nullptr to clear callback).
         void setEventCallback(void(*newEventCallback)(Window*, windowEvent)) {
             data.eventCallback = newEventCallback;
