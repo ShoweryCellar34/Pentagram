@@ -11,6 +11,23 @@ namespace PNT {
         unsigned int textureID = 0;
 
     public:
+        image() {}
+        /// @brief Image object constructor.
+        /// @param path The desired image path.
+        image(const char* path) {load(path);}
+        image(image& original) {
+            width = original.width;
+            height = original.height;
+            channels = original.channels;
+            pixels = original.pixels;
+            strcpy((char*)pixels, (const char*)original.pixels);
+            if(original.textureID) {loadOnGPU();}
+        }
+        ~image() {
+            unloadOffGPU();
+            stbi_image_free(pixels);
+        }
+
         /// @brief Checks the state of the image.
         /// @return The state of the image, true for valid and false for invalid (null).
         bool valid() const {return pixels == nullptr ? false : true;}
@@ -89,23 +106,6 @@ namespace PNT {
         /// @return Returns the image path (DO NOT MODIFY).
         const char* getPath() const {
             return path;
-        }
-
-        image() {}
-        /// @brief Image object constructor.
-        /// @param path The desired image path.
-        image(const char* path) {load(path);}
-        image(image& original) {
-            width = original.width;
-            height = original.height;
-            channels = original.channels;
-            pixels = original.pixels;
-            strcpy((char*)pixels, (const char*)original.pixels);
-            if(original.textureID) {loadOnGPU();}
-        }
-        ~image() {
-            unloadOffGPU();
-            stbi_image_free(pixels);
         }
     };
 }
