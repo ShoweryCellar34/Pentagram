@@ -15,7 +15,6 @@ namespace PNT {
         file(const char* path) {
             open(path);
             load();
-            close();
         }
         ~file() {
             delete[] path;
