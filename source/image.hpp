@@ -83,25 +83,21 @@ namespace PNT {
             glDeleteTextures(1, &textureID);
             textureID = 0;
         }
-
         /// @brief Gets the texture ID.
         /// @return Returns the GPU texture ID (0 means not on GPU).
         int getTextureID() const {
             return textureID;
         }
-
         /// @brief Get the image dimentions.
         /// @return Returns the width and height in their respective order.
         std::pair<int, int> getDimentions() const {
             return std::make_pair(width, height);
         }
-
         /// @brief Gets the image pixels.
         /// @return Returns the pixel data for the image (DO NOT MODIFY).
         unsigned char* getPixels() const {
             return pixels;
         }
-
         /// @brief Gets the path the image was loaded from.
         /// @return Returns the image path (DO NOT MODIFY).
         const char* getPath() const {
