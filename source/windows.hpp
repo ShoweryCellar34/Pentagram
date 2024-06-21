@@ -104,7 +104,7 @@ namespace PNT {
             glfwDestroyWindow(window);
         }
 
-        // Starts the opengl and imgui frame for the window, returns the sdl error code (0 is success)..
+        /// @brief Starts the opengl and imgui frame for the window.
         void startFrame() {
             glfwMakeContextCurrent(window);
             int width, height;
@@ -118,7 +118,7 @@ namespace PNT {
             ImGui::NewFrame();
         }
 
-        // Hides the window, returns the sdl error code (0 is success). 
+        /// @brief Hides the window, returns the sdl error code (0 is success).
         void endFrame() {
             ImGui::Render();
             ImGuiIO& io = ImGui::GetIO();
