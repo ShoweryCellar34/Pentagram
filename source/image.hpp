@@ -5,7 +5,7 @@
 namespace PNT {
     class image {
     private:
-        std::string path;
+        char* path = nullptr;
         int width = 0, height = 0, channels = 0;
         unsigned char* pixels = nullptr;
         unsigned int textureID = 0;
@@ -13,21 +13,21 @@ namespace PNT {
     public:
         /// @brief Checks the state of the image.
         /// @return The state of the image, true for valid and false for invalid (null).
-        bool valid() {return pixels == nullptr ? false : true;}
+        bool valid() const {return pixels == nullptr ? false : true;}
 
         /// @brief Loads an image from disk.
         /// @param path Image path on disk.
         void load(const char* path) {
-            this->path = path;
+            this->path = (char*)malloc(sizeof(char) * strlen(path));
+            strcpy(this->path, path);
             pixels = stbi_load(path, &width, &height, &this->channels, 4);
         }
 
         /// @brief Creats an ImGui draw call for the image (Requires loadOnGPU()).
         /// @param width The width of the imgui image element.
         /// @param height The height of the imgui image element.
-        void ImGuiDraw(int width, int height) {
-            textureID ? ImGui::Image((ImTextureID)textureID, ImVec2(width, height)) : ImGui::Text("Image not loaded on GPU");
-        }
+        void ImGuiDraw(int width, int height) const {
+            textureID ? ImGui::Image((ImTextureID)textureID, ImVec2(width, height)) : ImGui::Text("Image not loaded on GPU");}
 
         /// @brief Set the settings for the GPU texture (Requires loadOnGPU()).
         /// @param min Texture filtering for minification.
@@ -68,19 +68,19 @@ namespace PNT {
 
         /// @brief Gets the texture ID.
         /// @return Returns the GPU texture ID (0 means not on GPU).
-        int getTextureID() {return textureID;}
+        int getTextureID() const {return textureID;}
 
         /// @brief Get the image dimentions.
         /// @return Returns the width and height in their respective order.
-        std::pair<int, int> getDimentions() {return std::make_pair(width, height);}
+        std::pair<int, int> getDimentions() const {return std::make_pair(width, height);}
 
         /// @brief Gets the image pixels.
         /// @return Returns the pixel data for the image (DO NOT MODIFY).
-        unsigned char* getPixels() {return pixels;}
+        unsigned char* getPixels() const {return pixels;}
 
         /// @brief Gets the path the image was loaded from.
         /// @return Returns the image path (DO NOT MODIFY).
-        const char* getPath() {return path.c_str();}
+        const char* getPath() const {return path;}
 
         /// @brief Image object constructor.
         /// @param path Image path on disk.
