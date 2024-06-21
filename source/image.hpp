@@ -79,7 +79,8 @@ namespace PNT {
             width = original.width;
             height = original.height;
             channels = original.channels;
-            // how to copy
+            pixels = original.pixels;
+            printf(":%s:\n", original.pixels);
             if(original.textureID) {loadOnGPU();}
         }
         ~image() {
