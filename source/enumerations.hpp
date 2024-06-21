@@ -1,25 +1,25 @@
 #pragma once
 
-enum loggerFlags : unsigned char {
+enum loggerFlags : uint8_t {
     PNT_LOGGER_FLAGS_NOTE,
     PNT_LOGGER_FLAGS_WARNING,
     PNT_LOGGER_FLAGS_ERROR,
     PNT_LOGGER_FLAGS_FATAL
 };
 
-enum vsyncFlags : char {
+enum vsyncFlags : int8_t {
     PNT_VSYNC_FLAGS_ADAPTIVE = -1,
     PNT_VSYNC_FLAGS_OFF,
     PNT_VSYNC_FLAGS_ON,
 };
 
-enum callbackFlags : unsigned char {
+enum callbackFlags : uint8_t {
     PNT_CALLBACK_FLAGS_STARTFRAME,
     PNT_CALLBACK_FLAGS_ENDFRAME,
     PNT_CALLBACK_FLAGS_COUNT,
 };
 
-enum eventCallbackFlags : unsigned char {
+enum eventCallbackFlags : uint8_t {
     PNT_EVENT_TYPE_KEYBOARD,
     PNT_EVENT_TYPE_CHAR,
     PNT_EVENT_TYPE_DROP,

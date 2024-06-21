@@ -12,11 +12,11 @@ namespace PNT {
         void(*eventCallback)(Window*, windowEvent) = nullptr;
         std::string title = "";
         image icon;
-        unsigned short width = 0, height = 0;
-        unsigned short xpos = 0, ypos = 0;
+        uint16_t width = 0, height = 0;
+        uint16_t xpos = 0, ypos = 0;
         bool hidden = false;
         bool iconified = false;
-        unsigned char vsyncMode = 0;
+        uint8_t vsyncMode = 0;
         float clearColor[4] = {0.0f, 0.0f, 0.0f, 0.0f};
     };
 

@@ -5,8 +5,13 @@
 
 namespace PNT {
     /// @brief Starts Pentagram.
-    void init() {glfwInit();}
+    /// @return True if startup was succesful and false if there was an error.
+    bool init() {
+        return glfwInit();
+    }
 
     /// @brief Shutsdown Pentagram (All windows are deleted and handles become invalid).
-    void deinit() {glfwTerminate();}
+    void deinit() {
+        glfwTerminate();
+    }
 }
