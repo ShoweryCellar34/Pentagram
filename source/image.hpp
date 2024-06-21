@@ -5,6 +5,7 @@
 namespace PNT {
     class image {
     private:
+        std::string path;
         int width = 0, height = 0, channels = 0;
         unsigned char* pixels = nullptr;
         unsigned int textureID = 0;
@@ -16,7 +17,10 @@ namespace PNT {
 
         /// @brief Loads an image from disk.
         /// @param path Image path on disk.
-        void load(const char* path) {pixels = stbi_load(path, &width, &height, &this->channels, 4);}
+        void load(const char* path) {
+            this->path = path;
+            pixels = stbi_load(path, &width, &height, &this->channels, 4);
+        }
 
         /// @brief Creats an ImGui draw call for the image (Requires loadOnGPU()).
         /// @param width The width of the imgui image element.
@@ -79,8 +83,7 @@ namespace PNT {
             width = original.width;
             height = original.height;
             channels = original.channels;
-            pixels = original.pixels;
-            printf(":%s:\n", original.pixels);
+            load(original.path.c_str());
             if(original.textureID) {loadOnGPU();}
         }
         ~image() {
