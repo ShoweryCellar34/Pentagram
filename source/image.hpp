@@ -18,6 +18,7 @@ namespace PNT {
         /// @brief Loads an image from disk.
         /// @param path Image path on disk.
         void load(const char* path) {
+            free(this->path);
             this->path = (char*)malloc(sizeof(char) * strlen(path));
             strcpy(this->path, path);
             pixels = stbi_load(path, &width, &height, &this->channels, 4);
@@ -68,19 +69,27 @@ namespace PNT {
 
         /// @brief Gets the texture ID.
         /// @return Returns the GPU texture ID (0 means not on GPU).
-        int getTextureID() const {return textureID;}
+        int getTextureID() const {
+            return textureID;
+        }
 
         /// @brief Get the image dimentions.
         /// @return Returns the width and height in their respective order.
-        std::pair<int, int> getDimentions() const {return std::make_pair(width, height);}
+        std::pair<int, int> getDimentions() const {
+            return std::make_pair(width, height);
+        }
 
         /// @brief Gets the image pixels.
         /// @return Returns the pixel data for the image (DO NOT MODIFY).
-        unsigned char* getPixels() const {return pixels;}
+        unsigned char* getPixels() const {
+            return pixels;
+        }
 
         /// @brief Gets the path the image was loaded from.
         /// @return Returns the image path (DO NOT MODIFY).
-        const char* getPath() const {return path;}
+        const char* getPath() const {
+            return path;
+        }
 
         /// @brief Image object constructor.
         /// @param path Image path on disk.

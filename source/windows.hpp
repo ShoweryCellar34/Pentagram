@@ -9,8 +9,6 @@ namespace PNT {
     class Window;
 
     struct windowData {
-        void(*startFrameCallback)(Window*) = nullptr;
-        void(*endFrameCallback)(Window*) = nullptr;
         void(*eventCallback)(Window*, windowEvent) = nullptr;
         std::string title = "";
         image icon;
@@ -112,7 +110,6 @@ namespace PNT {
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
-            if(data.startFrameCallback != nullptr) data.startFrameCallback(this);
         }
 
         // Hides the window, returns the sdl error code (0 is success). 
@@ -125,38 +122,31 @@ namespace PNT {
             ImGui::UpdatePlatformWindows();
             ImGui::RenderPlatformWindowsDefault();
             glfwMakeContextCurrent(backupContext);
-            if(data.endFrameCallback != nullptr) data.endFrameCallback(this);
         }
 
-        // Sets the callback for the specified window event (use nullptr to clear callback).
-        void setCallback(unsigned char callbackID, void (*newcallback)(Window*)) {
-            switch(callbackID) {
-        	case PNT_CALLBACK_FLAGS_STARTFRAME:
-                data.startFrameCallback = newcallback;
-                break;
-
-            case PNT_CALLBACK_FLAGS_ENDFRAME:
-                data.endFrameCallback = newcallback;
-                break;
-
-            default:
-                break;
-            }
+        /// @brief Sets the event callback of the window.
+        /// @param newEventCallback The function pointer to the event callback with signature 'PNT::Window*, PNT::windowEvent' (use nullptr to clear callback).
+        void setEventCallback(void(*newEventCallback)(Window*, windowEvent)) {
+            data.eventCallback = newEventCallback;
         }
 
-        // Sets the event callback of the window (use nullptr to clear callback).
-        void setEventCallback(void(*newcallback)(Window*, windowEvent)) {data.eventCallback = newcallback;}
+        /// @brief Check if the currect window should close.
+        /// @return True if the window should close.
+        bool shouldClose() {
+            return glfwWindowShouldClose(window);
+        }
 
-        // Check if the currect window shoul close.
-        bool shouldClose() {return glfwWindowShouldClose(window);}
+        /// @brief Get the window data.
+        /// @return A PNT::windowData struct.
+        windowData getWindowData() {
+            return data;
+        }
 
-        // Returns the data struct of the window.
-        windowData getWindowData() {return data;}
+        // 
 
-        // Sets the data struct of the window.
+        /// @brief Sets the data struct of the window.
+        /// @param newData A PNT::windowData struct to override the current one.
         void setWindowData(windowData newData) {
-            data.startFrameCallback = newData.startFrameCallback;
-            data.endFrameCallback = newData.endFrameCallback;
             data.eventCallback = newData.eventCallback;
             setTitle(newData.title.c_str());
             setDimentions(newData.width, newData.height);
@@ -167,24 +157,28 @@ namespace PNT {
             setClearColor(newData.clearColor[0], newData.clearColor[1], newData.clearColor[2], newData.clearColor[3]);
         }
 
-        // Sets the title of the window.
+        /// @brief Sets the window title.
+        /// @param title Window title.
         void setTitle(const char* title) {
             data.title = title;
             glfwSetWindowTitle(window, title);
         }
 
-        bool setIcon(image* image) {
-            if(image->valid()) {
-                data.icon = *image;
+        /// @brief Sets the window icon.
+        /// @param image The PNT::image that will be used for the icon.
+        /// @return Will return false if the image is invalid, this happens if the contents of the image are null.
+        bool setIcon(const image& image) {
+            if(image.valid()) {
+                data.icon = image;
                 GLFWimage glfwImage;
-                glfwImage.width = image->getDimentions().first;
-                glfwImage.height = image->getDimentions().second;
-                glfwImage.pixels = image->getPixels();
+                glfwImage.width = image.getDimentions().first;
+                glfwImage.height = image.getDimentions().second;
+                glfwImage.pixels = image.getPixels();
                 glfwSetWindowIcon(window, 1, &glfwImage);
-                return 0;
+                return 1;
             } else {
                 glfwSetWindowIcon(window, 0, nullptr);
-                return 1;
+                return 0;
             }
         }
 

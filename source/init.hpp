@@ -4,9 +4,10 @@
 #include "windows.hpp"
 
 namespace PNT {
-    // initulizes Pentagram.
+
+    /// @brief Starts Pentagram.
     void init() {glfwInit();}
 
-    // shutsdown Pentagram (All windows are deleted and become invalid).
+    /// @brief Shutsdown Pentagram (All windows are deleted and handles become invalid).
     void deinit() {glfwTerminate();}
 }
