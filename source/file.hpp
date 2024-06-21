@@ -4,12 +4,16 @@
 
 namespace PNT {
     /// @brief Returns the contents of the specified file.
-    std::string fileToString(std::string filePath) {
+    /// @param filePath Path of the desired file to read.
+    /// @return The file contents.
+    std::string fileToString(const char* filePath) {
+        std::ifstream file(filePath);
         std::string output;
         std::string line;
-        std::ifstream file(filePath);
 
-        while(getline(file, line)) {output.append(line + "\n");}
+        while(getline(file, line)) {
+            output.append(line + "\n");
+        }
 
         file.close();
         return output;

@@ -5,7 +5,7 @@
 namespace PNT {
     class shader {
     private:
-        unsigned int ID = 0;
+        unsigned int shaderID = 0;
         unsigned int type = 0;
         char* source = nullptr;
 
@@ -13,7 +13,7 @@ namespace PNT {
         /// @brief Gets the shader ID.
         /// @return Shader ID.
         unsigned int getID() {
-            return ID;
+            return shaderID;
         }
         /// @brief Gets the shader type.
         /// @return Shader type.
@@ -26,19 +26,23 @@ namespace PNT {
             return source;
         }
 
-        void setData(char* source, unsigned int type) {
-
+        /// @brief Compiles the shader.
+        void compile() {
+            glCompileShader(shaderID);
         }
 
-        shader(char* source, unsigned int type) {
-            ID = glCreateShader(type);
-            glShaderSource(ID, 1, &source, NULL);
-            glCompileShader(ID);
+        void setData(const char* source) {
+            glShaderSource(shaderID, 1, &source, NULL);
         }
-        shader() {
-            ID = glCreateShader(type);
-            glShaderSource(ID, 1, &source, NULL);
+
+        shader(const char* source, unsigned int type) {
+            shaderID = glCreateShader(type);
+            glShaderSource(shaderID, 1, &source, NULL);
+            glCompileShader(shaderID);
         }
-        ~shader() {glDeleteShader(ID);}
+        shader() {}
+        ~shader() {
+            glDeleteShader(shaderID);
+        }
     };
 }
