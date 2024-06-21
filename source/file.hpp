@@ -44,7 +44,6 @@ namespace PNT {
             contents = new char[size];
             rewind(cFile);
             fread(contents, sizeof(char), size, cFile);
-            fclose(cFile);
         }
 
         /// @brief Gets the contents of the loaded file.
