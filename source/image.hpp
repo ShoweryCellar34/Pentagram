@@ -25,7 +25,9 @@ namespace PNT {
         /// @brief Creats an ImGui draw call for the image (Requires loadOnGPU()).
         /// @param width The width of the imgui image element.
         /// @param height The height of the imgui image element.
-        void ImGuiDraw(int width, int height) {ImGui::Image((void*)(intptr_t)textureID, ImVec2(width, height));}
+        void ImGuiDraw(int width, int height) {
+            textureID ? ImGui::Image((ImTextureID)textureID, ImVec2(width, height)) : ImGui::Text("Image not loaded on GPU");
+        }
 
         /// @brief Set the settings for the GPU texture (Requires loadOnGPU()).
         /// @param min Texture filtering for minification.
@@ -55,10 +57,14 @@ namespace PNT {
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, T);
 
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+            glGenerateMipmap(GL_TEXTURE_2D);
         }
 
         /// @brief Unloads the texture off GPU.
-        void unloadOffGPU() {glDeleteTextures(1, &textureID);}
+        void unloadOffGPU() {
+            glDeleteTextures(1, &textureID);
+            textureID = 0;
+        }
 
         /// @brief Gets the texture ID.
         /// @return Returns the GPU texture ID (0 means not on GPU).
@@ -80,6 +86,14 @@ namespace PNT {
         /// @param path Image path on disk.
         image() {}
         image(const char* path) {load(path);}
+        image(image& original) {
+            width = original.width;
+            height = original.height;
+            channels = original.channels;
+            pixels = original.pixels;
+            strcpy((char*)pixels, (const char*)original.pixels);
+            if(original.textureID) {loadOnGPU();}
+        }
         ~image() {
             unloadOffGPU();
             stbi_image_free(pixels);
