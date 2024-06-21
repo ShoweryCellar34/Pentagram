@@ -37,12 +37,17 @@ namespace PNT {
 
     class Window {
     private:
-        // Functions
         friend class callbackManagers;
         friend void deinit();
 
     public:
-        // Constructor/Destructor
+        /// @brief Winfow object constructor.
+        /// @param title The desired title.
+        /// @param width The desired width.
+        /// @param height The desired height.
+        /// @param xpos The desired x position.
+        /// @param ypos The desired y position.
+        /// @param ImGuiFlags The desired imgui gui flags.
         Window(const char* title = "Title", unsigned short width = 600, unsigned short height = 600, unsigned int xpos = 100, unsigned int ypos = 100, unsigned int ImGuiFlags = ImGuiConfigFlags_None) {
             instances++;
 
@@ -236,17 +241,10 @@ namespace PNT {
         }
 
     private:
-        // GLFW window.
         GLFWwindow* window;
-
-        // Window data
         windowData data;
-
-        // ImGui data
         ImGuiContext* ImGuiContext;
         ImGuiIO* IO;
-
-        // other data
         static inline int instances;
     };
 
