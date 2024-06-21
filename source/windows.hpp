@@ -125,7 +125,7 @@ namespace PNT {
         }
 
         /// @brief Sets the event callback of the window.
-        /// @param newEventCallback The function pointer to the event callback with signature 'PNT::Window*, PNT::windowEvent' (use nullptr to clear callback).
+        /// @param newEventCallback The desired function pointer for the event callback 'PNT::Window*, PNT::windowEvent' (use nullptr to clear callback).
         void setEventCallback(void(*newEventCallback)(Window*, windowEvent)) {
             data.eventCallback = newEventCallback;
         }
@@ -145,7 +145,7 @@ namespace PNT {
         // 
 
         /// @brief Sets the data struct of the window.
-        /// @param newData A PNT::windowData struct to override the current one.
+        /// @param newData The desired PNT::windowData for the window.
         void setWindowData(windowData newData) {
             data.eventCallback = newData.eventCallback;
             setTitle(newData.title.c_str());
@@ -158,14 +158,14 @@ namespace PNT {
         }
 
         /// @brief Sets the window title.
-        /// @param title Window title.
+        /// @param title The desired window title.
         void setTitle(const char* title) {
             data.title = title;
             glfwSetWindowTitle(window, title);
         }
 
         /// @brief Sets the window icon.
-        /// @param image The PNT::image that will be used for the icon.
+        /// @param image The desired PNT::image for the window icon.
         /// @return Will return false if the image is invalid, this happens if the contents of the image are null.
         bool setIcon(const image& image) {
             if(image.valid()) {
@@ -182,42 +182,62 @@ namespace PNT {
             }
         }
 
-        // Sets the width and height of the window.
+        // 
+
+        /// @brief Sets the dimentions of the window.
+        /// @param width The desired window width.
+        /// @param height The desired window height.
         void setDimentions(unsigned short width, unsigned short height) {
             glfwSetWindowSize(window, width, height);
         }
 
-        // Sets the x and y coordinates of the window.
+        // 
+
+        /// @brief Sets the position of the window.
+        /// @param xpos The desired x window position.
+        /// @param ypos The desired y window position.
         void setPosition(unsigned int xpos, unsigned int ypos) {
             glfwSetWindowPos(window, xpos, ypos);
             callbackManagers::windowposCallbackManager(window, xpos, ypos);
         }
 
-        // Sets the visiblity of the window.
+        /// @brief Hides the window.
         void hide() {
             glfwHideWindow(window);
         }
+        /// @brief Shows the window.
         void show() {
             glfwShowWindow(window);
         }
 
-        // Minimizes and maximizes the window.
+        /// @brief Minimises the window.
         void minimize() {glfwIconifyWindow(window);}
+        /// @brief Maximises the window.
         void maximize() {glfwRestoreWindow(window);}
 
         // Sets the vsync mode of the window (0 = off, 1 = on, -1 = adaptive).
+
+        /// @brief Sets the vsync mode for the window.
+        /// @param vsyncMode The desired vsync mode for the window
         void setVsyncMode(char vsyncMode) {
             data.vsyncMode = vsyncMode;
             glfwSwapInterval(vsyncMode);
         }
 
-        // Sets the opengl clear color for the window.
+        // 
+
+        /// @brief Sets the opengl clear color for the window.
+        /// @param red The desired red channel.
+        /// @param green The desired green channel.
+        /// @param blue The desired blue channel.
+        /// @param alpha The desired alpha channel.
         void setClearColor(float red, float green, float blue, float alpha) {
             data.clearColor[0] = red;
             data.clearColor[1] = green;
             data.clearColor[2] = blue;
             data.clearColor[3] = alpha;
         }
+
     private:
         // GLFW window.
         GLFWwindow* window;

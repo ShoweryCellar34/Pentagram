@@ -91,9 +91,9 @@ namespace PNT {
             return path;
         }
 
-        /// @brief Image object constructor.
-        /// @param path Image path on disk.
         image() {}
+        /// @brief Image object constructor.
+        /// @param path The desired image path.
         image(const char* path) {load(path);}
         image(image& original) {
             width = original.width;
