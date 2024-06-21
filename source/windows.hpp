@@ -131,7 +131,7 @@ namespace PNT {
         }
 
         /// @brief Sets the event callback of the window.
-        /// @param newEventCallback The desired function pointer for the event callback 'PNT::Window*, PNT::windowEvent' (use nullptr to clear callback).
+        /// @param newEventCallback The desired function pointer for the event callback with signature "PNT::Window*, PNT::windowEvent" (use nullptr to clear callback).
         void setEventCallback(void(*newEventCallback)(Window*, windowEvent)) {
             data.eventCallback = newEventCallback;
         }
