@@ -42,7 +42,7 @@ namespace PNT {
         }
 
         /// @brief Creats an ImGui draw call for the image (Requires loadOnGPU()).
-        /// @param dimentions The gui image element size.
+        /// @param dimensions The gui image element size.
         void ImGuiDraw(ImVec2 dimentions) const {
             textureID ? ImGui::Image((ImTextureID)textureID, dimentions) : ImGui::Text("Image not loaded on GPU");
         }
