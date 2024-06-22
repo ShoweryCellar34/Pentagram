@@ -19,7 +19,31 @@ namespace PNT {
     };
     struct dropEvent {
         int path_count;
-        char* paths;
+        char** paths;
+
+        void setData(int path_count, char** paths) {
+            init = true;
+            this->paths = new char*[path_count];
+            for(size_t i = 0; i < path_count; i++) {
+                this->paths[i] = new char[strlen(paths[i]) + 1];
+                strcpy(this->paths[i], paths[i]);
+            }
+        }
+
+        dropEvent() {
+            init = false;
+        }
+        ~dropEvent() {
+            if(init) {
+                for(size_t i = 0; i < path_count; i++) {
+                    delete[] this->paths[i];
+                }
+                delete[] paths;
+            }
+        }
+
+    private:
+        bool init = false;
     };
     struct scrollEvent {
         double xoffset;
@@ -81,7 +105,7 @@ namespace PNT {
 
         event.eventType = PNT_EVENT_TYPE_DROP;
         event.dropEvent.path_count = path_count;
-        event.dropEvent.paths = (char*)paths;
+        event.dropEvent.setData(path_count, (char**)paths);
 
         return event;
     }

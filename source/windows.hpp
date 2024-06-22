@@ -26,7 +26,7 @@ namespace PNT {
 
         static void keyCallbackManager(GLFWwindow*, int, int, int, int);
         static void charCallbackManager(GLFWwindow*, unsigned int);
-        static void dropCallbackManager(GLFWwindow*, int, const char* []);
+        static void dropCallbackManager(GLFWwindow*, int, const char**);
         static void scrollCallbackManager(GLFWwindow*, double, double);
         static void cursorPosCallbackManager(GLFWwindow*, double, double);
         static void windowposCallbackManager(GLFWwindow*, int, int);
@@ -191,14 +191,14 @@ namespace PNT {
         /// @brief Sets the dimentions of the window.
         /// @param width The desired window width.
         /// @param height The desired window height.
-        void setDimentions(unsigned short width, unsigned short height) {
+        void setDimentions(uint16_t width, uint16_t height) {
             glfwSetWindowSize(window, width, height);
         }
 
         /// @brief Sets the position of the window.
         /// @param xpos The desired x window position.
         /// @param ypos The desired y window position.
-        void setPosition(unsigned int xpos, unsigned int ypos) {
+        void setPosition(uint16_t xpos, uint16_t ypos) {
             glfwSetWindowPos(window, xpos, ypos);
             callbackManagers::windowposCallbackManager(window, xpos, ypos);
         }
@@ -256,7 +256,7 @@ namespace PNT {
         Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));
         if(!window->IO->WantCaptureKeyboard && window->data.eventCallback != nullptr) {window->data.eventCallback(window, createCharEvent(codepoint));}
     }
-    void callbackManagers::dropCallbackManager(GLFWwindow* glfwWindow, int path_count, const char* paths[]) {
+    void callbackManagers::dropCallbackManager(GLFWwindow* glfwWindow, int path_count, const char** paths) {
         Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));
         if(window->data.eventCallback != nullptr) window->data.eventCallback(window, createDropEvent(path_count, paths));
     }
