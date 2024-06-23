@@ -3,7 +3,7 @@
 #include "includes.hpp"
 
 namespace PNT {
-    /// @brief FIle class for opening and getting contents of a file.
+    /// @brief File handling class for getting and setting contents of a file.
     class file {
     private:
         char* path = nullptr;
@@ -29,13 +29,12 @@ namespace PNT {
             cFile = fopen(path, "a");
             cFile = fopen(path, "r");
         }
-
+        /// @brief Closes the currently open file.
         void close() {
             this->path = new char[1];
             strcpy(this->path, "\0");
             fclose(cFile);
         }
-
         /// @brief Loads the contents of the open file.
         void load() {
             fseek(cFile, 0, SEEK_END);
