@@ -14,13 +14,13 @@ namespace PNT {
 
     public:
         shader() {}
+        /// @brief Image object constructor.
+        /// @param source The desired shader source code.
+        /// @param type The desired shader type.
         shader(const char* source, uint32_t type) {
             init = true;
             shaderID = glCreateShader(type);
             setData(source);
-        }
-        shader(shader& original) {
-            std::cout << "COPY" << '\n';
         }
         ~shader() {
             if(init) {
@@ -28,6 +28,15 @@ namespace PNT {
                 delete[] errorBuffer;
                 glDeleteShader(shaderID);
             }
+        }
+
+        /// @brief Changes the shader source code, call "compile()" after this to push changes onto GPU.
+        /// @param source The desired shader source code.
+        void setData(const char* source) {
+            init = true;
+            this->source = new char[strlen(source)];
+            strcpy(this->source, source);
+            glShaderSource(shaderID, 1, &source, NULL);
         }
 
         /// @brief Gets the shader ID.
@@ -54,7 +63,7 @@ namespace PNT {
             return errorBuffer;
         }
 
-        /// @brief Compiles the shader, call this after "setData()", to push changes to GPU.
+        /// @brief Compiles the shader, call this after "setData()" to push changes to GPU.
         void compile() {
             glCompileShader(shaderID);
         }
@@ -64,14 +73,6 @@ namespace PNT {
             int success = 0;
             glGetShaderiv(shaderID, GL_COMPILE_STATUS, &success);
             return success;
-        }
-        /// @brief Changes the shader source code, call "compile()" after this to push changes to GPU.
-        /// @param source The desired shader source code.
-        void setData(const char* source) {
-            init = true;
-            this->source = new char[strlen(source)];
-            strcpy(this->source, source);
-            glShaderSource(shaderID, 1, &source, NULL);
         }
     };
 
@@ -85,26 +86,21 @@ namespace PNT {
     public:
         program() {}
         /// @brief Program object constructor for handling shaders.
-        /// @param count Number of shaders to link.
-        /// @param ... The shaders to link seperated by commas.
-        program(size_t count, ...) {
-            va_list args;
-            va_start(args, count);
-
-            attachedCount = count;
+        /// @param shaders Shaders to link into the program, they can be ether "PNT::shader*" or a shader identifier of type "uint32_t" contained in curly brackets (only one type at a time).
+        program(std::initializer_list<PNT::shader*> shaders) {
+            attachedCount = shaders.size();
             programID = glCreateProgram();
-            for(size_t i = 0; i < count; i++) {
-                glAttachShader(programID, va_arg(args, shader));
+            for(size_t i = 0; i < shaders.size(); i++) {
+                glAttachShader(programID, shaders.begin()[i]->getID());
             }
         }
-        /// @brief Constructor for "PNT::shaderProgram" object for handling shaders.
-        /// @param count Element count of shader array.
-        /// @param shaders Array of the desired shaders of type "PNT::shader" or a shader identifier of type "uint32_t" to be linked in.
-        program(uint32_t shaders[], size_t count) {
-            attachedCount = count;
+        /// @brief Program object constructor for handling shaders.
+        /// @param shaders Shaders to link into the program, they can be ether "PNT::shader*" or a shader identifier of type "uint32_t" contained in curly brackets (only one type at a time).
+        program(std::initializer_list<uint32_t> shaders) {
+            attachedCount = shaders.size();
             programID = glCreateProgram();
-            for(size_t i = 0; i < count; i++) {
-                glAttachShader(programID, shaders[i]);
+            for(size_t i = 0; i < shaders.size(); i++) {
+                glAttachShader(programID, shaders.begin()[i]);
             }
         }
         ~program() {
@@ -114,13 +110,13 @@ namespace PNT {
             }
         }
 
-        /// @brief Links a shader to the program, call "link()" to relink the program.
+        /// @brief Links a shader to the program, call "link()" after this to relink the program and push changes onto the GPU.
         /// @param object Can be a "PNT::shader*" or a shader identifier of type "uint32_t".
         void attachShader(shader* object) {
             attachedCount++;
             glAttachShader(programID, object->getID());
         }
-        /// @brief Links a shader to the program, call "link()" to relink the program.
+        /// @brief Links a shader to the program, call "link()" after this to relink the program and push changes onto the GPU.
         /// @param object Can be a "PNT::shader*" or a shader identifier of type "uint32_t".
         void attachShader(uint32_t object) {
             attachedCount++;
@@ -151,7 +147,7 @@ namespace PNT {
             return errorBuffer;
         }
 
-        /// @brief Links the program.
+        /// @brief Links the program, call this after "attachShader()" to push the changes onto the GPU.
         void link() {
             glLinkProgram(programID);
         }
