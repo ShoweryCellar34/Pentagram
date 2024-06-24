@@ -186,8 +186,6 @@ namespace PNT {
             }
         }
 
-        // 
-
         /// @brief Sets the dimentions of the window.
         /// @param width The desired window width.
         /// @param height The desired window height.
@@ -217,16 +215,12 @@ namespace PNT {
         /// @brief Maximises the window.
         void maximize() {glfwRestoreWindow(window);}
 
-        // Sets the vsync mode of the window (0 = off, 1 = on, -1 = adaptive).
-
         /// @brief Sets the vsync mode for the window.
-        /// @param vsyncMode The desired vsync mode for the window
+        /// @param vsyncMode The desired vsync mode for the window, 1 = on, 0 = off, -1 adaptive.
         void setVsyncMode(char vsyncMode) {
             data.vsyncMode = vsyncMode;
             glfwSwapInterval(vsyncMode);
         }
-
-        // 
 
         /// @brief Sets the opengl clear color for the window.
         /// @param red The desired red channel.
@@ -241,11 +235,11 @@ namespace PNT {
         }
 
     private:
+        static inline size_t instances;
         GLFWwindow* window;
         windowData data;
         ImGuiContext* ImGuiContext;
         ImGuiIO* IO;
-        static inline int instances;
     };
 
     void callbackManagers::keyCallbackManager(GLFWwindow* glfwWindow, int key, int scancode, int action, int mods) {
