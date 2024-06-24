@@ -19,6 +19,9 @@ namespace PNT {
             shaderID = glCreateShader(type);
             setData(source);
         }
+        shader(shader& original) {
+            std::cout << "COPY" << '\n';
+        }
         ~shader() {
             if(init) {
                 delete[] source;
@@ -81,19 +84,22 @@ namespace PNT {
 
     public:
         program() {}
-        /// @brief Constructor for "PNT::shaderProgram" object for handling shaders.
-        /// @param shaders Array of the desired shaders of type "PNT::shader" or a shader identifier of type "uint32_t" to be linked in.
-        /// @param count Element count of shader array.
-        program(shader shaders[], size_t count) {
+        /// @brief Program object constructor for handling shaders.
+        /// @param count Number of shaders to link.
+        /// @param ... The shaders to link seperated by commas.
+        program(size_t count, ...) {
+            va_list args;
+            va_start(args, count);
+
             attachedCount = count;
             programID = glCreateProgram();
             for(size_t i = 0; i < count; i++) {
-                glAttachShader(programID, shaders[i].getID());
+                glAttachShader(programID, va_arg(args, shader));
             }
         }
         /// @brief Constructor for "PNT::shaderProgram" object for handling shaders.
-        /// @param shaders Array of the desired shaders of type "PNT::shader" or a shader identifier of type "uint32_t" to be linked in.
         /// @param count Element count of shader array.
+        /// @param shaders Array of the desired shaders of type "PNT::shader" or a shader identifier of type "uint32_t" to be linked in.
         program(uint32_t shaders[], size_t count) {
             attachedCount = count;
             programID = glCreateProgram();
@@ -109,25 +115,25 @@ namespace PNT {
         }
 
         /// @brief Links a shader to the program, call "link()" to relink the program.
-        /// @param object Can be a "PNT::shader" or a shader identifier of type "uint32_t".
-        void attachShader(shader object) {
+        /// @param object Can be a "PNT::shader*" or a shader identifier of type "uint32_t".
+        void attachShader(shader* object) {
             attachedCount++;
-            glAttachShader(programID, object.getID());
+            glAttachShader(programID, object->getID());
         }
         /// @brief Links a shader to the program, call "link()" to relink the program.
-        /// @param object Can be a "PNT::shader" or a shader identifier of type "uint32_t".
+        /// @param object Can be a "PNT::shader*" or a shader identifier of type "uint32_t".
         void attachShader(uint32_t object) {
             attachedCount++;
             glAttachShader(programID, object);
         }
         /// @brief Detaches the connected shader from the program.
-        /// @param object Can be a "PNT::shader" or a shader identifier of type "uint32_t".
-        void detachShader(shader object) {
+        /// @param object Can be a "PNT::shader*" or a shader identifier of type "uint32_t".
+        void detachShader(shader* object) {
             attachedCount--;
-            glDetachShader(programID, object.getID());
+            glDetachShader(programID, object->getID());
         }
         /// @brief Detaches the connected shader from the program.
-        /// @param object Can be a "PNT::shader" or a shader identifier of type "uint32_t".
+        /// @param object Can be a "PNT::shader*" or a shader identifier of type "uint32_t".
         void detachShader(uint32_t object) {
             attachedCount--;
             glDetachShader(programID, object);

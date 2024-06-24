@@ -12,9 +12,20 @@ namespace PNT {
 
     public:
         file() {}
+        /// @brief File object constuctor.
+        /// @param path The desired path of the file to load.
         file(const char* path) {
             open(path);
             load();
+        }
+        /// @brief File object copy constuctor.
+        /// @param original File object to copy from.
+        file(file& original) {
+            path = new char[strlen(original.path)];
+            strcpy(path, (const char*)original.path);
+            contents = new char[strlen(original.contents)];
+            strcpy(contents, (const char*)original.contents);
+            cFile = original.cFile;
         }
         ~file() {
             delete[] path;
