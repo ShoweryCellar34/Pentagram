@@ -33,17 +33,15 @@ namespace PNT {
         }
 
         /// @brief Opens a file.
-        /// @param path The desired file path for loading, if the file does not exist one will be created.
+        /// @param path The desired file path for loading.
         void open(const char* path) {
             this->path = new char[strlen(path)];
             strcpy(this->path, path);
-            cFile = fopen(path, "a");
             cFile = fopen(path, "r");
         }
         /// @brief Closes the currently open file.
         void close() {
-            this->path = new char[1];
-            strcpy(this->path, "\0");
+            this->path = new char[0];
             fclose(cFile);
         }
         /// @brief Loads the contents of the open file.
