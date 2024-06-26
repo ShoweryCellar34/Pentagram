@@ -6,11 +6,10 @@ namespace PNT {
     /// @brief Shader class for handling shaders.
     class shader {
     private:
-        bool init = false;
         uint32_t shaderID = 0;
         uint32_t type = 0;
-        char* source = nullptr;
-        char* errorBuffer = nullptr;
+        char* source = new char[1];
+        char* errorBuffer = new char[1];
 
     public:
         shader() {}
@@ -18,14 +17,13 @@ namespace PNT {
         /// @param source The desired shader source code.
         /// @param type The desired shader type.
         shader(const char* source, uint32_t type) {
-            init = true;
             shaderID = glCreateShader(type);
             setData(source);
         }
         ~shader() {
-            if(init) {
-                delete[] source;
-                delete[] errorBuffer;
+            delete[] source;
+            delete[] errorBuffer;
+            if(shaderID) {
                 glDeleteShader(shaderID);
             }
         }
@@ -33,7 +31,6 @@ namespace PNT {
         /// @brief Changes the shader source code, call "compile()" after this to push changes onto GPU.
         /// @param source The desired shader source code.
         void setData(const char* source) {
-            init = true;
             this->source = new char[strlen(source)];
             strcpy(this->source, source);
             glShaderSource(shaderID, 1, &source, NULL);
