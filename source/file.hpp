@@ -6,147 +6,143 @@ namespace PNT {
     /// @brief File handling class for getting and setting contents of a file.
     class file {
     private:
-        char* path = new char[1];
-        size_t readPosition = 0;
-        size_t writePosition = 0;
         std::fstream fileStream;
+        char* errorBuffer = new char[1];
+
+        void setError(const char* errorBuffer) {
+            this->errorBuffer = new char[strlen(errorBuffer)];
+            strcpy(this->errorBuffer, errorBuffer);
+        }
 
     public:
         file() {}
         /// @brief File object constuctor.
-        /// @param path The desired file path to do operations on (will not be opened till read or write call, then closed immediately after).
+        /// @param path The desired file path to do operations on.
         file(const char* path) {
-            this->path = new char[strlen(path)];
-            strcpy(this->path, path);
+            open(path);
         }
         ~file() {
-            delete[] path;
+            delete[] errorBuffer;
         }
 
-        /// @brief Append contents to the file (Will be opened and immediatly closed afterwards).
+        /// @brief Append contents to the file.
         /// @param contents The desired contents to fill the file with.
-        /// @return False if the write was successful, and true if otherwise.
-        bool setContents(const char* contents) {
-            fileStream.open(path);
+        void setContents(const char* contents) {
             if(fileStream.is_open()) {
-                setReadPosition(readPosition);
-                setWritePosition(writePosition);
                 fileStream << contents;
-                fileStream.close();
-                if(fileStream.good()) {
-                    return false;
-                } else {
-                    return false;
+                if(!fileStream.good()) {
+                    setError("Integrity check failed!\0");
                 }
             } else {
-                return true;
+                setError("File not open!\0");
             }
         }
-        /// @brief Sets the position for the read and write pointers pointer, this changes the point at which read and write operations will get executed. The positions will save after closing the file, but it may cause problems if there are less characters than the position.
+        /// @brief Sets the position for the read and write pointers pointer, this changes the point at which read and write operations will get executed
         /// @param position The desired position for the read and write pointers.
-        /// @return False if the set was successful, and true if otherwise (this can be coused by an invalid position).
         /// @note You can use this function to skip to the end of the file for reading and appending from that position.
-        bool setPosition(size_t position) {
-            fileStream.open(path);
+        void setPosition(size_t position) {
             if(fileStream.is_open()) {
-                readPosition = position;
-                writePosition = position;
                 fileStream.seekg(position);
                 fileStream.seekp(position);
-                if(fileStream.good()) {
-                    return false;
-                } else {
-                    return false;
+                if(!fileStream.good()) {
+                    setError("Integrity check failed!\0");
                 }
             } else {
-                return true;
+                setError("File not open!\0");
             }
         }
-        /// @brief Sets the position for the read pointer, this changes the point at which read operations will get executed. The positions will save after closing the file, but it may cause problems if there are less characters than the position.
+        /// @brief Sets the position for the read pointer, this changes the point at which read operations will get executed.
         /// @param position The desired position for the read pointer.
-        /// @return False if the set was successful, and true if otherwise (this can be coused by an invalid position).
         /// @note You can use this function to skip to the end of the file for reading from that position.
-        bool setReadPosition(size_t position) {
-            fileStream.open(path);
+        void setReadPosition(size_t position) {
             if(fileStream.is_open()) {
-                readPosition = position;
                 fileStream.seekg(position);
-                if(fileStream.good()) {
-                    return false;
-                } else {
-                    return false;
+                if(!fileStream.good()) {
+                    setError("Integrity check failed!\0");
                 }
             } else {
-                return true;
+                setError("File not open!\0");
             }
         }
-        /// @brief Sets the position for the write pointer, this changes the point at which write operations will get executed. The positions will save after closing the file, but it may cause problems if there are less characters than the position.
+        /// @brief Sets the position for the write pointer, this changes the point at which write operations will get executed.
         /// @param position The desired position for the write pointer.
-        /// @return False if the set was successful, and true if otherwise (this can be coused by an invalid position).
         /// @note You can use this function to skip to the end of the file for appending from that position.
-        bool setWritePosition(size_t position) {
-            fileStream.open(path);
+        void setWritePosition(size_t position) {
             if(fileStream.is_open()) {
-            fileStream.open(path);
-                writePosition = position;
                 fileStream.seekp(position);
-                if(fileStream.good()) {
-                    return false;
-                } else {
-                    return false;
+                if(!fileStream.good()) {
+                    setError("Integrity check failed!\0");
                 }
             } else {
-                return true;
+                setError("File not open!\0");
             }
         }
 
         /// @brief Gets the read pointer position.
-        /// @param result A pointer to the desired varable to store the read pointer position.
-        /// @return False if the get was successful, and true if otherwise.
-        bool getReadPosition(size_t* result) {
-            fileStream.open(path);
+        /// @return The read pointer position.
+        size_t getReadPosition() {
             if(fileStream.is_open()) {
-                fileStream.open(path);
-                *result = fileStream.tellg();
+                size_t result = fileStream.tellg();
                 if(fileStream.good()) {
-                    return false;
+                    return result;
                 } else {
-                    return false;
+                    setError("Integrity check failed!\0");
                 }
             } else {
-                return true;
+                setError("File not open!\0");
             }
         }
         /// @brief Gets the write pointer position.
-        /// @param result A pointer to the desired varable to store the write pointer position.
-        /// @return False if the get was successful, and true if otherwise.
-        bool getReadPosition(size_t* result) {
-            fileStream.open(path);
+        /// @return The write pointer position.
+        size_t getReadPosition() {
             if(fileStream.is_open()) {
-                fileStream.open(path);
-                *result = fileStream.tellg();
+                size_t result = fileStream.tellg();
                 if(fileStream.good()) {
-                    return false;
+                    return result;
                 } else {
-                    return false;
+                    setError("Integrity check failed!\0");
                 }
             } else {
-                return true;
+                setError("File not open!\0");
             }
         }
+        /// @brief Gets the size of the file.
+        /// @return The size of the file in characters.
         size_t getCharacterCount() {
             if(fileStream.is_open()) {
-                size_t oldPosition = getReadPosition();
+                size_t old = fileStream.tellg();
                 fileStream.seekg(0);
-                size_t firstPosition = fileStream.tellg(); 
-                
+                size_t begin = fileStream.tellg();
+                fileStream.seekg(0, std::ios::end);
+                size_t result = fileStream.tellg() - begin;
                 if(fileStream.good()) {
-                    return false;
+                    return result;
                 } else {
-                    return false;
+                    setError("Integrity check failed!\0");
                 }
             } else {
-                return true;
+                setError("File not open!\0");
+            }
+        }
+
+        /// @brief Open a file, this is reqired by all operations.
+        /// @param path The desired file path to open.
+        /// @param seekToEnd The desired 
+        void open(const char* path, bool seekToEnd = false) {
+            fileStream.open(path);
+            if(fileStream.is_open()) {
+                if(seekToEnd) {
+                    fileStream.seekg(0);
+                    fileStream.seekp(0);
+                } else {
+                    fileStream.seekg(0, std::ios::end);
+                    fileStream.seekp(0, std::ios::end);
+                }
+                if(!fileStream.good()) {
+                    setError("Integrity check failed!\0");
+                }
+            } else {
+                setError("File failed to open!\0");
             }
         }
     };
