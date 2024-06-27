@@ -94,7 +94,7 @@ namespace PNT {
         }
         /// @brief Gets the write pointer position.
         /// @return The write pointer position.
-        size_t getReadPosition() {
+        size_t getWritePosition() {
             if(fileStream.is_open()) {
                 size_t result = fileStream.tellg();
                 if(fileStream.good()) {
@@ -114,20 +114,30 @@ namespace PNT {
                 fileStream.seekg(0);
                 size_t begin = fileStream.tellg();
                 fileStream.seekg(0, std::ios::end);
-                size_t result = fileStream.tellg() - begin;
+                size_t result = (size_t)fileStream.tellg() - begin;
                 if(fileStream.good()) {
                     return result;
                 } else {
                     setError("Integrity check failed!\0");
+                    return 0;
                 }
             } else {
                 setError("File not open!\0");
+                return 0;
             }
+        }
+        const char* getContents() {
+            
+        }
+        /// @brief Gets the file operation error.
+        /// @return The error buffer (DO NOT MODIFY).
+        const char* getError() {
+            return errorBuffer;
         }
 
         /// @brief Open a file, this is reqired by all operations.
         /// @param path The desired file path to open.
-        /// @param seekToEnd The desired 
+        /// @param seekToEnd Set this to true to set the read and write pointers to the end of the file, useful for appending.
         void open(const char* path, bool seekToEnd = false) {
             fileStream.open(path);
             if(fileStream.is_open()) {
@@ -143,6 +153,13 @@ namespace PNT {
                 }
             } else {
                 setError("File failed to open!\0");
+            }
+        }
+        /// @brief Closes the currently open file, this allows other apps to modify the file.
+        void close() {
+            fileStream.close();
+            if(!fileStream.good()) {
+                setError("Integrity check failed!\0");
             }
         }
     };
