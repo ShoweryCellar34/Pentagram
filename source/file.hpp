@@ -37,75 +37,31 @@ namespace PNT {
                 setError("File not open!\0");
             }
         }
-        /// @brief Sets the position for the read and write pointers pointer, this changes the point at which read and write operations will get executed
-        /// @param position The desired position for the read and write pointers.
-        /// @note You can use this function to skip to the end of the file for reading and appending from that position.
-        void setPosition(size_t position) {
+        /// @brief Moves the read and write pointers to the end of the file, this is required for appending.
+        void jumpToEnd() {
             if(fileStream.is_open()) {
-                fileStream.seekg(position);
-                fileStream.seekp(position);
+                fileStream.seekg(0, std::ios::end);
+                fileStream.seekp(0, std::ios::end);
                 if(!fileStream.good()) {
                     setError("Integrity check failed!\0");
                 }
             } else {
-                setError("File not open!\0");
+                setError("File failed to open!\0");
             }
         }
-        /// @brief Sets the position for the read pointer, this changes the point at which read operations will get executed.
-        /// @param position The desired position for the read pointer.
-        /// @note You can use this function to skip to the end of the file for reading from that position.
-        void setReadPosition(size_t position) {
+        /// @brief Moves the read and write pointers to the begining of the file.
+        void jumpToStart() {
             if(fileStream.is_open()) {
-                fileStream.seekg(position);
+                fileStream.seekg(0);
+                fileStream.seekp(0);
                 if(!fileStream.good()) {
                     setError("Integrity check failed!\0");
                 }
             } else {
-                setError("File not open!\0");
-            }
-        }
-        /// @brief Sets the position for the write pointer, this changes the point at which write operations will get executed.
-        /// @param position The desired position for the write pointer.
-        /// @note You can use this function to skip to the end of the file for appending from that position.
-        void setWritePosition(size_t position) {
-            if(fileStream.is_open()) {
-                fileStream.seekp(position);
-                if(!fileStream.good()) {
-                    setError("Integrity check failed!\0");
-                }
-            } else {
-                setError("File not open!\0");
+                setError("File failed to open!\0");
             }
         }
 
-        /// @brief Gets the read pointer position.
-        /// @return The read pointer position.
-        size_t getReadPosition() {
-            if(fileStream.is_open()) {
-                size_t result = fileStream.tellg();
-                if(fileStream.good()) {
-                    return result;
-                } else {
-                    setError("Integrity check failed!\0");
-                }
-            } else {
-                setError("File not open!\0");
-            }
-        }
-        /// @brief Gets the write pointer position.
-        /// @return The write pointer position.
-        size_t getWritePosition() {
-            if(fileStream.is_open()) {
-                size_t result = fileStream.tellg();
-                if(fileStream.good()) {
-                    return result;
-                } else {
-                    setError("Integrity check failed!\0");
-                }
-            } else {
-                setError("File not open!\0");
-            }
-        }
         /// @brief Gets the size of the file.
         /// @return The size of the file in characters.
         size_t getCharacterCount() {
@@ -127,7 +83,7 @@ namespace PNT {
             }
         }
         const char* getContents() {
-            
+
         }
         /// @brief Gets the file operation error.
         /// @return The error buffer (DO NOT MODIFY).
