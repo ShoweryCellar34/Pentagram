@@ -30,11 +30,19 @@ namespace PNT {
         void setContents(const char* contents) {
             if(fileStream.is_open()) {
                 fileStream << contents;
-                if(!fileStream.good()) {
-                    setError("Integrity check failed!\0");
+                switch(fileStream.rdstate()) {
+                case std::ios_base::badbit:
+                    setError("Bad bit is set!");
+                    break;
+                case std::ios_base::failbit:
+                    setError("Fail bit is set!");
+                    break;
+                case std::ios_base::eofbit:
+                    setError("EOF bit is set!");
+                    break;
                 }
             } else {
-                setError("File not open!\0");
+                setError("No file open!");
             }
         }
         /// @brief Moves the read and write pointers to the end of the file, this is required for appending.
@@ -42,23 +50,39 @@ namespace PNT {
             if(fileStream.is_open()) {
                 fileStream.seekg(0, std::ios::end);
                 fileStream.seekp(0, std::ios::end);
-                if(!fileStream.good()) {
-                    setError("Integrity check failed!\0");
+                switch(fileStream.rdstate()) {
+                case std::ios_base::badbit:
+                    setError("Bad bit is set!");
+                    break;
+                case std::ios_base::failbit:
+                    setError("Fail bit is set!");
+                    break;
+                case std::ios_base::eofbit:
+                    setError("EOF bit is set!");
+                    break;
                 }
             } else {
-                setError("File failed to open!\0");
+                setError("No file open!");
             }
         }
         /// @brief Moves the read and write pointers to the begining of the file.
         void jumpToStart() {
             if(fileStream.is_open()) {
-                fileStream.seekg(0);
-                fileStream.seekp(0);
-                if(!fileStream.good()) {
-                    setError("Integrity check failed!\0");
+                fileStream.seekg(0, std::ios::beg);
+                fileStream.seekp(0, std::ios::beg);
+                switch(fileStream.rdstate()) {
+                case std::ios_base::badbit:
+                    setError("Bad bit is set!");
+                    break;
+                case std::ios_base::failbit:
+                    setError("Fail bit is set!");
+                    break;
+                case std::ios_base::eofbit:
+                    setError("EOF bit is set!");
+                    break;
                 }
             } else {
-                setError("File failed to open!\0");
+                setError("No file open!");
             }
         }
 
@@ -71,19 +95,63 @@ namespace PNT {
                 size_t begin = fileStream.tellg();
                 fileStream.seekg(0, std::ios::end);
                 size_t result = (size_t)fileStream.tellg() - begin;
-                if(fileStream.good()) {
-                    return result;
-                } else {
-                    setError("Integrity check failed!\0");
+                switch(fileStream.rdstate()) {
+                case std::ios_base::badbit:
+                    setError("Bad bit is set!");
                     return 0;
+                    break;
+                case std::ios_base::failbit:
+                    setError("Fail bit is set!");
+                    return 0;
+                    break;
+                case std::ios_base::eofbit:
+                    setError("EOF bit is set!");
+                    return 0;
+                    break;
+                case std::ios_base::goodbit:
+                    return result;
+                    break;
                 }
             } else {
-                setError("File not open!\0");
+                setError("No file open!");
                 return 0;
             }
         }
+        /// @brief Gets the contents of the currently open file.
+        /// @return The contents of the file.
         const char* getContents() {
+            if(fileStream.is_open()) {
+                size_t oldPosition = fileStream.tellg();
+                fileStream.seekg(0, std::ios::end);
+                size_t length = (size_t)fileStream.tellg();
+                fileStream.seekg(0, std::ios::beg);
 
+                char* result = new char[length + 1];
+                fileStream.read(result, length);
+                result[length] = '\0';
+                fileStream.seekg(oldPosition);
+                switch(fileStream.rdstate()) {
+                case std::ios_base::badbit:
+                    setError("Bad bit is set!");
+                    return "\0";
+                    break;
+                case std::ios_base::failbit:
+                    setError("Fail bit is set!");
+                    return "\0";
+                    break;
+                case std::ios_base::eofbit:
+                    setError("EOF bit is set!");
+                    return "\0";
+                    break;
+                case std::ios_base::goodbit:
+                    return result;
+                    break;
+                }
+            } else {
+                setError("No file open!");
+                return "\0";
+            }
+            return "\0";
         }
         /// @brief Gets the file operation error.
         /// @return The error buffer (DO NOT MODIFY).
@@ -101,21 +169,37 @@ namespace PNT {
                     fileStream.seekg(0);
                     fileStream.seekp(0);
                 } else {
-                    fileStream.seekg(0, std::ios::end);
-                    fileStream.seekp(0, std::ios::end);
+                    fileStream.seekg(0, std::ios::beg);
+                    fileStream.seekp(0, std::ios::beg);
                 }
-                if(!fileStream.good()) {
-                    setError("Integrity check failed!\0");
+                switch(fileStream.rdstate()) {
+                case std::ios_base::badbit:
+                    setError("Bad bit is set!");
+                    break;
+                case std::ios_base::failbit:
+                    setError("Fail bit is set!");
+                    break;
+                case std::ios_base::eofbit:
+                    setError("EOF bit is set!");
+                    break;
                 }
             } else {
-                setError("File failed to open!\0");
+                setError("No file open!");
             }
         }
         /// @brief Closes the currently open file, this allows other apps to modify the file.
         void close() {
             fileStream.close();
-            if(!fileStream.good()) {
-                setError("Integrity check failed!\0");
+            switch(fileStream.rdstate()) {
+            case std::ios_base::badbit:
+                setError("Bad bit is set!");
+                break;
+            case std::ios_base::failbit:
+                setError("Fail bit is set!");
+                break;
+            case std::ios_base::eofbit:
+                setError("EOF bit is set!");
+                break;
             }
         }
     };
