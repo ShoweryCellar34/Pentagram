@@ -127,7 +127,9 @@ namespace PNT {
                 fileStream.seekg(0, std::ios::beg);
 
                 char* result = new char[length + 1];
-                fileStream.read(result, length);
+                for(size_t i = 0; i < length; i++) {
+                    result[i] = fileStream.get();
+                }
                 result[length] = '\0';
                 fileStream.seekg(oldPosition);
                 switch(fileStream.rdstate()) {
