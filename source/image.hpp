@@ -14,7 +14,9 @@ namespace PNT {
         image() {}
         /// @brief Image object constructor.
         /// @param path The desired image path.
-        image(const char* path) {load(path);}
+        image(const char* path) {
+            load(path);
+        }
         image(image& original) {
             width = original.width;
             height = original.height;
@@ -30,7 +32,9 @@ namespace PNT {
 
         /// @brief Checks the state of the image.
         /// @return The state of the image, true for valid and false for invalid (null).
-        bool valid() const {return pixels == nullptr ? false : true;}
+        bool valid() const {
+            return pixels == nullptr ? false : true;
+        }
 
         /// @brief Loads an image from disk.
         /// @param path Image path on disk.
