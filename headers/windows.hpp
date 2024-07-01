@@ -17,7 +17,7 @@ namespace PNT {
         /// @param xpos The desired x position.
         /// @param ypos The desired y position.
         /// @param ImGuiFlags The desired imgui gui flags.
-        Window(const char* title = "Title", unsigned short width = 600, unsigned short height = 600, unsigned int xpos = 100, unsigned int ypos = 100, unsigned int ImGuiFlags = ImGuiConfigFlags_None);
+        Window(const char*, unsigned short, unsigned short, unsigned int, unsigned int, unsigned int);
         ~Window();
 
         /// @brief Starts the opengl and imgui frame for the window.
@@ -36,11 +36,11 @@ namespace PNT {
 
         /// @brief Get the window data.
         /// @return A PNT::windowData struct.
-        windowData getWindowData();
+        windowData* getWindowData();
 
         /// @brief Sets the data struct of the window.
         /// @param newData The desired PNT::windowData for the window.
-        void setWindowData(windowData newData);
+        void setWindowData(windowData* newData);
 
         /// @brief Sets the window title.
         /// @param title The desired window title.
@@ -87,7 +87,7 @@ namespace PNT {
         friend void deinit();
         static inline size_t instances;
         GLFWwindow* window;
-        windowData data;
+        windowData* data;
         ImGuiContext* ImGuiContext;
         ImGuiIO* IO;
     };
