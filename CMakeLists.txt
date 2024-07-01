@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 project(Pentagram LANGUAGES CXX C DESCRIPTION "A framwork for building apps" HOMEPAGE_URL "https://github.com/ShoweryCellar34/Pentagram")
 add_library(Pentagram STATIC)
-set_target_properties(Pentagram PROPERTIES LINKER_LANGUAGE CXX)
 
 set(GLFW_LIBRARY_TYPE "STATIC" CACHE STRING "Library type override for GLFW (SHARED, STATIC, OBJECT, or empty to follow BUILD_SHARED_LIBS)")
 add_subdirectory(vendors/glfw)
