@@ -21,10 +21,10 @@ namespace PNT {
     };
 
     struct dropEvent {
-        size_t path_count;
+        size_t pathCount;
         char** paths;
 
-        void setData(size_t path_count, char** paths);
+        void setData(size_t pathCount, char** paths);
 
         dropEvent();
 
@@ -78,7 +78,7 @@ namespace PNT {
 
     windowEvent createKeyEvent(int key, int scancode, int action, int mods);
     windowEvent createCharEvent(unsigned int codepoint);
-    windowEvent createDropEvent(size_t path_count, const char* paths[]);
+    windowEvent createDropEvent(size_t pathCount, const char* paths[]);
     windowEvent createScrollEvent(double xoffset, double yoffset);
     windowEvent createCursorposEvent(double xpos, double ypos);
     windowEvent createWindowposEvent(int xpos, int ypos);

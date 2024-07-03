@@ -5,10 +5,10 @@ namespace PNT {
         glfwPollEvents();
     }
 
-    void dropEvent::setData(size_t path_count, char** paths) {
+    void dropEvent::setData(size_t pathCount, char** paths) {
         init = true;
-        this->paths = new char*[path_count];
-        for(size_t i = 0; i < path_count; i++) {
+        this->paths = new char*[pathCount];
+        for(size_t i = 0; i < pathCount; i++) {
             this->paths[i] = new char[strlen(paths[i]) + 1];
             strcpy(this->paths[i], paths[i]);
         }
@@ -16,14 +16,18 @@ namespace PNT {
 
     dropEvent::dropEvent() : init(false) {
     }
-    
-    dropEvent::dropEvent(dropEvent& original) : init(original.init) {
-        
+
+    dropEvent::dropEvent(dropEvent& original) : init(original.init), pathCount(original.pathCount) {
+        paths = new char*[original.pathCount];
+        for(size_t i = 0; i < original.pathCount; i++) {
+            paths[i] = new char[strlen(original.paths[i]) + 1];
+            strcpy(paths[i], original.paths[i]);
+        }
     }
 
     dropEvent::~dropEvent() {
         if(init) {
-            for(size_t i = 0; i < path_count; i++) {
+            for(size_t i = 0; i < pathCount; i++) {
                 delete[] this->paths[i];
             }
             delete[] paths;
@@ -51,12 +55,12 @@ namespace PNT {
         return event;
     }
 
-    windowEvent createDropEvent(size_t path_count, const char* paths[]) {
+    windowEvent createDropEvent(size_t pathCount, const char* paths[]) {
         windowEvent event;
 
         event.eventType = PNT_EVENT_TYPE_DROP;
-        event.dropEvent.path_count = path_count;
-        event.dropEvent.setData(path_count, (char**)paths);
+        event.dropEvent.pathCount = pathCount;
+        event.dropEvent.setData(pathCount, (char**)paths);
 
         return event;
     }
