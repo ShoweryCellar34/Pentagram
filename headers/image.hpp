@@ -5,18 +5,19 @@
 namespace PNT {
     class image {
     private:
-        char* path = nullptr;
         int width = 0, height = 0, channels = 0;
         unsigned char* pixels = nullptr;
         unsigned int textureID = 0;
 
     public:
-        image() {}
+        image() = default;
+
         /// @brief Image object constructor.
         /// @param path The desired image path.
         image(const char* path) {
             load(path);
         }
+
         image(image& original) {
             width = original.width;
             height = original.height;
@@ -25,8 +26,11 @@ namespace PNT {
             strcpy((char*)pixels, (const char*)original.pixels);
             if(original.textureID) {loadOnGPU();}
         }
+
         ~image() {
-            unloadOffGPU();
+            if(textureID) {
+                unloadOffGPU();
+            }
             stbi_image_free(pixels);
         }
 
@@ -39,9 +43,6 @@ namespace PNT {
         /// @brief Loads an image from disk.
         /// @param path Image path on disk.
         void load(const char* path) {
-            free(this->path);
-            this->path = (char*)malloc(sizeof(char) * strlen(path));
-            strcpy(this->path, path);
             pixels = stbi_load(path, &width, &height, &this->channels, 4);
         }
 
@@ -87,25 +88,29 @@ namespace PNT {
             glDeleteTextures(1, &textureID);
             textureID = 0;
         }
+
         /// @brief Gets the texture ID.
         /// @return Returns the GPU texture ID (0 means not on GPU).
         int getTextureID() const {
             return textureID;
         }
-        /// @brief Get the image dimentions.
-        /// @return Returns the width and height in their respective order.
-        std::pair<int, int> getDimentions() const {
-            return std::make_pair(width, height);
+
+        /// @brief Get the image width.
+        /// @return Returns the width of the image.
+        uint32_t getWidth() const {
+            return width;
         }
+
+        /// @brief Get the image height.
+        /// @return Returns the height of the image.
+        uint32_t getHeight() const {
+            return height;
+        }
+
         /// @brief Gets the image pixels.
         /// @return Returns the pixel data for the image (DO NOT MODIFY).
         unsigned char* getPixels() const {
             return pixels;
-        }
-        /// @brief Gets the path the image was loaded from.
-        /// @return Returns the image path (DO NOT MODIFY).
-        const char* getPath() const {
-            return path;
         }
     };
 }

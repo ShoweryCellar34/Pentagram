@@ -69,10 +69,6 @@ namespace PNT {
         /// @return True if the window should close.
         bool shouldClose();
 
-        /// @brief Get the window data.
-        /// @return A PNT::windowData struct.
-        windowData getWindowData();
-
         /// @brief Sets the data struct of the window.
         /// @param newData The desired PNT::windowData for the window.
         void setWindowData(windowData newData);
@@ -118,6 +114,10 @@ namespace PNT {
         /// @param blue The desired blue channel.
         /// @param alpha The desired alpha channel.
         void setClearColor(float red, float green, float blue, float alpha);
+
+        /// @brief Get the window data.
+        /// @return A PNT::windowData struct.
+        windowData getWindowData() const;
 
     private:
         static inline size_t instances;

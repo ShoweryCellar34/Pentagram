@@ -92,10 +92,6 @@ namespace PNT {
         return glfwWindowShouldClose(window);
     }
 
-    windowData Window::getWindowData() {
-        return data;
-    }
-
     void Window::setWindowData(windowData newData) {
         data.eventCallback = newData.eventCallback;
         setTitle(newData.title.c_str());
@@ -117,8 +113,8 @@ namespace PNT {
             data.icon = image;
             data.icon.unloadOffGPU();
             GLFWimage glfwImage;
-            glfwImage.width = image.getDimentions().first;
-            glfwImage.height = image.getDimentions().second;
+            glfwImage.width = image.getWidth();
+            glfwImage.height = image.getHeight();
             glfwImage.pixels = image.getPixels();
             glfwSetWindowIcon(window, 1, &glfwImage);
             return 1;
@@ -163,6 +159,10 @@ namespace PNT {
         data.clearColor[1] = green;
         data.clearColor[2] = blue;
         data.clearColor[3] = alpha;
+    }
+
+    windowData Window::getWindowData() const {
+        return data;
     }
 
     // Callback definitions

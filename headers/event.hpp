@@ -28,6 +28,8 @@ namespace PNT {
 
         dropEvent();
 
+        dropEvent(dropEvent&);
+
         ~dropEvent();
 
     private:

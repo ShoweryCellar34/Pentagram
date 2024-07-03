@@ -16,6 +16,10 @@ namespace PNT {
 
     dropEvent::dropEvent() : init(false) {
     }
+    
+    dropEvent::dropEvent(dropEvent& original) : init(original.init) {
+        
+    }
 
     dropEvent::~dropEvent() {
         if(init) {
