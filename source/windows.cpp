@@ -3,7 +3,7 @@
 namespace PNT {
     // Window definitions
 
-    Window::Window(const char* title = "Title", unsigned short width = 600, unsigned short height = 600, unsigned int xpos = 100, unsigned int ypos = 100, unsigned int ImGuiFlags = ImGuiConfigFlags_None) {
+    Window::Window(const char* title = "Title", uint32_t width = 600, uint32_t height = 600, uint32_t xpos = 100, uint32_t ypos = 100, uint32_t ImGuiFlags = ImGuiConfigFlags_None) {
         instances++;
 
         data.title = title;
@@ -153,7 +153,7 @@ namespace PNT {
         glfwRestoreWindow(window);
     }
 
-    void Window::setVsyncMode(char vsyncMode) {
+    void Window::setVsyncMode(uint8_t vsyncMode) {
         data.vsyncMode = vsyncMode;
         glfwSwapInterval(vsyncMode);
     }

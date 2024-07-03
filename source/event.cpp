@@ -1,7 +1,4 @@
 #include <event.hpp>
-#include <enumerations.hpp>
-#include <cstring>
-#include <GLFW/glfw3.h>
 
 namespace PNT {
     void processEvents() {

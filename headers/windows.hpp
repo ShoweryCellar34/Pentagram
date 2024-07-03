@@ -1,16 +1,22 @@
 #pragma once
 
-#include <events.hpp>
+#include <cstdint>
+#include <string>
+#include <glad.h>
+#include <GLFW/glfw3.h>
+#include <imgui.h>
+#include <image.hpp>
+#include <event.hpp>
 
 namespace PNT {
     class Window;
 
     struct windowData {
         void(*eventCallback)(Window*, windowEvent) = nullptr;
-        std::string title = "";
+        std::string title;
         image icon;
-        uint16_t width = 0, height = 0;
-        uint16_t xpos = 0, ypos = 0;
+        uint32_t width = 0, height = 0;
+        uint32_t xpos = 0, ypos = 0;
         bool hidden = false;
         bool iconified = false;
         uint8_t vsyncMode = 0;
@@ -45,7 +51,7 @@ namespace PNT {
         /// @param xpos The desired x position.
         /// @param ypos The desired y position.
         /// @param ImGuiFlags The desired imgui gui flags.
-        Window(const char* title = "Title", unsigned short width = 600, unsigned short height = 600, unsigned int xpos = 100, unsigned int ypos = 100, unsigned int ImGuiFlags = ImGuiConfigFlags_None);
+        Window(const char* title, uint32_t width, uint32_t height, uint32_t xpos, uint32_t ypos, uint32_t ImGuiFlags);
 
         ~Window();
 
@@ -104,7 +110,7 @@ namespace PNT {
 
         /// @brief Sets the vsync mode for the window.
         /// @param vsyncMode The desired vsync mode for the window, 1 = on, 0 = off, -1 adaptive.
-        void setVsyncMode(char vsyncMode);
+        void setVsyncMode(uint8_t vsyncMode);
 
         /// @brief Sets the opengl clear color for the window.
         /// @param red The desired red channel.

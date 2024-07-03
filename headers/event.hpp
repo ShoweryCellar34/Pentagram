@@ -1,6 +1,9 @@
 #pragma once
 
 #include <cstddef>
+#include <cstring>
+#include <GLFW/glfw3.h>
+#include <enumerations.hpp>
 
 namespace PNT {
     /// @brief Processes all pending events.
