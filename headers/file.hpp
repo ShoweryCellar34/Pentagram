@@ -1,208 +1,101 @@
 #pragma once
 
-#include "includes.hpp"
+#include <fstream>
+#include <string>
+#include <cstdint>
 
 namespace PNT {
     /// @brief File handling class for getting and setting contents of a file.
     class file {
     private:
         std::fstream fileStream;
-        char* errorBuffer = new char[1];
-
-        void setError(const char* errorBuffer) {
-            this->errorBuffer = new char[strlen(errorBuffer)];
-            strcpy(this->errorBuffer, errorBuffer);
-        }
+        std::string errorBuffer;
 
     public:
-        file() {}
+        file();
+
         /// @brief File object constuctor.
         /// @param path The desired file path to do operations on.
-        file(const char* path) {
+        file(const char* path)  {
             open(path);
-        }
-        ~file() {
-            delete[] errorBuffer;
         }
 
         /// @brief Append contents to the file.
         /// @param contents The desired contents to fill the file with.
-        void setContents(const char* contents) {
-            if(fileStream.is_open()) {
-                fileStream << contents;
-                switch(fileStream.rdstate()) {
-                case std::ios_base::badbit:
-                    setError("Bad bit is set!");
-                    break;
-                case std::ios_base::failbit:
-                    setError("Fail bit is set!");
-                    break;
-                case std::ios_base::eofbit:
-                    setError("EOF bit is set!");
-                    break;
-                }
-            } else {
-                setError("No file open!");
-            }
-        }
+        void setContents(const char* contents);
+
         /// @brief Moves the read and write pointers to the end of the file, this is required for appending.
-        void jumpToEnd() {
-            if(fileStream.is_open()) {
-                fileStream.seekg(0, std::ios::end);
-                fileStream.seekp(0, std::ios::end);
-                switch(fileStream.rdstate()) {
-                case std::ios_base::badbit:
-                    setError("Bad bit is set!");
-                    break;
-                case std::ios_base::failbit:
-                    setError("Fail bit is set!");
-                    break;
-                case std::ios_base::eofbit:
-                    setError("EOF bit is set!");
-                    break;
-                }
-            } else {
-                setError("No file open!");
-            }
-        }
+        void jumpToEnd();
+
         /// @brief Moves the read and write pointers to the begining of the file.
-        void jumpToStart() {
-            if(fileStream.is_open()) {
-                fileStream.seekg(0, std::ios::beg);
-                fileStream.seekp(0, std::ios::beg);
-                switch(fileStream.rdstate()) {
-                case std::ios_base::badbit:
-                    setError("Bad bit is set!");
-                    break;
-                case std::ios_base::failbit:
-                    setError("Fail bit is set!");
-                    break;
-                case std::ios_base::eofbit:
-                    setError("EOF bit is set!");
-                    break;
-                }
-            } else {
-                setError("No file open!");
-            }
-        }
+        void jumpToStart();
 
         /// @brief Gets the size of the file.
         /// @return The size of the file in characters.
-        size_t getCharacterCount() {
-            if(fileStream.is_open()) {
-                size_t old = fileStream.tellg();
-                fileStream.seekg(0);
-                size_t begin = fileStream.tellg();
-                fileStream.seekg(0, std::ios::end);
-                size_t result = (size_t)fileStream.tellg() - begin;
-                switch(fileStream.rdstate()) {
-                case std::ios_base::badbit:
-                    setError("Bad bit is set!");
-                    return 0;
-                    break;
-                case std::ios_base::failbit:
-                    setError("Fail bit is set!");
-                    return 0;
-                    break;
-                case std::ios_base::eofbit:
-                    setError("EOF bit is set!");
-                    return 0;
-                    break;
-                case std::ios_base::goodbit:
-                    return result;
-                    break;
-                }
-            } else {
-                setError("No file open!");
-                return 0;
-            }
-        }
+        size_t getCharacterCount();
+
         /// @brief Gets the contents of the currently open file.
         /// @return The contents of the file.
-        const char* getContents() {
-            if(fileStream.is_open()) {
-                size_t oldPosition = fileStream.tellg();
-                fileStream.seekg(0, std::ios::end);
-                size_t length = (size_t)fileStream.tellg();
-                fileStream.seekg(0, std::ios::beg);
+        std::string getContents() {
+        if(fileStream.is_open()) {
+            fileStream.seekg(0, std::ios::end);
+            size_t size = fileStream.tellg();
 
-                char* result = new char[length + 1];
-                for(size_t i = 0; i < length; i++) {
-                    result[i] = fileStream.get();
-                }
-                result[length] = '\0';
-                fileStream.seekg(oldPosition);
-                switch(fileStream.rdstate()) {
-                case std::ios_base::badbit:
-                    setError("Bad bit is set!");
-                    return "\0";
-                    break;
-                case std::ios_base::failbit:
-                    setError("Fail bit is set!");
-                    return "\0";
-                    break;
-                case std::ios_base::eofbit:
-                    setError("EOF bit is set!");
-                    return "\0";
-                    break;
-                case std::ios_base::goodbit:
-                    return result;
-                    break;
-                }
-            } else {
-                setError("No file open!");
-                return "\0";
+            std::string result(size, ' ');
+            fileStream.seekg(0);
+            fileStream.read(&result[0], size); 
+
+            switch(fileStream.rdstate()) {
+            case std::ios_base::badbit:
+                errorBuffer = "Bad bit is set!";
+                return "";
+                break;
+            case std::ios_base::failbit:
+                errorBuffer = "Fail bit is set!";
+                return "";
+                break;
+            case std::ios_base::eofbit:
+                errorBuffer = "EOF bit is set!";
+                return "";
+                break;
+            case std::ios_base::goodbit:
+                return result;
+                break;
             }
-            return "\0";
+        } else {
+            errorBuffer = "No file open!";
+            return "";
         }
+        return "";
+    }
+
         /// @brief Gets the file operation error.
-        /// @return The error buffer (DO NOT MODIFY).
-        const char* getError() {
-            return errorBuffer;
-        }
+        /// @return The error buffer).
+        std::string getError();
 
         /// @brief Open a file, this is reqired by all operations.
         /// @param path The desired file path to open.
         /// @param seekToEnd Set this to true to set the read and write pointers to the end of the file, useful for appending.
-        void open(const char* path, bool seekToEnd = false) {
-            fileStream.open(path);
-            if(fileStream.is_open()) {
-                if(seekToEnd) {
-                    fileStream.seekg(0);
-                    fileStream.seekp(0);
-                } else {
-                    fileStream.seekg(0, std::ios::beg);
-                    fileStream.seekp(0, std::ios::beg);
-                }
-                switch(fileStream.rdstate()) {
-                case std::ios_base::badbit:
-                    setError("Bad bit is set!");
-                    break;
-                case std::ios_base::failbit:
-                    setError("Fail bit is set!");
-                    break;
-                case std::ios_base::eofbit:
-                    setError("EOF bit is set!");
-                    break;
-                }
-            } else {
-                setError("No file open!");
-            }
-        }
-        /// @brief Closes the currently open file, this allows other apps to modify the file.
-        void close() {
-            fileStream.close();
+    void open(const char* path) {
+        fileStream.open(path);
+        if(fileStream.is_open()) {
             switch(fileStream.rdstate()) {
             case std::ios_base::badbit:
-                setError("Bad bit is set!");
+                errorBuffer = "Bad bit is set!";
                 break;
             case std::ios_base::failbit:
-                setError("Fail bit is set!");
+                errorBuffer = "Fail bit is set!";
                 break;
             case std::ios_base::eofbit:
-                setError("EOF bit is set!");
+                errorBuffer = "EOF bit is set!";
                 break;
             }
+        } else {
+            errorBuffer = "No file open!";
         }
+    }
+
+        /// @brief Closes the currently open file, this allows other apps to modify the file.
+        void close();
     };
 }

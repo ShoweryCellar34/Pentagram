@@ -1,6 +1,9 @@
 #include <window.hpp>
 
 #include <algorithm>
+#include <misc/cpp/imgui_stdlib.h>
+#include <backends/imgui_impl_glfw.h>
+#include <backends/imgui_impl_opengl3.h>
 
 namespace PNT {
     // Window definitions.
