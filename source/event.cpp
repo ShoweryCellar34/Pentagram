@@ -17,7 +17,7 @@ namespace PNT {
     dropEvent::dropEvent() : init(false) {
     }
 
-    dropEvent::dropEvent(dropEvent& original) : init(original.init), pathCount(original.pathCount) {
+    dropEvent::dropEvent(const dropEvent& original) : init(original.init), pathCount(original.pathCount) {
         paths = new char*[original.pathCount];
         for(size_t i = 0; i < original.pathCount; i++) {
             paths[i] = new char[strlen(original.paths[i]) + 1];

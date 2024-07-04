@@ -28,7 +28,7 @@ namespace PNT {
 
         dropEvent();
 
-        dropEvent(dropEvent&);
+        dropEvent(const dropEvent& original);
 
         ~dropEvent();
 

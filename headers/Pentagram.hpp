@@ -3,7 +3,7 @@
 #include "includes.hpp"
 
 #include "init.hpp"
-#include "windows.hpp"
+#include "window.hpp"
 #include "event.hpp"
 #include "enumerations.hpp"
 #include "file.hpp"

@@ -1,4 +1,4 @@
-#include <windows.hpp>
+#include <window.hpp>
 
 namespace PNT {
     // Window definitions
@@ -161,7 +161,7 @@ namespace PNT {
         data.clearColor[3] = alpha;
     }
 
-    windowData Window::getWindowData() const {
+    windowData Window::getWindowData() {
         return data;
     }
 

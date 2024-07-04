@@ -117,7 +117,7 @@ namespace PNT {
 
         /// @brief Get the window data.
         /// @return A PNT::windowData struct.
-        windowData getWindowData() const;
+        windowData getWindowData();
 
     private:
         static inline size_t instances;
