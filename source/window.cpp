@@ -1,9 +1,12 @@
 #include <window.hpp>
 
+#include <algorithm>
+
 namespace PNT {
-    // Window definitions
+    // Window definitions.
 
     Window::Window(const char* title = "Title", uint32_t width = 600, uint32_t height = 600, uint32_t xpos = 100, uint32_t ypos = 100, uint32_t ImGuiFlags = ImGuiConfigFlags_None) {
+        instancesList.push_back(this);
         instances++;
 
         data.title = title;
@@ -51,6 +54,7 @@ namespace PNT {
 
     Window::~Window() {
         instances--;
+        instancesList.erase(std::find(instancesList.begin(), instancesList.end(), this));
 
         ImGui::SetCurrentContext(ImGuiContext);
         ImGui_ImplOpenGL3_Shutdown();
@@ -165,7 +169,7 @@ namespace PNT {
         return data;
     }
 
-    // Callback definitions
+    // Callback definitions.
 
     void callbackManagers::keyCallbackManager(GLFWwindow* glfwWindow, int key, int scancode, int action, int mods) {
         Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));

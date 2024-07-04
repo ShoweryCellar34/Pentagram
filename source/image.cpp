@@ -1,6 +1,13 @@
 #include <image.hpp>
 
+#include <stb_image.h>
+#include <misc/cpp/imgui_stdlib.h>
+#include <backends/imgui_impl_glfw.h>
+#include <backends/imgui_impl_opengl3.h>
+
 namespace PNT {
+    // Image definitions.
+
     image::image() = default;
 
     image::image(const char* path) {
@@ -32,7 +39,11 @@ namespace PNT {
     }
 
     void image::ImGuiDraw(ImVec2 dimentions) const {
-        textureID ? ImGui::Image((ImTextureID)textureID, dimentions) : ImGui::Text("Image not loaded on GPU");
+        if(textureID) {
+            ImGui::Image((ImTextureID)textureID, dimentions);
+        } else {
+            ImGui::Text("Image not loaded on GPU");
+        }
     }
 
     void image::imageSettings(unsigned int min, unsigned int mag, unsigned int S, unsigned int T) {
@@ -43,7 +54,7 @@ namespace PNT {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, T);
     }
 
-    void image::loadOnGPU(unsigned int min = GL_NEAREST_MIPMAP_NEAREST, unsigned int mag = GL_NEAREST_MIPMAP_NEAREST, unsigned int S = GL_CLAMP_TO_EDGE, unsigned int T = GL_CLAMP_TO_EDGE) {
+    void image::loadOnGPU(unsigned int min, unsigned int mag, unsigned int S, unsigned int T) {
         glGenTextures(1, &textureID);
         glBindTexture(GL_TEXTURE_2D, textureID);
 

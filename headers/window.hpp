@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <string>
+#include <vector>
 #include <glad.h>
 #include <GLFW/glfw3.h>
 #include <imgui.h>
@@ -120,7 +121,10 @@ namespace PNT {
         windowData getWindowData();
 
     private:
+        friend void deinit();
+
         static inline size_t instances;
+        static inline std::vector<Window*> instancesList;
         GLFWwindow* window;
         windowData data;
         ImGuiContext* ImGuiContext;

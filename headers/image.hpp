@@ -1,6 +1,8 @@
 #pragma once
 
-#include <includes.hpp>
+#include <cstdint>
+#include <imgui.h>
+#include <glad.h>
 
 namespace PNT {
     class image {

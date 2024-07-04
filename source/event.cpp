@@ -1,6 +1,12 @@
 #include <event.hpp>
 
+#include <cstring>
+#include <GLFW/glfw3.h>
+#include <enumerations.hpp>
+
 namespace PNT {
+    // Event definitions.
+
     void processEvents() {
         glfwPollEvents();
     }
@@ -33,6 +39,8 @@ namespace PNT {
             delete[] paths;
         }
     }
+
+    // Event creation function definitions.
 
     windowEvent createKeyEvent(int key, int scancode, int action, int mods) {
         windowEvent event;
