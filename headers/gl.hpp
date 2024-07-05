@@ -2,7 +2,6 @@
 
 #include <cstdint>
 #include <initializer_list>
-#include <glad.h>
 
 namespace PNT {
     /// @brief Shader class for handling shaders.
@@ -100,10 +99,6 @@ namespace PNT {
 
         /// @brief Checks if the program linked successfuly.
         /// @return True if the program linked successfuly, and false if otherwise, check "getError()" for more info.
-        bool valid() {
-            int success = 0;
-            glGetProgramiv(programID, GL_LINK_STATUS, &success);
-            return success;
-        }
+        bool valid();
     };
 }

@@ -2,6 +2,7 @@
 
 #include <glad.h>
 #include <cstring>
+#include <glad.h>
 
 namespace PNT {
     // Shader definitions.
@@ -116,9 +117,9 @@ namespace PNT {
         glLinkProgram(programID);
     }
 
-    // bool program::valid() {
-    //     int success = 0;
-    //     glGetProgramiv(programID, GL_LINK_STATUS, &success);
-    //     return success;
-    // }
+    bool program::valid() {
+        int success = 0;
+        glGetProgramiv(programID, GL_LINK_STATUS, &success);
+        return success;
+    }
 }
