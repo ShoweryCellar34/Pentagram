@@ -51,20 +51,23 @@ namespace PNT {
         IO = &ImGui::GetIO();
         IO->ConfigFlags |= ImGuiFlags;
         ImGui_ImplGlfw_InitForOpenGL(window, true);
-        ImGui_ImplOpenGL3_Init("#version 460");
+        ImGui_ImplOpenGL3_Init(nullptr);
         ImGui::StyleColorsDark();
     }
 
     Window::~Window() {
-        instances--;
-        instancesList.erase(std::find(instancesList.begin(), instancesList.end(), this));
+        if(!destroyed) {
+            instances--;
+            instancesList.erase(std::find(instancesList.begin(), instancesList.end(), this));
 
-        ImGui::SetCurrentContext(ImGuiContext);
-        ImGui_ImplOpenGL3_Shutdown();
-        ImGui_ImplGlfw_Shutdown();
-        ImGui::DestroyContext(ImGuiContext);
+            ImGui_ImplOpenGL3_Shutdown();
+            ImGui_ImplGlfw_Shutdown();
+            ImGui::DestroyContext(ImGuiContext);
 
-        glfwDestroyWindow(window);
+            glfwDestroyWindow(window);
+
+            destroyed = true;
+        }
     }
 
     void Window::startFrame() {

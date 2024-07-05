@@ -40,10 +40,6 @@ namespace PNT {
     };
 
     class Window {
-    private:
-        friend class callbackManagers;
-        friend void deinit();
-
     public:
         /// @brief Winfow object constructor.
         /// @param title The desired title.
@@ -121,6 +117,7 @@ namespace PNT {
         windowData getWindowData();
 
     private:
+        friend class callbackManagers;
         friend void deinit();
 
         static inline size_t instances;
@@ -129,5 +126,7 @@ namespace PNT {
         windowData data;
         ImGuiContext* ImGuiContext;
         ImGuiIO* IO;
+
+        bool destroyed;
     };
 }

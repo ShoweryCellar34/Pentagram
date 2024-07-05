@@ -31,8 +31,13 @@ namespace PNT {
         void load(const char* path);
 
         /// @brief Creats an ImGui draw call for the image (Requires loadOnGPU()).
-        /// @param dimensions The gui image element size.
+        /// @param dimensions The desired display width and height for the image in "ImVec2" format.
         void ImGuiDraw(ImVec2 dimentions) const;
+
+        /// @brief Creats an ImGui draw call for the image (Requires loadOnGPU()).
+        /// @param width The desired display width for the image.
+        /// @param height The desired display height for the image.
+        void ImGuiDraw(uint32_t width, uint32_t height) const;
 
         /// @brief Set the settings for the GPU texture (Requires loadOnGPU()).
         /// @param min Texture filtering for minification.

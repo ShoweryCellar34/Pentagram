@@ -46,6 +46,14 @@ namespace PNT {
         }
     }
 
+    void image::ImGuiDraw(uint32_t width, uint32_t height) const {
+        if(textureID) {
+            ImGui::Image((ImTextureID)textureID, ImVec2(width, height));
+        } else {
+            ImGui::Text("Image not loaded on GPU");
+        }
+    }
+
     void image::imageSettings(unsigned int min, unsigned int mag, unsigned int S, unsigned int T) {
         glBindTexture(GL_TEXTURE_2D, textureID);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min);
