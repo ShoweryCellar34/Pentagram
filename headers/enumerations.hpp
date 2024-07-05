@@ -1,19 +1,12 @@
 #pragma once
 
-enum loggerFlags : uint8_t {
-    PNT_LOGGER_FLAGS_NOTE,
-    PNT_LOGGER_FLAGS_WARNING,
-    PNT_LOGGER_FLAGS_ERROR,
-    PNT_LOGGER_FLAGS_FATAL
-};
-
-enum vsyncFlags : int8_t {
+enum vsyncFlags {
     PNT_VSYNC_FLAGS_ADAPTIVE = -1,
     PNT_VSYNC_FLAGS_OFF,
     PNT_VSYNC_FLAGS_ON,
 };
 
-enum eventCallbackFlags : uint8_t {
+enum eventCallbackFlags {
     PNT_EVENT_TYPE_KEYBOARD,
     PNT_EVENT_TYPE_CHAR,
     PNT_EVENT_TYPE_DROP,

@@ -1,11 +1,11 @@
 This project uses the following projects:
 
-- ImGui: The license for ImGui can be found at `imgui/imgui/LICENSE.txt`.
-- GLFW: The license for SDL can be found at `glfw/LICENCE.md`.
-- glm: The license for glm can be found at `glm/copying.txt`.
-- GLAD: The license for GLAD can be found at `glad/LICENSE`.
-- stb: The license for stb can be found at `stb/LICENSE`.
-- spdlog: The license for stb can be found at `spdlog/LICENSE`.
+- ImGui: The license for ImGui can be found at `vendors/imgui/LICENSE.txt`.
+- GLFW: The license for SDL can be found at `vendors/glfw/LICENCE.md`.
+- glm: The license for glm can be found at `vendors/glm/copying.txt`.
+- GLAD: The license for GLAD can be found at `vendors/glad/LICENSE`.
+- stb: The license for stb can be found at `vendors/stb/LICENSE`.
+- spdlog: The license for stb can be found at `vendors/spdlog/LICENSE`.
 
 Please ensure to comply with the terms and conditions of each license when using these projects.
 Some of the mentioned projects are added a git submodules, you may need to initialize all submodules before the files for these projects will appear.

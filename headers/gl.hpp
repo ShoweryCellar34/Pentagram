@@ -1,6 +1,7 @@
 #pragma once
 
-#include "includes.hpp"
+#include <cstdint>
+#include <initializer_list>
 
 namespace PNT {
     /// @brief Shader class for handling shaders.
@@ -12,65 +13,42 @@ namespace PNT {
         char* errorBuffer = new char[1];
 
     public:
-        shader() {}
+        shader();
+
         /// @brief Image object constructor.
         /// @param source The desired shader source code.
         /// @param type The desired shader type.
-        shader(const char* source, uint32_t type) {
-            shaderID = glCreateShader(type);
-            setData(source);
-        }
-        ~shader() {
-            delete[] source;
-            delete[] errorBuffer;
-            if(shaderID) {
-                glDeleteShader(shaderID);
-            }
-        }
+        shader(const char* source, uint32_t type);
+
+        ~shader();
 
         /// @brief Changes the shader source code, call "compile()" after this to push changes onto GPU.
         /// @param source The desired shader source code.
-        void setData(const char* source) {
-            this->source = new char[strlen(source)];
-            strcpy(this->source, source);
-            glShaderSource(shaderID, 1, &source, NULL);
-        }
+        void setData(const char* source);
 
         /// @brief Gets the shader ID.
         /// @return Shader ID.
-        uint32_t getID() {
-            return shaderID;
-        }
+        uint32_t getID();
+
         /// @brief Gets the shader type.
         /// @return Shader type.
-        uint32_t getType() {
-            return type;
-        }
+        uint32_t getType();
+
         /// @brief Gets the shader source.
         /// @return The shader source code (DO NOT MODIFY).
-        char* getSource() {
-            return source;
-        }
+        char* getSource();
+
         /// @brief Gets the shader compile error.
         /// @param errorBufferSize THe desired error buffer size.
         /// @return The error buffer (DO NOT MODIFY).
-        const char* getError(size_t errorBufferSize = 512) {
-            errorBuffer = new char[errorBufferSize];
-            glGetShaderInfoLog(shaderID, errorBufferSize, NULL, errorBuffer);
-            return errorBuffer;
-        }
+        const char* getError(size_t errorBufferSize);
 
         /// @brief Compiles the shader, call this after "setData()" to push changes to GPU.
-        void compile() {
-            glCompileShader(shaderID);
-        }
+        void compile();
+
         /// @brief Checks if the shader compiled successfuly.
         /// @return True if the shader compiled successfuly, and false if otherwise, check "getError()" for more info.
-        bool valid() {
-            int success = 0;
-            glGetShaderiv(shaderID, GL_COMPILE_STATUS, &success);
-            return success;
-        }
+        bool valid();
     };
 
     /// @brief Program class for using shaders, compatible with "PNT::shader" and shader identifier of type "uint32_t" to be linked in.
@@ -81,79 +59,46 @@ namespace PNT {
         char* errorBuffer = nullptr;
 
     public:
-        program() {}
+        program();
+
         /// @brief Program object constructor for handling shaders.
         /// @param shaders Shaders to link into the program, they can be ether "PNT::shader*" or a shader identifier of type "uint32_t" contained in curly brackets (only one type at a time).
-        program(std::initializer_list<PNT::shader*> shaders) {
-            attachedCount = shaders.size();
-            programID = glCreateProgram();
-            for(size_t i = 0; i < shaders.size(); i++) {
-                glAttachShader(programID, shaders.begin()[i]->getID());
-            }
-        }
+        program(std::initializer_list<PNT::shader*> shaders);
+
         /// @brief Program object constructor for handling shaders.
         /// @param shaders Shaders to link into the program, they can be ether "PNT::shader*" or a shader identifier of type "uint32_t" contained in curly brackets (only one type at a time).
-        program(std::initializer_list<uint32_t> shaders) {
-            attachedCount = shaders.size();
-            programID = glCreateProgram();
-            for(size_t i = 0; i < shaders.size(); i++) {
-                glAttachShader(programID, shaders.begin()[i]);
-            }
-        }
-        ~program() {
-            if(attachedCount) {
-                delete[] errorBuffer;
-                glDeleteProgram(programID);
-            }
-        }
+        program(std::initializer_list<uint32_t> shaders);
+
+        ~program();
 
         /// @brief Links a shader to the program, call "link()" after this to relink the program and push changes onto the GPU.
         /// @param object Can be a "PNT::shader*" or a shader identifier of type "uint32_t".
-        void attachShader(shader* object) {
-            attachedCount++;
-            glAttachShader(programID, object->getID());
-        }
+        void attachShader(shader* object);
+
         /// @brief Links a shader to the program, call "link()" after this to relink the program and push changes onto the GPU.
         /// @param object Can be a "PNT::shader*" or a shader identifier of type "uint32_t".
-        void attachShader(uint32_t object) {
-            attachedCount++;
-            glAttachShader(programID, object);
-        }
+        void attachShader(uint32_t object);
+
         /// @brief Detaches the connected shader from the program.
         /// @param object Can be a "PNT::shader*" or a shader identifier of type "uint32_t".
-        void detachShader(shader* object) {
-            attachedCount--;
-            glDetachShader(programID, object->getID());
-        }
+        void detachShader(shader* object);
+
         /// @brief Detaches the connected shader from the program.
         /// @param object Can be a "PNT::shader*" or a shader identifier of type "uint32_t".
-        void detachShader(uint32_t object) {
-            attachedCount--;
-            glDetachShader(programID, object);
-        }
-        void use() {
-            glUseProgram(programID);
-        }
+        void detachShader(uint32_t object);
+
+        void use();
 
         /// @brief Gets the program compile error.
         /// @param errorBufferSize The desired error buffer size.
         /// @return The error buffer (DO NOT MODIFY).
-        const char* getError(size_t errorBufferSize = 512) {
-            errorBuffer = new char[errorBufferSize];
-            glGetProgramInfoLog(programID, errorBufferSize, NULL, errorBuffer);
-            return errorBuffer;
-        }
+        const char* getError(size_t errorBufferSize);
 
         /// @brief Links the program, call this after "attachShader()" to push the changes onto the GPU.
-        void link() {
-            glLinkProgram(programID);
-        }
+        void link();
+
         /// @brief Checks if the program linked successfuly.
         /// @return True if the program linked successfuly, and false if otherwise, check "getError()" for more info.
-        bool valid() {
-            int success = 0;
-            glGetProgramiv(programID, GL_LINK_STATUS, &success);
-            return success;
-        }
+        bool valid();
     };
 }

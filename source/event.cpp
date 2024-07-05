@@ -1,85 +1,46 @@
-#pragma once
+#include <event.hpp>
 
-#include "includes.hpp"
+#include <cstring>
+#include <GLFW/glfw3.h>
+#include <enumerations.hpp>
 
 namespace PNT {
-    /// @brief Processes all pending events.
+    // Event definitions.
+
     void processEvents() {
         glfwPollEvents();
     }
 
-    struct keyEvent {
-        int key;
-        int scancode;
-        int action;
-        int mods;
-    };
-    struct charEvent {
-        unsigned int codepoint;
-    };
-    struct dropEvent {
-        int path_count;
-        char** paths;
+    void dropEvent::setData(size_t pathCount, char** paths) {
+        init = true;
+        this->paths = new char*[pathCount];
+        for(size_t i = 0; i < pathCount; i++) {
+            this->paths[i] = new char[strlen(paths[i]) + 1];
+            strcpy(this->paths[i], paths[i]);
+        }
+    }
 
-        void setData(int path_count, char** paths) {
-            init = true;
-            this->paths = new char*[path_count];
-            for(size_t i = 0; i < path_count; i++) {
-                this->paths[i] = new char[strlen(paths[i]) + 1];
-                strcpy(this->paths[i], paths[i]);
+    dropEvent::dropEvent() : init(false) {
+    }
+
+    dropEvent::dropEvent(const dropEvent& original) : init(original.init), pathCount(original.pathCount) {
+        paths = new char*[original.pathCount];
+        for(size_t i = 0; i < original.pathCount; i++) {
+            paths[i] = new char[strlen(original.paths[i]) + 1];
+            strcpy(paths[i], original.paths[i]);
+        }
+    }
+
+    dropEvent::~dropEvent() {
+        if(init) {
+            for(size_t i = 0; i < pathCount; i++) {
+                delete[] this->paths[i];
             }
+            delete[] paths;
         }
+    }
 
-        dropEvent() {
-            init = false;
-        }
-        ~dropEvent() {
-            if(init) {
-                for(size_t i = 0; i < path_count; i++) {
-                    delete[] this->paths[i];
-                }
-                delete[] paths;
-            }
-        }
-
-    private:
-        bool init = false;
-    };
-    struct scrollEvent {
-        double xoffset;
-        double yoffset;
-    };
-    struct cursorposEvent {
-        double xpos;
-        double ypos;
-    };
-    struct windowposEvent {
-        int xpos;
-        int ypos;
-    };
-    struct windowsizeEvent {
-        int width;
-        int height;
-    };
-    struct mousebuttonEvent {
-        int button;
-        int action;
-        int mods;
-    };
-
-    // Structure for events.
-    struct windowEvent {
-        unsigned short eventType;
-        keyEvent keyboardEvent;
-        charEvent charEvent;
-        dropEvent dropEvent;
-        scrollEvent scrollEvent;
-        cursorposEvent cursorposEvent;
-        windowposEvent windowposEvent;
-        windowsizeEvent windowsizeEvent;
-        mousebuttonEvent mousebuttonEvent;
-        bool iconified;
-    };
+    // Event creation function definitions.
 
     windowEvent createKeyEvent(int key, int scancode, int action, int mods) {
         windowEvent event;
@@ -92,6 +53,7 @@ namespace PNT {
 
         return event;
     }
+
     windowEvent createCharEvent(unsigned int codepoint) {
         windowEvent event;
 
@@ -100,15 +62,17 @@ namespace PNT {
 
         return event;
     }
-    windowEvent createDropEvent(int path_count, const char* paths[]) {
+
+    windowEvent createDropEvent(size_t pathCount, const char* paths[]) {
         windowEvent event;
 
         event.eventType = PNT_EVENT_TYPE_DROP;
-        event.dropEvent.path_count = path_count;
-        event.dropEvent.setData(path_count, (char**)paths);
+        event.dropEvent.pathCount = pathCount;
+        event.dropEvent.setData(pathCount, (char**)paths);
 
         return event;
     }
+
     windowEvent createScrollEvent(double xoffset, double yoffset) {
         windowEvent event;
 
@@ -118,6 +82,7 @@ namespace PNT {
 
         return event;
     }
+
     windowEvent createCursorposEvent(double xpos, double ypos) {
         windowEvent event;
 
@@ -127,6 +92,7 @@ namespace PNT {
 
         return event;
     }
+
     windowEvent createWindowposEvent(int xpos, int ypos) {
         windowEvent event;
 
@@ -136,6 +102,7 @@ namespace PNT {
 
         return event;
     }
+
     windowEvent createWindowsizeEvent(int width, int height) {
         windowEvent event;
 
@@ -145,6 +112,7 @@ namespace PNT {
 
         return event;
     }
+
     windowEvent createMousebuttonEvent(int button, int action, int mods) {
         windowEvent event;
 
@@ -155,6 +123,7 @@ namespace PNT {
 
         return event;
     }
+
     windowEvent createIconifyEvent(bool iconified) {
         windowEvent event;
 
