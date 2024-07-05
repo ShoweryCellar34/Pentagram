@@ -1,7 +1,5 @@
 #pragma once
 
-#include "includes.hpp"
-
 #include "init.hpp"
 #include "window.hpp"
 #include "event.hpp"
