@@ -45,11 +45,11 @@ namespace PNT {
     windowEvent createKeyEvent(int key, int scancode, int action, int mods) {
         windowEvent event;
 
-        event.eventType = PNT_EVENT_TYPE_KEYBOARD;
-        event.keyboardEvent.key = key;
-        event.keyboardEvent.scancode = scancode;
-        event.keyboardEvent.action = action;
-        event.keyboardEvent.mods = mods;
+        event.type = PNT_EVENT_TYPE_KEYBOARD;
+        event.keyboard.key = key;
+        event.keyboard.scancode = scancode;
+        event.keyboard.action = action;
+        event.keyboard.mods = mods;
 
         return event;
     }
@@ -57,8 +57,8 @@ namespace PNT {
     windowEvent createCharEvent(unsigned int codepoint) {
         windowEvent event;
 
-        event.eventType = PNT_EVENT_TYPE_CHAR;
-        event.charEvent.codepoint = codepoint;
+        event.type = PNT_EVENT_TYPE_CHAR;
+        event.character.codepoint = codepoint;
 
         return event;
     }
@@ -66,9 +66,9 @@ namespace PNT {
     windowEvent createDropEvent(size_t pathCount, const char* paths[]) {
         windowEvent event;
 
-        event.eventType = PNT_EVENT_TYPE_DROP;
-        event.dropEvent.pathCount = pathCount;
-        event.dropEvent.setData(pathCount, (char**)paths);
+        event.type = PNT_EVENT_TYPE_DROP;
+        event.dropfiles.pathCount = pathCount;
+        event.dropfiles.setData(pathCount, (char**)paths);
 
         return event;
     }
@@ -76,9 +76,9 @@ namespace PNT {
     windowEvent createScrollEvent(double xoffset, double yoffset) {
         windowEvent event;
 
-        event.eventType = PNT_EVENT_TYPE_SCROLL;
-        event.scrollEvent.xoffset = xoffset;
-        event.scrollEvent.yoffset = yoffset;
+        event.type = PNT_EVENT_TYPE_SCROLL;
+        event.scroll.xoffset = xoffset;
+        event.scroll.yoffset = yoffset;
 
         return event;
     }
@@ -86,9 +86,9 @@ namespace PNT {
     windowEvent createCursorposEvent(double xpos, double ypos) {
         windowEvent event;
 
-        event.eventType = PNT_EVENT_TYPE_CURSORPOS;
-        event.cursorposEvent.xpos = xpos;
-        event.cursorposEvent.ypos = ypos;
+        event.type = PNT_EVENT_TYPE_CURSORPOS;
+        event.cursorpos.xpos = xpos;
+        event.cursorpos.ypos = ypos;
 
         return event;
     }
@@ -96,9 +96,9 @@ namespace PNT {
     windowEvent createWindowposEvent(int xpos, int ypos) {
         windowEvent event;
 
-        event.eventType = PNT_EVENT_TYPE_WINDOWPOS;
-        event.windowposEvent.xpos = xpos;
-        event.windowposEvent.ypos = ypos;
+        event.type = PNT_EVENT_TYPE_WINDOWPOS;
+        event.windowpos.xpos = xpos;
+        event.windowpos.ypos = ypos;
 
         return event;
     }
@@ -106,9 +106,9 @@ namespace PNT {
     windowEvent createWindowsizeEvent(int width, int height) {
         windowEvent event;
 
-        event.eventType = PNT_EVENT_TYPE_WINDOWSIZE;
-        event.windowsizeEvent.width = width;
-        event.windowsizeEvent.height = height;
+        event.type = PNT_EVENT_TYPE_WINDOWSIZE;
+        event.windowsize.width = width;
+        event.windowsize.height = height;
 
         return event;
     }
@@ -116,10 +116,10 @@ namespace PNT {
     windowEvent createMousebuttonEvent(int button, int action, int mods) {
         windowEvent event;
 
-        event.eventType = PNT_EVENT_TYPE_MOUSEBUTTON;
-        event.mousebuttonEvent.button = button;
-        event.mousebuttonEvent.action = action;
-        event.mousebuttonEvent.mods = mods;
+        event.type = PNT_EVENT_TYPE_MOUSEBUTTON;
+        event.mousebutton.button = button;
+        event.mousebutton.action = action;
+        event.mousebutton.mods = mods;
 
         return event;
     }
@@ -127,7 +127,7 @@ namespace PNT {
     windowEvent createIconifyEvent(bool iconified) {
         windowEvent event;
 
-        event.eventType = PNT_EVENT_TYPE_ICONIFY;
+        event.type = PNT_EVENT_TYPE_ICONIFY;
         event.iconified = iconified;
 
         return event;

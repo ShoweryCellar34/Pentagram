@@ -61,15 +61,15 @@ namespace PNT {
 
     // Structure for events.
     struct windowEvent {
-        unsigned short eventType;
-        keyEvent keyboardEvent;
-        charEvent charEvent;
-        dropEvent dropEvent;
-        scrollEvent scrollEvent;
-        cursorposEvent cursorposEvent;
-        windowposEvent windowposEvent;
-        windowsizeEvent windowsizeEvent;
-        mousebuttonEvent mousebuttonEvent;
+        unsigned short type;
+        keyEvent keyboard;
+        charEvent character;
+        dropEvent dropfiles;
+        scrollEvent scroll;
+        cursorposEvent cursorpos;
+        windowposEvent windowpos;
+        windowsizeEvent windowsize;
+        mousebuttonEvent mousebutton;
         bool iconified;
     };
 

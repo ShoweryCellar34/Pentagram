@@ -123,7 +123,7 @@ namespace PNT {
         static inline std::vector<Window*> instancesList;
         GLFWwindow* window;
         windowData data;
-        ImGuiContext* ImGuiContext;
+        ImGuiContext* ImContext;
         ImGuiIO* IO;
 
         bool destroyed;

@@ -51,7 +51,7 @@ namespace PNT {
         //glfwSetFramebufferSizeCallback(window, callbackManagers::);
         //glfwSetWindowContentScaleCallback(window, callbackManagers::);
 
-        ImGuiContext = ImGui::CreateContext();
+        ImContext = ImGui::CreateContext();
         IO = &ImGui::GetIO();
         IO->ConfigFlags |= ImGuiFlags;
         ImGui_ImplGlfw_InitForOpenGL(window, true);
@@ -66,7 +66,7 @@ namespace PNT {
 
             ImGui_ImplOpenGL3_Shutdown();
             ImGui_ImplGlfw_Shutdown();
-            ImGui::DestroyContext(ImGuiContext);
+            ImGui::DestroyContext(ImContext);
 
             glfwDestroyWindow(window);
 
@@ -81,7 +81,7 @@ namespace PNT {
         glViewport(0, 0, width, height);
         glClearColor(data.clearColor[0], data.clearColor[1], data.clearColor[2], data.clearColor[3]);
         glClear(GL_COLOR_BUFFER_BIT);
-        ImGui::SetCurrentContext(ImGuiContext);
+        ImGui::SetCurrentContext(ImContext);
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
