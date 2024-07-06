@@ -25,8 +25,6 @@ namespace PNT {
 
         dropEvent();
 
-        dropEvent(const dropEvent& original);
-
         ~dropEvent();
 
     private:
@@ -64,7 +62,7 @@ namespace PNT {
         unsigned short type;
         keyEvent keyboard;
         charEvent character;
-        dropEvent dropfiles;
+        dropEvent dropFiles;
         scrollEvent scroll;
         cursorposEvent cursorpos;
         windowposEvent windowpos;

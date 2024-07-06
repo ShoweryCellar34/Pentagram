@@ -23,14 +23,6 @@ namespace PNT {
     dropEvent::dropEvent() : init(false) {
     }
 
-    dropEvent::dropEvent(const dropEvent& original) : init(original.init), pathCount(original.pathCount) {
-        paths = new char*[original.pathCount];
-        for(size_t i = 0; i < original.pathCount; i++) {
-            paths[i] = new char[strlen(original.paths[i]) + 1];
-            strcpy(paths[i], original.paths[i]);
-        }
-    }
-
     dropEvent::~dropEvent() {
         if(init) {
             for(size_t i = 0; i < pathCount; i++) {
@@ -67,8 +59,8 @@ namespace PNT {
         windowEvent event;
 
         event.type = PNT_EVENT_TYPE_DROP;
-        event.dropfiles.pathCount = pathCount;
-        event.dropfiles.setData(pathCount, (char**)paths);
+        event.dropFiles.pathCount = pathCount;
+        event.dropFiles.setData(pathCount, (char**)paths);
 
         return event;
     }
