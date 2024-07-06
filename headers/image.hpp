@@ -2,7 +2,6 @@
 
 #include <cstdint>
 #include <imgui.h>
-#include <glad.h>
 
 namespace PNT {
     class image {
@@ -46,12 +45,8 @@ namespace PNT {
         /// @param T Vertical wrapping mode.
         void imageSettings(unsigned int min, unsigned int mag, unsigned int S, unsigned int T);
 
-        /// @brief Loads the image on to the GPU with settings.
-        /// @param min Texture filtering for minification.
-        /// @param mag Texture filtering for magmification.
-        /// @param S Horizontal wrapping mode.
-        /// @param T Vertical wrapping mode.
-        void loadOnGPU(unsigned int min = GL_NEAREST_MIPMAP_NEAREST, unsigned int mag = GL_NEAREST_MIPMAP_NEAREST, unsigned int S = GL_CLAMP_TO_EDGE, unsigned int T = GL_CLAMP_TO_EDGE);
+        /// @brief Loads the image on to the GPU.
+        void loadOnGPU();
 
         /// @brief Unloads the texture off GPU.
         void unloadOffGPU();

@@ -1,6 +1,5 @@
 #include <gl.hpp>
 
-#include <glad.h>
 #include <cstring>
 #include <glad.h>
 

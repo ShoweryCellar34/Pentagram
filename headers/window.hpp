@@ -3,14 +3,13 @@
 #include <cstdint>
 #include <string>
 #include <vector>
-#include <glad.h>
-#include <GLFW/glfw3.h>
-#include <imgui.h>
 #include <image.hpp>
-#include <event.hpp>
+
+class GLFWwindow;
 
 namespace PNT {
     class Window;
+    struct windowEvent;
 
     struct windowData {
         void(*eventCallback)(Window*, windowEvent) = nullptr;
