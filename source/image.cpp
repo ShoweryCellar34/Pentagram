@@ -43,7 +43,7 @@ namespace PNT {
 
     void image::ImGuiDraw(ImVec2 dimentions) const {
         if(textureID) {
-            ImGui::Image((ImTextureID)textureID, dimentions);
+            ImGui::Image((void*)(intptr_t)textureID, dimentions);
         } else {
             ImGui::Text("Image not loaded on GPU");
         }
@@ -51,7 +51,7 @@ namespace PNT {
 
     void image::ImGuiDraw(uint32_t width, uint32_t height) const {
         if(textureID) {
-            ImGui::Image((ImTextureID)textureID, ImVec2(width, height));
+            ImGui::Image((void*)(intptr_t)textureID, ImVec2(width, height));
         } else {
             ImGui::Text("Image not loaded on GPU");
         }
