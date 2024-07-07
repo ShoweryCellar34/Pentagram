@@ -8,8 +8,8 @@
 	path = vendors/spdlog
 	url = https://github.com/gabime/spdlog.git
 [submodule "stb"]
-	path = vendors/stb
+	path = vendors/stb/stb
 	url = https://github.com/nothings/stb.git
 [submodule "imgui"]
-	path = vendors/imgui
+	path = vendors/imgui/imgui
 	url = https://github.com/ocornut/imgui.git
