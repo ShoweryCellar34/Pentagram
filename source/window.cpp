@@ -102,10 +102,6 @@ namespace PNT {
         data.eventCallback = newEventCallback;
     }
 
-    bool Window::shouldClose() {
-        return glfwWindowShouldClose(window);
-    }
-
     void Window::setWindowData(windowData newData) {
         data.eventCallback = newData.eventCallback;
         setTitle(newData.title.c_str());
@@ -163,6 +159,10 @@ namespace PNT {
         glfwRestoreWindow(window);
     }
 
+    void Window::setShouldClose(bool shouldClose) {
+        glfwSetWindowShouldClose(window, shouldClose);
+    }
+
     void Window::setVsyncMode(uint8_t vsyncMode) {
         data.vsyncMode = vsyncMode;
         glfwSwapInterval(vsyncMode);
@@ -177,6 +177,10 @@ namespace PNT {
 
     windowData Window::getWindowData() {
         return data;
+    }
+
+    bool Window::shouldClose() {
+        return glfwWindowShouldClose(window);
     }
 
     // Callback definitions.

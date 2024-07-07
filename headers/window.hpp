@@ -61,10 +61,6 @@ namespace PNT {
         /// @param newEventCallback The desired function pointer for the event callback with signature "PNT::Window*, PNT::windowEvent" (use nullptr to clear callback).
         void setEventCallback(void(*newEventCallback)(Window*, windowEvent));
 
-        /// @brief Check if the currect window should close.
-        /// @return True if the window should close.
-        bool shouldClose();
-
         /// @brief Sets the data struct of the window.
         /// @param newData The desired PNT::windowData for the window.
         void setWindowData(windowData newData);
@@ -100,6 +96,10 @@ namespace PNT {
         /// @brief Maximises the window.
         void maximize();
 
+        /// @brief Manualy sets the return for the "shouldClose()" method.
+        /// @param shouldClose The desired return value for the "shouldClose()" method.
+        void setShouldClose(bool shouldClose);
+
         /// @brief Sets the vsync mode for the window.
         /// @param vsyncMode The desired vsync mode for the window, 1 = on, 0 = off, -1 adaptive.
         void setVsyncMode(uint8_t vsyncMode);
@@ -114,6 +114,10 @@ namespace PNT {
         /// @brief Get the window data.
         /// @return A PNT::windowData struct.
         windowData getWindowData();
+
+        /// @brief Check if the currect window should close.
+        /// @return True if the window should close.
+        bool shouldClose();
 
     private:
         friend class callbackManagers;
