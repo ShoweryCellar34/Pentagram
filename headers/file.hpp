@@ -45,7 +45,7 @@ namespace PNT {
         /// @param seekToEnd Set this to true to set the read and write pointers to the end of the file, useful for appending.
         void open(const char* path);
 
-        /// @brief Closes the currently open file, this allows other apps to modify the file.
+        /// @brief Closes the currently open file, this allows other apps to modify the file (call close before open if reusing the object).
         void close();
     };
 }
