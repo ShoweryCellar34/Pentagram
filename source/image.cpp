@@ -83,7 +83,7 @@ namespace PNT {
         textureID = 0;
     }
 
-    int image::getTextureID() const {
+    uint32_t image::getID() const {
         return textureID;
     }
 

@@ -112,6 +112,10 @@ namespace PNT {
         return errorBuffer;
     }
 
+    uint32_t program::getID() {
+        return programID;
+    }
+
     void program::link() {
         glLinkProgram(programID);
     }

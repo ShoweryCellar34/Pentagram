@@ -1,5 +1,7 @@
 #include <file.hpp>
 
+#include <sstream>
+
 namespace PNT {
     // File definitions.
 
@@ -104,13 +106,11 @@ namespace PNT {
 
     std::string file::getContents() {
         if(fileStream.is_open()) {
-            fileStream.seekg(0, std::ios::end);
-            size_t size = fileStream.tellg();
-
-            std::string result(size, ' ');
-            fileStream.seekg(0);
-            fileStream.read(&result[0], size); 
-
+            std::string result;
+            std::filebuf* a = fileStream.rdbuf();
+            std::stringstream b;
+            b << a;
+            result = b.str();
             switch(fileStream.rdstate()) {
             case std::ios_base::badbit:
                 errorBuffer = "Bad bit is set!";

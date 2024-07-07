@@ -88,12 +88,15 @@ namespace PNT {
         /// @param object Can be a "PNT::shader*" or a shader identifier of type "uint32_t".
         void detachShader(uint32_t object);
 
+        /// @brief Use the shader.
         void use();
 
         /// @brief Gets the program compile error.
         /// @param errorBufferSize The desired error buffer size.
         /// @return The error buffer (DO NOT MODIFY).
         const char* getError(size_t errorBufferSize);
+
+        uint32_t getID();
 
         /// @brief Links the program, call this after "attachShader()" to push the changes onto the GPU.
         void link();

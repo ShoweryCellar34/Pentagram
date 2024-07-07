@@ -53,7 +53,7 @@ namespace PNT {
 
         /// @brief Gets the texture ID.
         /// @return Returns the GPU texture ID (0 means not on GPU).
-        int getTextureID() const;
+        uint32_t getID() const;
 
         /// @brief Get the image width.
         /// @return Returns the width of the image.
