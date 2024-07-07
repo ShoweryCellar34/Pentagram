@@ -29,11 +29,11 @@ namespace PNT {
         /// @param path Image path on disk.
         void load(const char* path);
 
-        /// @brief Creats an ImGui draw call for the image (Requires loadOnGPU()).
+        /// @brief Creates an ImGui draw call for the image (Requires loadOnGPU()).
         /// @param dimensions The desired display width and height for the image in "ImVec2" format.
-        void ImGuiDraw(ImVec2 dimentions) const;
+        void ImGuiDraw(ImVec2 dimensions) const;
 
-        /// @brief Creats an ImGui draw call for the image (Requires loadOnGPU()).
+        /// @brief Creates an ImGui draw call for the image (Requires loadOnGPU()).
         /// @param width The desired display width for the image.
         /// @param height The desired display height for the image.
         void ImGuiDraw(uint32_t width, uint32_t height) const;

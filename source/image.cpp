@@ -41,9 +41,9 @@ namespace PNT {
         pixels = stbi_load(path, &width, &height, &this->channels, 4);
     }
 
-    void image::ImGuiDraw(ImVec2 dimentions) const {
+    void image::ImGuiDraw(ImVec2 dimensions) const {
         if(textureID) {
-            ImGui::Image((void*)(intptr_t)textureID, dimentions);
+            ImGui::Image((void*)(intptr_t)textureID, dimensions);
         } else {
             ImGui::Text("Image not loaded on GPU");
         }
