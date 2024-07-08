@@ -65,6 +65,7 @@ namespace PNT {
             instances--;
             instancesList.erase(std::find(instancesList.begin(), instancesList.end(), this));
 
+            ImGui::SetCurrentContext(ImContext);
             ImGui_ImplOpenGL3_Shutdown();
             ImGui_ImplGlfw_Shutdown();
             ImGui::DestroyContext(ImContext);
