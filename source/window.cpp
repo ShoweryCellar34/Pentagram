@@ -52,6 +52,7 @@ namespace PNT {
         //glfwSetWindowContentScaleCallback(window, callbackManagers::);
 
         ImContext = ImGui::CreateContext();
+        ImGui::SetCurrentContext(ImContext);
         IO = &ImGui::GetIO();
         IO->ConfigFlags |= ImGuiFlags;
         ImGui_ImplGlfw_InitForOpenGL(window, true);
@@ -157,10 +158,6 @@ namespace PNT {
 
     void Window::maximize() {
         glfwRestoreWindow(window);
-    }
-
-    void Window::setShouldClose(bool shouldClose) {
-        glfwSetWindowShouldClose(window, shouldClose);
     }
 
     void Window::setVsyncMode(uint8_t vsyncMode) {

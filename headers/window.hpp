@@ -96,10 +96,6 @@ namespace PNT {
         /// @brief Maximises the window.
         void maximize();
 
-        /// @brief Manualy sets the return for the "shouldClose()" method.
-        /// @param shouldClose The desired return value for the "shouldClose()" method.
-        void setShouldClose(bool shouldClose);
-
         /// @brief Sets the vsync mode for the window.
         /// @param vsyncMode The desired vsync mode for the window, 1 = on, 0 = off, -1 adaptive.
         void setVsyncMode(uint8_t vsyncMode);
