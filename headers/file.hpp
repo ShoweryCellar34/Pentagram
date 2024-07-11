@@ -1,15 +1,15 @@
 #pragma once
 
 #include <fstream>
-#include <string>
-#include <cstdint>
 
 namespace PNT {
+    typedef unsigned int uint32_t;
+
     /// @brief File handling class for getting and setting contents of a file.
     class file {
     private:
         std::fstream fileStream;
-        std::string errorBuffer;
+        char errorBuffer[256];
 
     public:
         file();
@@ -38,7 +38,7 @@ namespace PNT {
 
         /// @brief Gets the file operation error.
         /// @return The error buffer).
-        std::string getError();
+        const char* getError();
 
         /// @brief Open a file, this is reqired by all operations.
         /// @param path The desired file path to open.

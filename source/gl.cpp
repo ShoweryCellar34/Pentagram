@@ -15,7 +15,6 @@ namespace PNT {
 
     shader::~shader() {
         delete[] source;
-        delete[] errorBuffer;
         if(shaderID) {
             glDeleteShader(shaderID);
         }
@@ -39,9 +38,8 @@ namespace PNT {
         return source;
     }
 
-    const char* shader::getError(size_t errorBufferSize = 512) {
-        errorBuffer = new char[errorBufferSize];
-        glGetShaderInfoLog(shaderID, errorBufferSize, NULL, errorBuffer);
+    const char* shader::getError() {
+        glGetShaderInfoLog(shaderID, 1024, NULL, errorBuffer);
         return errorBuffer;
     }
 
@@ -60,7 +58,6 @@ namespace PNT {
     program::program() = default;
 
     program::program(std::initializer_list<PNT::shader*> shaders) {
-        attachedCount = shaders.size();
         programID = glCreateProgram();
         for(size_t i = 0; i < shaders.size(); i++) {
             glAttachShader(programID, shaders.begin()[i]->getID());
@@ -68,37 +65,25 @@ namespace PNT {
     }
 
     program::program(std::initializer_list<uint32_t> shaders) {
-        attachedCount = shaders.size();
         programID = glCreateProgram();
         for(size_t i = 0; i < shaders.size(); i++) {
             glAttachShader(programID, shaders.begin()[i]);
         }
     }
 
-    program::~program() {
-        if(attachedCount) {
-            delete[] errorBuffer;
-            glDeleteProgram(programID);
-        }
-    }
-
     void program::attachShader(shader* object) {
-        attachedCount++;
         glAttachShader(programID, object->getID());
     }
 
     void program::attachShader(uint32_t object) {
-        attachedCount++;
         glAttachShader(programID, object);
     }
 
     void program::detachShader(shader* object) {
-        attachedCount--;
         glDetachShader(programID, object->getID());
     }
 
     void program::detachShader(uint32_t object) {
-        attachedCount--;
         glDetachShader(programID, object);
     }
 
@@ -106,9 +91,8 @@ namespace PNT {
         glUseProgram(programID);
     }
 
-    const char* program::getError(size_t errorBufferSize = 512) {
-        errorBuffer = new char[errorBufferSize];
-        glGetProgramInfoLog(programID, errorBufferSize, NULL, errorBuffer);
+    const char* program::getError() {
+        glGetProgramInfoLog(programID, 1024, NULL, errorBuffer);
         return errorBuffer;
     }
 

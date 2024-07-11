@@ -16,7 +16,7 @@ namespace PNT {
         instancesList.push_back(this);
         instances++;
 
-        data.title = title;
+        strcpy(data.title, title);
         data.width = width;
         data.height = height;
 
@@ -101,7 +101,7 @@ namespace PNT {
 
     void Window::setWindowData(windowData newData) {
         data.eventCallback = newData.eventCallback;
-        setTitle(newData.title.c_str());
+        setTitle(newData.title);
         setDimentions(newData.width, newData.height);
         setPosition(newData.xpos, newData.ypos);
         setVsyncMode(newData.vsyncMode);
@@ -111,7 +111,7 @@ namespace PNT {
     }
 
     void Window::setTitle(const char* title) {
-        data.title = title;
+        strcpy(data.title, title);
         glfwSetWindowTitle(window, title);
     }
 

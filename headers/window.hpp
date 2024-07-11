@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cstdint>
 #include <string>
 #include <vector>
 #include <image.hpp>
@@ -8,12 +7,14 @@
 class GLFWwindow;
 
 namespace PNT {
+    typedef unsigned int uint32_t;
+
     class Window;
     struct windowEvent;
 
     struct windowData {
         void(*eventCallback)(Window*, windowEvent) = nullptr;
-        std::string title;
+        char title[256];
         image icon;
         uint32_t width = 0, height = 0;
         uint32_t xpos = 0, ypos = 0;
