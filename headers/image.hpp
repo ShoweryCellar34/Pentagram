@@ -1,7 +1,8 @@
 #pragma once
 
 #include <cstdint>
-#include <imgui.h>
+
+struct ImVec2;
 
 namespace PNT {
     class image {

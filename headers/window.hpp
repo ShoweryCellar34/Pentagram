@@ -5,6 +5,8 @@
 #include <image.hpp>
 
 class GLFWwindow;
+struct ImGuiContext;
+struct ImGuiIO;
 
 namespace PNT {
     typedef unsigned int uint32_t;
