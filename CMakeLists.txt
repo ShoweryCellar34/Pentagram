@@ -1,3 +1,6 @@
+
+set(POSITION_INDEPENDENT_CODE true)
+
 cmake_minimum_required(VERSION 3.10)
 project(Pentagram LANGUAGES CXX C DESCRIPTION "A framwork for building apps" HOMEPAGE_URL "https://github.com/ShoweryCellar34/Pentagram")
 
