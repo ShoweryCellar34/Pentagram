@@ -1,8 +1,8 @@
 #pragma once
 
-namespace PNT {
-    typedef unsigned long long size_t;
+#include <stdint.h>
 
+namespace PNT {
     /// @brief Processes all pending events.
     void processEvents();
 

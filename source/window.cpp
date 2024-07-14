@@ -168,8 +168,36 @@ namespace PNT {
         data.clearColor[3] = alpha;
     }
 
-    windowData Window::getWindowData() {
-        return data;
+    void Window::setShouldClose(bool shouldClose) {
+        glfwSetWindowShouldClose(window, shouldClose);
+    }
+
+    const char *Window::getTitle() {
+        return data.title;
+    }
+
+    uint16_t Window::getWidth() {
+        return data.width;
+    }
+
+    uint16_t Window::getHeight() {
+        return data.height;
+    }
+
+    uint16_t Window::getXPos() {
+        return data.xpos;
+    }
+
+    uint16_t Window::getYPos() {
+        return data.ypos;
+    }
+
+    bool Window::getHidden() {
+        return data.hidden;
+    }
+
+    bool Window::getIconified() {
+        return data.iconified;
     }
 
     bool Window::shouldClose() {

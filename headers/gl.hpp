@@ -1,10 +1,9 @@
 #pragma once
 
+#include <stdint.h>
 #include <initializer_list>
 
 namespace PNT {
-    typedef unsigned int uint32_t;
-
     /// @brief Shader class for handling shaders.
     class shader {
     private:

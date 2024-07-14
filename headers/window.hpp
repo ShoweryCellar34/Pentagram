@@ -1,6 +1,6 @@
 #pragma once
 
-#include <string>
+#include <stdint.h>
 #include <vector>
 #include <image.hpp>
 
@@ -9,8 +9,6 @@ struct ImGuiContext;
 struct ImGuiIO;
 
 namespace PNT {
-    typedef unsigned int uint32_t;
-
     class Window;
     struct windowEvent;
 
@@ -110,9 +108,37 @@ namespace PNT {
         /// @param alpha The desired alpha channel.
         void setClearColor(float red, float green, float blue, float alpha);
 
-        /// @brief Get the window data.
-        /// @return A PNT::windowData struct.
-        windowData getWindowData();
+        /// @brief Sets the should close status of the window (can be obtained with the "shouldClose();" method).
+        /// @param shouldClose The desired should close status of the window.
+        void setShouldClose(bool shouldClose);
+
+        /// @brief Gets the window title.
+        /// @return The window title (DO NOT MODIFY).
+        const char* getTitle();
+
+        /// @brief Gets the width of the window.
+        /// @return The window width.
+        uint16_t getWidth();
+
+        /// @brief Gets the height of the window.
+        /// @return The window height.
+        uint16_t getHeight();
+
+        /// @brief Gets the X position of the window.
+        /// @return The window X position.
+        uint16_t getXPos();
+
+        /// @brief Gets the Y position of the window.
+        /// @return The window Y position.
+        uint16_t getYPos();
+
+        /// @brief Gets the hidden state of the window.
+        /// @return True if the window is hidden (not on screen of on taskbar), and false if otherwise.
+        bool getHidden();
+
+        /// @brief Gets the iconified state of the window.
+        /// @return True if the window is minimised (on the taskbar), and false if otherwise.
+        bool getIconified();
 
         /// @brief Check if the currect window should close.
         /// @return True if the window should close.

@@ -1,10 +1,10 @@
 #pragma once
 
 #include <fstream>
+#include <stdint.h>
+
 
 namespace PNT {
-    typedef unsigned int uint32_t;
-
     /// @brief File handling class for getting and setting contents of a file.
     class file {
     private:
