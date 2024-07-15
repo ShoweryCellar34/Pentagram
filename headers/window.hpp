@@ -158,6 +158,7 @@ namespace PNT {
         static inline std::vector<Window*> instancesList;
         GLFWwindow* window;
         windowData data;
+        std::vector<windowEvent> eventQueue;
         ImGuiContext* ImContext;
         ImGuiIO* IO;
 

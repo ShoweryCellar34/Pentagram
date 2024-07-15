@@ -173,7 +173,7 @@ namespace PNT {
     }
 
     void Window::pushEvent(windowEvent event) {
-        
+        eventQueue.push_back(event);
     }
 
     const char *Window::getTitle()
