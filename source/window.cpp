@@ -156,7 +156,7 @@ namespace PNT {
         glfwRestoreWindow(window);
     }
 
-    void Window::setVsyncMode(uint8_t vsyncMode) {
+    void Window::setVsyncMode(int8_t vsyncMode) {
         data.vsyncMode = vsyncMode;
         glfwSwapInterval(vsyncMode);
     }

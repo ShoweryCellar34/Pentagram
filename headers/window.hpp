@@ -20,7 +20,7 @@ namespace PNT {
         uint32_t xpos = 0, ypos = 0;
         bool hidden = false;
         bool iconified = false;
-        uint8_t vsyncMode = 0;
+        int8_t vsyncMode = 0;
         float clearColor[4] = {0.0f, 0.0f, 0.0f, 0.0f};
     };
 
@@ -99,7 +99,7 @@ namespace PNT {
 
         /// @brief Sets the vsync mode for the window.
         /// @param vsyncMode The desired vsync mode for the window, 1 = on, 0 = off, -1 adaptive.
-        void setVsyncMode(uint8_t vsyncMode);
+        void setVsyncMode(int8_t vsyncMode);
 
         /// @brief Sets the opengl clear color for the window.
         /// @param red The desired red channel.
