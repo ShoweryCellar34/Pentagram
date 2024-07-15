@@ -176,6 +176,10 @@ namespace PNT {
         eventQueue.push_back(event);
     }
 
+    void Window::setAspectRatio(uint32_t numerator, uint32_t denominator) {
+        glfwSetWindowAspectRatio(window, numerator, denominator);
+    }
+
     const char *Window::getTitle()
     {
         return data.title;

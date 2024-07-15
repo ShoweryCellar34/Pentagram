@@ -8,7 +8,8 @@
 namespace PNT {
     // Image definitions.
 
-    image::image() = default;
+    image::image() : width(100), height(100) {
+    };
 
     image::image(const char* path) {
         load(path);

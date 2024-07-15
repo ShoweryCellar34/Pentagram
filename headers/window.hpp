@@ -112,6 +112,11 @@ namespace PNT {
         /// @param shouldClose The desired should close status of the window.
         void setShouldClose(bool shouldClose);
 
+        /// @brief Sets the required aspect ratio of the window.
+        /// @param numerator The desired aspect ratio numerator (-1 for anything).
+        /// @param denominator The desired aspect ratio denominator (-1 for anything).
+        void setAspectRatio(uint32_t numerator, uint32_t denominator);
+
         /// @brief Pushes an event to the event stack.
         /// @param event The desired event to push, you can create events with the numerous "create...Event(...);" functions.
         /// @warning glfw has no event queue manipulation that I know of, so all custom events push by this function will be proccesed before glfw events.
