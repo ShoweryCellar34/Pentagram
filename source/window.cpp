@@ -172,7 +172,12 @@ namespace PNT {
         glfwSetWindowShouldClose(window, shouldClose);
     }
 
-    const char *Window::getTitle() {
+    void Window::pushEvent(windowEvent event) {
+        
+    }
+
+    const char *Window::getTitle()
+    {
         return data.title;
     }
 

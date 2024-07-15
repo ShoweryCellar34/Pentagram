@@ -112,6 +112,11 @@ namespace PNT {
         /// @param shouldClose The desired should close status of the window.
         void setShouldClose(bool shouldClose);
 
+        /// @brief Pushes an event to the event stack.
+        /// @param event The desired event to push, you can create events with the numerous "create...Event(...);" functions.
+        /// @warning glfw has no event queue manipulation that I know of, so all custom events push by this function will be proccesed before glfw events.
+        void pushEvent(windowEvent event);
+
         /// @brief Gets the window title.
         /// @return The window title (DO NOT MODIFY).
         const char* getTitle();
@@ -147,6 +152,7 @@ namespace PNT {
     private:
         friend class callbackManagers;
         friend void deinit();
+        friend void processEvents();
 
         static inline size_t instances;
         static inline std::vector<Window*> instancesList;

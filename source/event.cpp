@@ -2,13 +2,24 @@
 
 #include <cstring>
 #include <GLFW/glfw3.h>
+#include <window.hpp>
 #include <enumerations.hpp>
 
 namespace PNT {
     // Event definitions.
 
     void processEvents() {
+        while(customEventQueue.size()) {
+            Window* window = customEventQueue.back().first;
+            windowEvent* event = &customEventQueue.back().second;
+            window->data.eventCallback(window, *event);
+            customEventQueue.pop_back();
+        }
         glfwPollEvents();
+    }
+
+    void pushEvent(Window* window, windowEvent event) {
+        customEventQueue.push_back(std::make_pair(window, event));
     }
 
     void dropEvent::setData(size_t pathCount, char** paths) {

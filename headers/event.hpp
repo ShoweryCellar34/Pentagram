@@ -1,10 +1,21 @@
 #pragma once
 
+#include <vector>
 #include <stdint.h>
 
 namespace PNT {
+    class Window;
+    struct windowEvent;
+    static std::vector<std::pair<Window*, windowEvent>> customEventQueue;
+
     /// @brief Processes all pending events.
     void processEvents();
+
+    /// @brief Pushes an event to the event stack.
+    /// @param window The desired "PNT::Window*" to associate the event with.
+    /// @param event The desired event to push, you can create events with the numerous "create...Event(...);" functions.
+    /// @warning glfw has no event queue manipulation that I know of, so all custom events push by this function will be proccesed before glfw events.
+    void pushEvent(Window* window, windowEvent event);
 
     struct keyEvent {
         int key;
