@@ -59,9 +59,12 @@ namespace PNT {
 
     // Program definitions.
 
-    program::program() = default;
+    program::program() {
+        errorBuffer[0] = 0;
+    }
 
     program::program(std::initializer_list<PNT::shader*> shaders) {
+        errorBuffer[0] = 0;
         programID = glCreateProgram();
         for(size_t i = 0; i < shaders.size(); i++) {
             glAttachShader(programID, shaders.begin()[i]->getID());
@@ -91,26 +94,27 @@ namespace PNT {
         glDetachShader(programID, object);
     }
 
-    void program::use() {
-        glUseProgram(programID);
+    void program::link() {
+        glLinkProgram(programID);
+        glGetProgramiv(programID, GL_LINK_STATUS, &success);
+        if(!success) {
+            glGetProgramInfoLog(programID, 1024, NULL, errorBuffer);
+        }
     }
 
-    const char* program::getError() {
-        glGetProgramInfoLog(programID, 1024, NULL, errorBuffer);
-        return errorBuffer;
+    void program::use() {
+        glUseProgram(programID);
     }
 
     uint32_t program::getID() {
         return programID;
     }
 
-    void program::link() {
-        glLinkProgram(programID);
+    const char* program::getError() {
+        return errorBuffer;
     }
 
     bool program::valid() {
-        int success = 0;
-        glGetProgramiv(programID, GL_LINK_STATUS, &success);
         return success;
     }
 }

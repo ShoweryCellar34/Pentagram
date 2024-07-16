@@ -11,7 +11,7 @@ namespace PNT {
         uint32_t type = 0;
         char* source = new char[1];
         char errorBuffer[1024];
-        int success = false;
+        int success = 0;
 
     public:
         shader();
@@ -56,6 +56,7 @@ namespace PNT {
     private:
         uint32_t programID = 0;
         char errorBuffer[1024];
+        int success = 0;
 
     public:
         program();
@@ -84,17 +85,17 @@ namespace PNT {
         /// @param object Can be a "PNT::shader*" or a shader identifier of type "uint32_t".
         void detachShader(uint32_t object);
 
+        /// @brief Links the program, call this after "attachShader()" to push the changes onto the GPU.
+        void link();
+
         /// @brief Use the shader.
         void use();
+
+        uint32_t getID();
 
         /// @brief Gets the program compile error.
         /// @return The error buffer (DO NOT MODIFY).
         const char* getError();
-
-        uint32_t getID();
-
-        /// @brief Links the program, call this after "attachShader()" to push the changes onto the GPU.
-        void link();
 
         /// @brief Checks if the program linked successfuly.
         /// @return True if the program linked successfuly, and false if otherwise, check "getError()" for more info.
