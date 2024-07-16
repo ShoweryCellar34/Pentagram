@@ -5,11 +5,18 @@
 
 namespace PNT {
     // File definitions.
-\
-    file::file() = default;
+
+    file::file() {
+        errorBuffer[0] = 0;
+    }
 
     file::file(const char* path) {
+        errorBuffer[0] = 0;
         open(path);
+    }
+
+    void file::setError(const char* error) {
+        strcpy(errorBuffer, error);
     }
 
     void file::setContents(const char* contents) {
@@ -18,17 +25,17 @@ namespace PNT {
 
             switch(fileStream.rdstate()) {
             case std::ios_base::badbit:
-                strcpy(errorBuffer, "Bad bit is set!");
+                setError("Bad bit is set!");
                 break;
             case std::ios_base::failbit:
-                strcpy(errorBuffer, "Fail bit is set!");
+                setError("Fail bit is set!");
                 break;
             case std::ios_base::eofbit:
-                strcpy(errorBuffer, "EOF bit is set!");
+                setError("EOF bit is set!");
                 break;
             }
         } else {
-            strcpy(errorBuffer, "No file open!");
+            setError("No file open!");
         }
     }
 
@@ -39,17 +46,17 @@ namespace PNT {
 
             switch(fileStream.rdstate()) {
             case std::ios_base::badbit:
-                strcpy(errorBuffer, "Bad bit is set!");
+                setError("Bad bit is set!");
                 break;
             case std::ios_base::failbit:
-                strcpy(errorBuffer, "Fail bit is set!");
+                setError("Fail bit is set!");
                 break;
             case std::ios_base::eofbit:
-                strcpy(errorBuffer, "EOF bit is set!");
+                setError("EOF bit is set!");
                 break;
             }
         } else {
-            strcpy(errorBuffer, "No file open!");
+            setError("No file open!");
         }
     }
 
@@ -60,17 +67,17 @@ namespace PNT {
 
             switch(fileStream.rdstate()) {
             case std::ios_base::badbit:
-                strcpy(errorBuffer, "Bad bit is set!");
+                setError("Bad bit is set!");
                 break;
             case std::ios_base::failbit:
-                strcpy(errorBuffer, "Fail bit is set!");
+                setError("Fail bit is set!");
                 break;
             case std::ios_base::eofbit:
-                strcpy(errorBuffer, "EOF bit is set!");
+                setError("EOF bit is set!");
                 break;
             }
         } else {
-            strcpy(errorBuffer, "No file open!");
+            setError("No file open!");
         }
     }
 
@@ -84,15 +91,15 @@ namespace PNT {
 
             switch(fileStream.rdstate()) {
             case std::ios_base::badbit:
-                strcpy(errorBuffer, "Bad bit is set!");
+                setError("Bad bit is set!");
                 return 0;
                 break;
             case std::ios_base::failbit:
-                strcpy(errorBuffer, "Fail bit is set!");
+                setError("Fail bit is set!");
                 return 0;
                 break;
             case std::ios_base::eofbit:
-                strcpy(errorBuffer, "EOF bit is set!");
+                setError("EOF bit is set!");
                 return 0;
                 break;
             case std::ios_base::goodbit:
@@ -100,7 +107,7 @@ namespace PNT {
                 break;
             }
         } else {
-            strcpy(errorBuffer, "No file open!");
+            setError("No file open!");
         }
         return 0;
     }
@@ -114,15 +121,15 @@ namespace PNT {
             result = b.str();
             switch(fileStream.rdstate()) {
             case std::ios_base::badbit:
-                strcpy(errorBuffer, "Bad bit is set!");
+                setError("Bad bit is set!");
                 return "";
                 break;
             case std::ios_base::failbit:
-                strcpy(errorBuffer, "Fail bit is set!");
+                setError("Fail bit is set!");
                 return "";
                 break;
             case std::ios_base::eofbit:
-                strcpy(errorBuffer, "EOF bit is set!");
+                setError("EOF bit is set!");
                 return "";
                 break;
             case std::ios_base::goodbit:
@@ -130,7 +137,7 @@ namespace PNT {
                 break;
             }
         } else {
-            strcpy(errorBuffer, "No file open!");
+            setError("No file open!");
             return "";
         }
         return "";
@@ -145,17 +152,17 @@ namespace PNT {
         if(fileStream.is_open()) {
             switch(fileStream.rdstate()) {
             case std::ios_base::badbit:
-                strcpy(errorBuffer, "Bad bit is set!");
+                setError("Bad bit is set!");
                 break;
             case std::ios_base::failbit:
-                strcpy(errorBuffer, "Fail bit is set!");
+                setError("Fail bit is set!");
                 break;
             case std::ios_base::eofbit:
-                strcpy(errorBuffer, "EOF bit is set!");
+                setError("EOF bit is set!");
                 break;
             }
         } else {
-            strcpy(errorBuffer, "No file open!");
+            setError("No file open!");
         }
     }
 
@@ -163,13 +170,13 @@ namespace PNT {
         fileStream.close();
         switch(fileStream.rdstate()) {
         case std::ios_base::badbit:
-            strcpy(errorBuffer, "Bad bit is set!");
+            setError("Bad bit is set!");
             break;
         case std::ios_base::failbit:
-            strcpy(errorBuffer, "Fail bit is set!");
+            setError("Fail bit is set!");
             break;
         case std::ios_base::eofbit:
-            strcpy(errorBuffer, "EOF bit is set!");
+            setError("EOF bit is set!");
             break;
         }
     }

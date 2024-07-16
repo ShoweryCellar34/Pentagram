@@ -11,6 +11,7 @@ namespace PNT {
         uint32_t type = 0;
         char* source = new char[1];
         char errorBuffer[1024];
+        int success = false;
 
     public:
         shader();

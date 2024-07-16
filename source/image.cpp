@@ -33,10 +33,6 @@ namespace PNT {
         stbi_image_free(pixels);
     }
 
-    bool image::valid() const {
-        return pixels == nullptr ? false : true;
-    }
-
     void image::load(const char* path) {
         pixels = stbi_load(path, &width, &height, &this->channels, 4);
     }
@@ -97,5 +93,9 @@ namespace PNT {
 
     unsigned char* image::getPixels() const {
         return pixels;
+    }
+
+    bool image::valid() const {
+        return pixels == nullptr ? false : true;
     }
 }

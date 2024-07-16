@@ -6,9 +6,12 @@
 namespace PNT {
     // Shader definitions.
 
-    shader::shader() = default;
+    shader::shader() {
+        errorBuffer[0] = 0;
+    }
 
     shader::shader(const char* source, uint32_t type) {
+        errorBuffer[0] = 0;
         shaderID = glCreateShader(type);
         setData(source);
     }
@@ -24,6 +27,10 @@ namespace PNT {
         this->source = new char[strlen(source)];
         strcpy(this->source, source);
         glShaderSource(shaderID, 1, &source, NULL);
+        glGetShaderiv(shaderID, GL_COMPILE_STATUS, &success);
+        if(!success) {
+            glGetShaderInfoLog(shaderID, 1024, NULL, errorBuffer);
+        }
     }
 
     uint32_t shader::getID() {
@@ -39,7 +46,6 @@ namespace PNT {
     }
 
     const char* shader::getError() {
-        glGetShaderInfoLog(shaderID, 1024, NULL, errorBuffer);
         return errorBuffer;
     }
 
@@ -48,8 +54,6 @@ namespace PNT {
     }
 
     bool shader::valid() {
-        int success = 0;
-        glGetShaderiv(shaderID, GL_COMPILE_STATUS, &success);
         return success;
     }
 

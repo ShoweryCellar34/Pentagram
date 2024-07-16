@@ -22,10 +22,6 @@ namespace PNT {
 
         ~image();
 
-        /// @brief Checks the state of the image.
-        /// @return The state of the image, true for valid and false for invalid (null).
-        bool valid() const;
-
         /// @brief Loads an image from disk.
         /// @param path Image path on disk.
         void load(const char* path);
@@ -67,5 +63,9 @@ namespace PNT {
         /// @brief Gets the image pixels.
         /// @return Returns the pixel data for the image (DO NOT MODIFY).
         unsigned char* getPixels() const;
+
+        /// @brief Checks the state of the image.
+        /// @return The state of the image, true for valid and false for invalid (null).
+        bool valid() const;
     };
 }

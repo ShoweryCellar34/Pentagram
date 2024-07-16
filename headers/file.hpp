@@ -11,6 +11,8 @@ namespace PNT {
         std::fstream fileStream;
         char errorBuffer[256];
 
+        void setError(const char* error);
+
     public:
         file();
 
