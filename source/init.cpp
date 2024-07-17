@@ -9,7 +9,7 @@ namespace PNT {
     // Init/deinit definitions.
 
     bool init() {
-        glfwSetErrorCallback();
+        glfwSetErrorCallback(nullptr);
         return glfwInit();
     }
 
