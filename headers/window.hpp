@@ -17,8 +17,7 @@ namespace PNT {
         void(*eventCallback)(Window*, windowEvent) = nullptr;
         char title[256];
         image icon;
-        uint32_t width = 0, height = 0;
-        uint32_t xpos = 0, ypos = 0;
+        uint32_t width = 0, height = 0, xpos = 0, ypos = 0, ImGuiFlags = 0;
         bool hidden = false;
         bool iconified = false;
         int8_t vsyncMode = 0;
@@ -41,17 +40,52 @@ namespace PNT {
     };
 
     class Window {
+    private:
+        friend class callbackManagers;
+        friend void deinit();
+        friend void processEvents();
+
+        static inline size_t instances;
+        static inline std::vector<Window*> instancesList;
+        GLFWwindow* window;
+        windowData data;
+        std::vector<windowEvent> eventQueue;
+        ImGuiContext* ImContext;
+        ImGuiIO* IO;
+
     public:
-        /// @brief Winfow object constructor.
+        /// @brief Window object empty default constuctor, can be used later with "createWindow()" method.
+        Window();
+
+        /// @brief Window object constructor.
         /// @param title The desired title.
         /// @param width The desired width.
         /// @param height The desired height.
         /// @param xpos The desired x position.
         /// @param ypos The desired y position.
-        /// @param ImGuiFlags The desired imgui gui flags.
+        /// @param ImGuiFlags The desired imgui configuration flags.
         Window(const char* title, uint32_t width, uint32_t height, uint32_t xpos, uint32_t ypos, uint32_t ImGuiFlags);
 
+        /// @brief Window object constuctor.
+        /// @param data The desired "windowData" object for the window.
+        Window(windowData data);
+
         ~Window();
+
+        /// @brief Creates the window, you can use this in conjunction with the "Window()" constructor that tskes no arguments to create the window on screen later.
+        /// @param title The desired title.
+        /// @param width The desired width.
+        /// @param height The desired height.
+        /// @param xpos The desired x position.
+        /// @param ypos The desired y position.
+        /// @param ImGuiFlags The desired imgui configuration flags.
+        void createWindow(const char* title, uint32_t width, uint32_t height, uint32_t xpos, uint32_t ypos, uint32_t ImGuiFlags = 0);
+
+        /// @brief Creates the window, you can use this in conjunction with the "Window()" constructor that tskes no arguments to create the window on screen later.
+        /// @param data The desired "windowData" object for the window.
+        void createWindow(windowData data);
+
+        void destroyWindow();
 
         /// @brief Starts the opengl and imgui frame for the window.
         void startFrame();
@@ -73,8 +107,7 @@ namespace PNT {
 
         /// @brief Sets the window icon.
         /// @param image The desired PNT::image for the window icon.
-        /// @return Will return false if the image is invalid, this happens if the contents of the image are null.
-        bool setIcon(const image& image);
+        void setIcon(const image& image);
 
         /// @brief Sets the dimentions of the window.
         /// @param width The desired window width.
@@ -154,20 +187,5 @@ namespace PNT {
         /// @brief Check if the currect window should close.
         /// @return True if the window should close.
         bool shouldClose();
-
-    private:
-        friend class callbackManagers;
-        friend void deinit();
-        friend void processEvents();
-
-        static inline size_t instances;
-        static inline std::vector<Window*> instancesList;
-        GLFWwindow* window;
-        windowData data;
-        std::vector<windowEvent> eventQueue;
-        ImGuiContext* ImContext;
-        ImGuiIO* IO;
-
-        bool destroyed;
     };
 }

@@ -12,205 +12,328 @@
 namespace PNT {
     // Window definitions.
 
-    Window::Window(const char* title = "Title", uint32_t width = 600, uint32_t height = 600, uint32_t xpos = 100, uint32_t ypos = 100, uint32_t ImGuiFlags = ImGuiConfigFlags_None) {
-        instancesList.push_back(this);
-        instances++;
+    Window::Window() = default;
 
-        strcpy(data.title, title);
-        data.width = width;
-        data.height = height;
+    Window::Window(const char *title, uint32_t width, uint32_t height, uint32_t xpos, uint32_t ypos, uint32_t ImGuiFlags) {
+        createWindow(title, width, height, xpos, ypos, ImGuiFlags);
+    }
 
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-        window = glfwCreateWindow(width, height, title, NULL, NULL);
-        glfwSetWindowUserPointer(window, this);
-        glfwMakeContextCurrent(window);
-        gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-        setPosition(xpos, ypos);
-
-        glfwSetKeyCallback(window, callbackManagers::keyCallbackManager);
-        glfwSetCharCallback(window, callbackManagers::charCallbackManager);
-        glfwSetDropCallback(window, callbackManagers::dropCallbackManager);
-        //glfwSetErrorCallback(callbackManagers::);
-        glfwSetScrollCallback(window, callbackManagers::scrollCallbackManager);
-        //glfwSetMonitorCallback(callbackManagers::);
-        //glfwSetCharModsCallback(window, callbackManagers::);
-        //glfwSetJoystickCallback(callbackManagers::);
-        glfwSetCursorPosCallback(window, callbackManagers::cursorPosCallbackManager);
-        glfwSetWindowPosCallback(window, callbackManagers::windowposCallbackManager);
-        glfwSetWindowSizeCallback(window, callbackManagers::windowsizeCallbackManager);
-        //glfwSetCursorEnterCallback(window, callbackManagers::);
-        glfwSetMouseButtonCallback(window, callbackManagers::mousebuttonCallbackManager);
-        //glfwSetWindowCloseCallback(window, callbackManagers::);
-        //glfwSetWindowFocusCallback(window, callbackManagers::);
-        glfwSetWindowIconifyCallback(window, callbackManagers::iconifyCallbackManager);
-        //glfwSetWindowRefreshCallback(window, callbackManagers::);
-        //glfwSetWindowMaximizeCallback(window, callbackManagers::);
-        //glfwSetFramebufferSizeCallback(window, callbackManagers::);
-        //glfwSetWindowContentScaleCallback(window, callbackManagers::);
-
-        ImContext = ImGui::CreateContext();
-        ImGui::SetCurrentContext(ImContext);
-        IO = &ImGui::GetIO();
-        IO->ConfigFlags |= ImGuiFlags;
-        ImGui_ImplGlfw_InitForOpenGL(window, true);
-        ImGui_ImplOpenGL3_Init(nullptr);
-        ImGui::StyleColorsDark();
+    Window::Window(windowData data) {
+        createWindow(data);
     }
 
     Window::~Window() {
-        if(!destroyed) {
+        destroyWindow();
+    }
+
+    void Window::createWindow(const char *title, uint32_t width, uint32_t height, uint32_t xpos, uint32_t ypos, uint32_t ImGuiFlags) {
+        if(!window) {
+            instancesList.push_back(this);
+            instances++;
+
+            strcpy(data.title, title);
+            data.width = width;
+            data.height = height;
+
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+            glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+            window = glfwCreateWindow(width, height, title, NULL, NULL);
+            glfwSetWindowUserPointer(window, this);
+            glfwMakeContextCurrent(window);
+            gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+            setPosition(xpos, ypos);
+
+            glfwSetKeyCallback(window, callbackManagers::keyCallbackManager);
+            glfwSetCharCallback(window, callbackManagers::charCallbackManager);
+            glfwSetDropCallback(window, callbackManagers::dropCallbackManager);
+            //glfwSetErrorCallback(callbackManagers::);
+            glfwSetScrollCallback(window, callbackManagers::scrollCallbackManager);
+            //glfwSetMonitorCallback(callbackManagers::);
+            //glfwSetCharModsCallback(window, callbackManagers::);
+            //glfwSetJoystickCallback(callbackManagers::);
+            glfwSetCursorPosCallback(window, callbackManagers::cursorPosCallbackManager);
+            glfwSetWindowPosCallback(window, callbackManagers::windowposCallbackManager);
+            glfwSetWindowSizeCallback(window, callbackManagers::windowsizeCallbackManager);
+            //glfwSetCursorEnterCallback(window, callbackManagers::);
+            glfwSetMouseButtonCallback(window, callbackManagers::mousebuttonCallbackManager);
+            //glfwSetWindowCloseCallback(window, callbackManagers::);
+            //glfwSetWindowFocusCallback(window, callbackManagers::);
+            glfwSetWindowIconifyCallback(window, callbackManagers::iconifyCallbackManager);
+            //glfwSetWindowRefreshCallback(window, callbackManagers::);
+            //glfwSetWindowMaximizeCallback(window, callbackManagers::);
+            //glfwSetFramebufferSizeCallback(window, callbackManagers::);
+            //glfwSetWindowContentScaleCallback(window, callbackManagers::);
+
+            ImContext = ImGui::CreateContext();
+            ImGui::SetCurrentContext(ImContext);
+            IO = &ImGui::GetIO();
+            IO->ConfigFlags |= ImGuiFlags;
+            ImGui_ImplGlfw_InitForOpenGL(window, true);
+            ImGui_ImplOpenGL3_Init(nullptr);
+            ImGui::StyleColorsDark();
+        }
+    }
+
+    void Window::createWindow(windowData data) {
+        if(!window) {
+            instancesList.push_back(this);
+            instances++;
+
+            strcpy(this->data.title, data.title);
+            this->data.width = data.width;
+            this->data.height = data.height;
+
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+            glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+            window = glfwCreateWindow(data.width, data.height, data.title, NULL, NULL);
+            glfwSetWindowUserPointer(window, this);
+            glfwMakeContextCurrent(window);
+            gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+            setPosition(data.xpos, data.ypos);
+
+            glfwSetKeyCallback(window, callbackManagers::keyCallbackManager);
+            glfwSetCharCallback(window, callbackManagers::charCallbackManager);
+            glfwSetDropCallback(window, callbackManagers::dropCallbackManager);
+            //glfwSetErrorCallback(callbackManagers::);
+            glfwSetScrollCallback(window, callbackManagers::scrollCallbackManager);
+            //glfwSetMonitorCallback(callbackManagers::);
+            //glfwSetCharModsCallback(window, callbackManagers::);
+            //glfwSetJoystickCallback(callbackManagers::);
+            glfwSetCursorPosCallback(window, callbackManagers::cursorPosCallbackManager);
+            glfwSetWindowPosCallback(window, callbackManagers::windowposCallbackManager);
+            glfwSetWindowSizeCallback(window, callbackManagers::windowsizeCallbackManager);
+            //glfwSetCursorEnterCallback(window, callbackManagers::);
+            glfwSetMouseButtonCallback(window, callbackManagers::mousebuttonCallbackManager);
+            //glfwSetWindowCloseCallback(window, callbackManagers::);
+            //glfwSetWindowFocusCallback(window, callbackManagers::);
+            glfwSetWindowIconifyCallback(window, callbackManagers::iconifyCallbackManager);
+            //glfwSetWindowRefreshCallback(window, callbackManagers::);
+            //glfwSetWindowMaximizeCallback(window, callbackManagers::);
+            //glfwSetFramebufferSizeCallback(window, callbackManagers::);
+            //glfwSetWindowContentScaleCallback(window, callbackManagers::);
+
+            ImContext = ImGui::CreateContext();
+            ImGui::SetCurrentContext(ImContext);
+            IO = &ImGui::GetIO();
+            IO->ConfigFlags |= data.ImGuiFlags;
+            ImGui_ImplGlfw_InitForOpenGL(window, true);
+            ImGui_ImplOpenGL3_Init(nullptr);
+            ImGui::StyleColorsDark();
+        }
+    }
+
+    void Window::destroyWindow()
+    {
+        if(window) {
             instances--;
             instancesList.erase(std::find(instancesList.begin(), instancesList.end(), this));
 
             glfwDestroyWindow(window);
 
-            destroyed = true;
+            window = nullptr;
         }
     }
 
-    void Window::startFrame() {
-        glfwMakeContextCurrent(window);
-        int width, height;
-        glfwGetFramebufferSize(window, &width, &height);
-        glViewport(0, 0, width, height);
-        glClearColor(data.clearColor[0], data.clearColor[1], data.clearColor[2], data.clearColor[3]);
-        glClear(GL_COLOR_BUFFER_BIT);
-        ImGui::SetCurrentContext(ImContext);
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
+    void Window::startFrame()
+    {
+        if(window) {
+            glfwMakeContextCurrent(window);
+            int width, height;
+            glfwGetFramebufferSize(window, &width, &height);
+            glViewport(0, 0, width, height);
+            glClearColor(data.clearColor[0], data.clearColor[1], data.clearColor[2], data.clearColor[3]);
+            glClear(GL_COLOR_BUFFER_BIT);
+            ImGui::SetCurrentContext(ImContext);
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+            ImGui::NewFrame();
+        }
     }
 
     void Window::endFrame() {
-        ImGui::Render();
-        ImGuiIO& io = ImGui::GetIO();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-        glfwSwapBuffers(window);
-        GLFWwindow* backupContext = glfwGetCurrentContext();
-        ImGui::UpdatePlatformWindows();
-        ImGui::RenderPlatformWindowsDefault();
-        glfwMakeContextCurrent(backupContext);
+        if(window) {
+            ImGui::Render();
+            ImGuiIO& io = ImGui::GetIO();
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+            glfwSwapBuffers(window);
+            GLFWwindow* backupContext = glfwGetCurrentContext();
+            ImGui::UpdatePlatformWindows();
+            ImGui::RenderPlatformWindowsDefault();
+            glfwMakeContextCurrent(backupContext);
+        }
     }
 
     void Window::setEventCallback(void(*newEventCallback)(Window*, windowEvent)) {
-        data.eventCallback = newEventCallback;
+        if(window) {
+            data.eventCallback = newEventCallback;
+        }
     }
 
     void Window::setWindowData(windowData newData) {
-        data.eventCallback = newData.eventCallback;
-        setTitle(newData.title);
-        setDimentions(newData.width, newData.height);
-        setPosition(newData.xpos, newData.ypos);
-        setVsyncMode(newData.vsyncMode);
-        newData.hidden ? show() : hide();
-        newData.iconified ? minimize() : maximize();
-        setClearColor(newData.clearColor[0], newData.clearColor[1], newData.clearColor[2], newData.clearColor[3]);
+        if(window) {
+            data.eventCallback = newData.eventCallback;
+            setTitle(newData.title);
+            setDimentions(newData.width, newData.height);
+            setPosition(newData.xpos, newData.ypos);
+            setVsyncMode(newData.vsyncMode);
+            newData.hidden ? show() : hide();
+            newData.iconified ? minimize() : maximize();
+            setClearColor(newData.clearColor[0], newData.clearColor[1], newData.clearColor[2], newData.clearColor[3]);
+        }
     }
 
     void Window::setTitle(const char* title) {
-        strcpy(data.title, title);
-        glfwSetWindowTitle(window, title);
+        if(window) {
+            strcpy(data.title, title);
+            glfwSetWindowTitle(window, title);
+        }
     }
 
-    bool Window::setIcon(const image& image) {
-        if(image.valid()) {
-            data.icon = image;
-            data.icon.unloadOffGPU();
-            GLFWimage glfwImage;
-            glfwImage.width = image.getWidth();
-            glfwImage.height = image.getHeight();
-            glfwImage.pixels = image.getPixels();
-            glfwSetWindowIcon(window, 1, &glfwImage);
-            return 1;
-        } else {
-            glfwSetWindowIcon(window, 0, nullptr);
-            return 0;
+    void Window::setIcon(const image& image) {
+        if(window) {
+            if(image.valid()) {
+                data.icon = image;
+                data.icon.unloadOffGPU();
+                GLFWimage glfwImage;
+                glfwImage.width = image.getWidth();
+                glfwImage.height = image.getHeight();
+                glfwImage.pixels = image.getPixels();
+                glfwSetWindowIcon(window, 1, &glfwImage);
+            } else {
+                glfwSetWindowIcon(window, 0, nullptr);
+            }
         }
     }
 
     void Window::setDimentions(uint16_t width, uint16_t height) {
-        glfwSetWindowSize(window, width, height);
+        if(window) {
+            glfwSetWindowSize(window, width, height);
+        }
     }
 
     void Window::setPosition(uint16_t xpos, uint16_t ypos) {
-        glfwSetWindowPos(window, xpos, ypos);
-        callbackManagers::windowposCallbackManager(window, xpos, ypos);
+        if(window) {
+            glfwSetWindowPos(window, xpos, ypos);
+            callbackManagers::windowposCallbackManager(window, xpos, ypos);
+        }
     }
 
     void Window::hide() {
-        glfwHideWindow(window);
+        if(window) {
+            glfwHideWindow(window);
+        }
     }
 
     void Window::show() {
-        glfwShowWindow(window);
+        if(window) {
+            glfwShowWindow(window);
+        }
     }
 
     void Window::minimize() {
-        glfwIconifyWindow(window);
+        if(window) {
+            glfwIconifyWindow(window);
+        }
     }
 
     void Window::maximize() {
-        glfwRestoreWindow(window);
+        if(window) {
+            glfwRestoreWindow(window);
+        }
     }
 
     void Window::setVsyncMode(int8_t vsyncMode) {
-        data.vsyncMode = vsyncMode;
-        glfwSwapInterval(vsyncMode);
+        if(window) {
+            data.vsyncMode = vsyncMode;
+            glfwSwapInterval(vsyncMode);
+        }
     }
 
     void Window::setClearColor(float red, float green, float blue, float alpha) {
-        data.clearColor[0] = red;
-        data.clearColor[1] = green;
-        data.clearColor[2] = blue;
-        data.clearColor[3] = alpha;
+        if(window) {
+            data.clearColor[0] = red;
+            data.clearColor[1] = green;
+            data.clearColor[2] = blue;
+            data.clearColor[3] = alpha;
+        }
     }
 
     void Window::setShouldClose(bool shouldClose) {
-        glfwSetWindowShouldClose(window, shouldClose);
+        if(window) {
+            glfwSetWindowShouldClose(window, shouldClose);
+        }
     }
 
     void Window::pushEvent(windowEvent event) {
-        eventQueue.push_back(event);
+        if(window) {
+            eventQueue.push_back(event);
+        }
     }
 
     void Window::setAspectRatio(uint32_t numerator, uint32_t denominator) {
-        glfwSetWindowAspectRatio(window, numerator, denominator);
+        if(window) {
+            glfwSetWindowAspectRatio(window, numerator, denominator);
+        }
     }
 
-    const char *Window::getTitle()
-    {
-        return data.title;
+    const char *Window::getTitle() {
+        if(window) {
+            return data.title;
+        }
+        return 0;
     }
 
     uint16_t Window::getWidth() {
-        return data.width;
+        if(window) {
+            return data.width;
+        }
+        return 0;
     }
 
     uint16_t Window::getHeight() {
-        return data.height;
+        if(window) {
+            return data.height;
+        }
+        return 0;
     }
 
     uint16_t Window::getXPos() {
-        return data.xpos;
+        if(window) {
+            return data.xpos;
+        }
+        return 0;
     }
 
     uint16_t Window::getYPos() {
-        return data.ypos;
+        if(window) {
+            return data.ypos;
+        }
+        return 0;
     }
 
     bool Window::getHidden() {
-        return data.hidden;
+        if(window) {
+            return data.hidden;
+        }
+        return 0;
     }
 
     bool Window::getIconified() {
-        return data.iconified;
+        if(window) {
+            return data.iconified;
+        }
+        return 0;
     }
 
     bool Window::shouldClose() {
-        return glfwWindowShouldClose(window);
+        if(window) {
+            return glfwWindowShouldClose(window);
+        }
+        return 0;
     }
 
     // Callback definitions.
