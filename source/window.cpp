@@ -48,7 +48,6 @@ namespace PNT {
             glfwSetKeyCallback(window, callbackManagers::keyCallbackManager);
             glfwSetCharCallback(window, callbackManagers::charCallbackManager);
             glfwSetDropCallback(window, callbackManagers::dropCallbackManager);
-            //glfwSetErrorCallback(callbackManagers::);
             glfwSetScrollCallback(window, callbackManagers::scrollCallbackManager);
             //glfwSetMonitorCallback(callbackManagers::);
             //glfwSetCharModsCallback(window, callbackManagers::);
