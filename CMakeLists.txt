@@ -23,6 +23,6 @@ add_subdirectory(vendors/glad)
 
 file(GLOB pentagram source/*.cpp)
 add_library(Pentagram STATIC ${pentagram})
-set_target_properties(Pentagram PROPERTIES LINKER_LANGUAGE CXX CXX_STANDARD 11)
+set_target_properties(Pentagram PROPERTIES LINKER_LANGUAGE CXX CXX_STANDARD 17)
 target_link_libraries(Pentagram spdlog::spdlog glm::glm glfw imgui glad stb)
 target_include_directories(Pentagram PUBLIC headers)
