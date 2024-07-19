@@ -9,13 +9,13 @@ namespace PNT {
     // Init/deinit definitions.
 
     bool init() {
-        glfwSetErrorCallback(nullptr);
+        glfwSetErrorCallback(errorCallback);
         return glfwInit();
     }
 
     void deinit() {
-        for(const Window* window : Window::instancesList) {
-            delete window;
+        for(Window* window : Window::instancesList) {
+            window->destroyWindow();
         }
         glfwTerminate();
     }
