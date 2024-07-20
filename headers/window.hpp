@@ -5,7 +5,7 @@
 #include <vector>
 #include <image.hpp>
 
-class GLFWwindow;
+struct GLFWwindow;
 struct ImGuiContext;
 struct ImGuiIO;
 
