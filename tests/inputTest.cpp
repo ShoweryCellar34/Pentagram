@@ -40,7 +40,7 @@ void eventCallback(PNT::Window *window, PNT::windowEvent event) {
                 if(event.keyboard.action == GLFW_RELEASE) movment[1] += -1;
                 break;
             }
-            window->setPosition(window->getXPos() + (movment[0] * step), window->getYPos() + (movment[1] * step));
+            window->setPosition(window->getXPos() + ((uint16_t)movment[0] * step), window->getYPos() + ((uint16_t)movment[1] * step));
             break;
         case PNT_EVENT_TYPE_CURSORPOS:
             printf("Cursor position changed to: %f, %f\n", event.cursorpos.xpos, event.cursorpos.ypos);
