@@ -75,8 +75,10 @@ namespace PNT {
     }
 
     void image::unloadOffGPU() {
-        glDeleteTextures(1, &textureID);
-        textureID = 0;
+        if(textureID) {
+            glDeleteTextures(1, &textureID);
+            textureID = 0;
+        }
     }
 
     uint32_t image::getID() const {
