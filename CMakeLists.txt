@@ -39,7 +39,7 @@ add_custom_target(copy_resources ALL COMMAND ${CMAKE_COMMAND} -E copy_directory 
 file(GLOB tests tests/*.cpp)
 foreach(test ${tests})
 
-get_filename_component(test_name ${test} NAME)
+get_filename_component(test_name ${test} NAME_WE)
 add_executable(${test_name} ${test})
 target_link_libraries(${test_name} Pentagram)
 
