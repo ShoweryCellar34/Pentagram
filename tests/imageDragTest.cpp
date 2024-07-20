@@ -28,12 +28,11 @@ int main(int argc, char *argv[]) {
     stbi_set_flip_vertically_on_load(true);
 
     if(!PNT::init()) {
-        return 1;
+        exit(EXIT_FAILURE);
     }
 
     image.load("res/textures/logo/ghoul.png");
     PNT::Window window("Drag'n Drop", image.getWidth(), image.getHeight(), 500, 500, 0);
-    image.loadOnGPU();
     window.setAspectRatio(image.getWidth(), image.getHeight());
     window.setEventCallback(eventCallback);
 
@@ -79,6 +78,12 @@ int main(int argc, char *argv[]) {
     glEnableVertexAttribArray(0);
 
     glUniform1i(glGetUniformLocation(shader.getID(), "texture"), image.getID());
+
+    window.startFrame();
+
+    image.loadOnGPU();
+
+    window.endFrame();
 
     while(!window.shouldClose()) {
         PNT::processEvents();
