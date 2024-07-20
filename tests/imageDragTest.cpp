@@ -1,44 +1,4 @@
 #include <Pentagram.hpp>
-#include <iostream>
-#ifdef _WIN32
-#include <windows.h>
-#include <shobjidl.h>
-
-// Ripped for microsoft.
-PWSTR userGetPath() {
-    HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
-    if (SUCCEEDED(hr)) {
-        IFileOpenDialog* pFileOpen;
-
-        // Create the FileOpenDialog object.
-        hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL, IID_IFileOpenDialog, reinterpret_cast<void**>(&pFileOpen));
-
-        if (SUCCEEDED(hr)) {
-            // Show the Open dialog box.
-            hr = pFileOpen->Show(NULL);
-
-            // Get the file name from the dialog box.
-            if (SUCCEEDED(hr)) {
-                IShellItem* pItem;
-                hr = pFileOpen->GetResult(&pItem);
-                if (SUCCEEDED(hr)) {
-                    PWSTR pszFilePath;
-                    hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
-
-                    // Display the file name to the user.
-                    if (SUCCEEDED(hr)) {
-                        return pszFilePath;
-                    }
-                    pItem->Release();
-                }
-            }
-            pFileOpen->Release();
-        }
-        CoUninitialize();
-    }
-    return PWSTR();
-}
-#endif
 
 PNT::image image;
 
@@ -59,26 +19,6 @@ void eventCallback(PNT::Window* window, PNT::windowEvent event) {
             case GLFW_KEY_ESCAPE:
                 window->setShouldClose(true);
                 break;
-#ifdef _WIN32
-            case GLFW_KEY_TAB:
-                PWSTR wpath = userGetPath();
-                if(wpath != nullptr) {
-                    size_t origsize = wcslen(wpath) + 1;
-                    size_t convertedChars = 0;
-                    const size_t newsize = origsize * 2;
-                    char* path = new char[newsize];
-                    wcstombs_s(&convertedChars, path, newsize, wpath, _TRUNCATE);
-
-                    image.load(path);
-                    window->setDimentions(image.getWidth(), image.getHeight());
-                    window->setAspectRatio(image.getWidth(), image.getHeight());
-                    image.loadOnGPU();
-
-                    delete[] path;
-                }
-                CoTaskMemFree(wpath);
-                break;
-#endif
             }
         }
     }
@@ -99,23 +39,18 @@ int main(int argc, char *argv[]) {
 
     // Vertex shader.
     PNT::file file("res/shaders/vertex.glsl");
-    printf("%s\n", file.getError());
     PNT::shader vertexShader(file.getContents().c_str(), GL_VERTEX_SHADER);
     vertexShader.compile();
-    std::cout << vertexShader.getError() << '\n';
 
     // Fragment shader.
     file.close();
     file.open("res/shaders/fragment.glsl");
-    printf("%s\n", file.getError());
     PNT::shader fragmentShader(file.getContents().c_str(), GL_FRAGMENT_SHADER);
     fragmentShader.compile();
-    std::cout << fragmentShader.getError() << '\n';
 
     // Shader program.
     PNT::program shader({&vertexShader, &fragmentShader});
     shader.link();
-    std::cout << shader.getError() << '\n';
 
     float vertices[] = {
          1.0f,  1.0f,
@@ -150,36 +85,6 @@ int main(int argc, char *argv[]) {
 
         window.startFrame();
 
-        if (ImGui::BeginMainMenuBar()) {
-              if (ImGui::BeginMenu("File")) {
-#ifdef _WIN32
-                    if (ImGui::MenuItem("Open", "TAB")) {
-                        PWSTR wpath = userGetPath();
-                        if(wpath != nullptr) {
-                            size_t origsize = wcslen(wpath) + 1;
-                            size_t convertedChars = 0;
-                            const size_t newsize = origsize * 2;
-                            char* path = new char[newsize];
-                            wcstombs_s(&convertedChars, path, newsize, wpath, _TRUNCATE);
-
-                            image.load(path);
-                            window.setDimentions(image.getWidth(), image.getHeight());
-                            window.setAspectRatio(image.getWidth(), image.getHeight());
-                            image.loadOnGPU();
-
-                            delete[] path;
-                        }
-                        CoTaskMemFree(wpath);
-                    }
-#endif
-#ifndef _WIN32
-                        ImGui::Text("File open dialog only avalable on windows");
-#endif
-        ImGui::EndMenu();
-        }
-        ImGui::EndMainMenuBar();
-        }
-
         shader.use();
 
         glBindVertexArray(VAO);
@@ -188,6 +93,6 @@ int main(int argc, char *argv[]) {
         window.endFrame();
     }
 
-    //PNT::deinit();
+    PNT::deinit();
     return 0;
 }
