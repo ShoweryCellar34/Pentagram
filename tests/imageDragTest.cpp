@@ -5,6 +5,7 @@ PNT::image image;
 void eventCallback(PNT::Window* window, PNT::windowEvent event) {
     switch(event.type) {
     case PNT_EVENT_TYPE_DROP:
+        image.unloadOffGPU();
         image.load(event.dropFiles.paths[0]);
         window->setDimentions(image.getWidth(), image.getHeight());
         window->setAspectRatio(image.getWidth(), image.getHeight());
