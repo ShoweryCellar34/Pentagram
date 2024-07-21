@@ -6,6 +6,7 @@
 #include "enumerations.hpp"
 #include "file.hpp"
 #include "gl.hpp"
+#include "image.hpp"
 
 #include <glad.h>
 #include <imgui.h>

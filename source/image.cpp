@@ -30,7 +30,9 @@ namespace PNT {
         if(textureID) {
             unloadOffGPU();
         }
-        stbi_image_free(pixels);
+        if(pixels) {
+            stbi_image_free(pixels);
+        }
     }
 
     void image::load(const char* path) {

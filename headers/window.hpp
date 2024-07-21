@@ -3,7 +3,6 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <vector>
-#include <image.hpp>
 
 struct GLFWwindow;
 struct ImGuiContext;
@@ -12,11 +11,11 @@ struct ImGuiIO;
 namespace PNT {
     class Window;
     struct windowEvent;
+    class image;
 
     struct windowData {
         void(*eventCallback)(Window*, windowEvent) = nullptr;
         char title[256];
-        image icon;
         uint32_t width = 0, height = 0, xpos = 0, ypos = 0, ImGuiFlags = 0;
         bool hidden = false;
         bool iconified = false;
@@ -47,7 +46,7 @@ namespace PNT {
 
         static inline size_t instances;
         static inline std::vector<Window*> instancesList;
-        GLFWwindow* window;
+        GLFWwindow* window = nullptr;
         windowData data;
         std::vector<windowEvent> eventQueue;
         ImGuiContext* ImContext;

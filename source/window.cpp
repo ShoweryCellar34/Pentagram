@@ -8,6 +8,7 @@
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
 #include <event.hpp>
+#include <image.hpp>
 
 namespace PNT {
     // Window definitions.
@@ -192,15 +193,13 @@ namespace PNT {
         }
     }
 
-    void Window::setIcon(const image& image) {
+    void Window::setIcon(const image& icon) {
         if(window) {
-            if(image.valid()) {
-                data.icon = image;
-                data.icon.unloadOffGPU();
+            if(icon.valid()) {
                 GLFWimage glfwImage;
-                glfwImage.width = image.getWidth();
-                glfwImage.height = image.getHeight();
-                glfwImage.pixels = image.getPixels();
+                glfwImage.width = icon.getWidth();
+                glfwImage.height = icon.getHeight();
+                glfwImage.pixels = icon.getPixels();
                 glfwSetWindowIcon(window, 1, &glfwImage);
             } else {
                 glfwSetWindowIcon(window, 0, nullptr);
