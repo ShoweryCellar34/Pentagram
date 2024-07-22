@@ -1,7 +1,7 @@
 #include <error.hpp>
 
 namespace PNT {
-    std::shared_ptr<spdlog::logger> logger = spdlog::basic_logger_mt("Pentagram log", "logs/log.txt");
+    std::shared_ptr<spdlog::logger> logger = spdlog::stdout_color_mt("Pentagram console log");
 }
 
 void PNT::assertMsg(const char *file, int line, int code) {
