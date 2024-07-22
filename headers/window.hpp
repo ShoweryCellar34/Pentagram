@@ -47,6 +47,7 @@ namespace PNT {
         static inline size_t instances;
         static inline std::vector<Window*> instancesList;
         GLFWwindow* window = nullptr;
+        bool frame = false;
         windowData data;
         std::vector<windowEvent> eventQueue;
         ImGuiContext* ImContext;

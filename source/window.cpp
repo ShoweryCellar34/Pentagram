@@ -7,6 +7,7 @@
 #include <misc/cpp/imgui_stdlib.h>
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
+#include <error.hpp>
 #include <event.hpp>
 #include <image.hpp>
 
@@ -28,310 +29,304 @@ namespace PNT {
     }
 
     void Window::createWindow(const char *title, uint32_t width, uint32_t height, uint32_t xpos, uint32_t ypos, uint32_t ImGuiFlags) {
-        if(!window) {
-            instancesList.push_back(this);
-            instances++;
+        PNT_NO_WINDOW_ASSERT(window);
 
-            strcpy(data.title, title);
-            data.width = width;
-            data.height = height;
+        instancesList.push_back(this);
+        instances++;
 
-            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-            glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        strcpy(data.title, title);
+        data.width = width;
+        data.height = height;
 
-            window = glfwCreateWindow(width, height, title, NULL, NULL);
-            glfwSetWindowUserPointer(window, this);
-            glfwMakeContextCurrent(window);
-            gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-            setPosition(xpos, ypos);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-            glfwSetKeyCallback(window, callbackManagers::keyCallbackManager);
-            glfwSetCharCallback(window, callbackManagers::charCallbackManager);
-            glfwSetDropCallback(window, callbackManagers::dropCallbackManager);
-            glfwSetScrollCallback(window, callbackManagers::scrollCallbackManager);
-            //glfwSetMonitorCallback(callbackManagers::);
-            //glfwSetCharModsCallback(window, callbackManagers::);
-            //glfwSetJoystickCallback(callbackManagers::);
-            glfwSetCursorPosCallback(window, callbackManagers::cursorPosCallbackManager);
-            glfwSetWindowPosCallback(window, callbackManagers::windowposCallbackManager);
-            glfwSetWindowSizeCallback(window, callbackManagers::windowsizeCallbackManager);
-            //glfwSetCursorEnterCallback(window, callbackManagers::);
-            glfwSetMouseButtonCallback(window, callbackManagers::mousebuttonCallbackManager);
-            //glfwSetWindowCloseCallback(window, callbackManagers::);
-            //glfwSetWindowFocusCallback(window, callbackManagers::);
-            glfwSetWindowIconifyCallback(window, callbackManagers::iconifyCallbackManager);
-            //glfwSetWindowRefreshCallback(window, callbackManagers::);
-            //glfwSetWindowMaximizeCallback(window, callbackManagers::);
-            //glfwSetFramebufferSizeCallback(window, callbackManagers::);
-            //glfwSetWindowContentScaleCallback(window, callbackManagers::);
+        window = glfwCreateWindow(width, height, title, NULL, NULL);
+        glfwSetWindowUserPointer(window, this);
+        glfwMakeContextCurrent(window);
+        gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+        setPosition(xpos, ypos);
 
-            ImContext = ImGui::CreateContext();
-            ImGui::SetCurrentContext(ImContext);
-            IO = &ImGui::GetIO();
-            IO->ConfigFlags |= ImGuiFlags;
-            ImGui_ImplGlfw_InitForOpenGL(window, true);
-            ImGui_ImplOpenGL3_Init(nullptr);
-            ImGui::StyleColorsDark();
-        }
+        glfwSetKeyCallback(window, callbackManagers::keyCallbackManager);
+        glfwSetCharCallback(window, callbackManagers::charCallbackManager);
+        glfwSetDropCallback(window, callbackManagers::dropCallbackManager);
+        glfwSetScrollCallback(window, callbackManagers::scrollCallbackManager);
+        //glfwSetMonitorCallback(callbackManagers::);
+        //glfwSetCharModsCallback(window, callbackManagers::);
+        //glfwSetJoystickCallback(callbackManagers::);
+        glfwSetCursorPosCallback(window, callbackManagers::cursorPosCallbackManager);
+        glfwSetWindowPosCallback(window, callbackManagers::windowposCallbackManager);
+        glfwSetWindowSizeCallback(window, callbackManagers::windowsizeCallbackManager);
+        //glfwSetCursorEnterCallback(window, callbackManagers::);
+        glfwSetMouseButtonCallback(window, callbackManagers::mousebuttonCallbackManager);
+        //glfwSetWindowCloseCallback(window, callbackManagers::);
+        //glfwSetWindowFocusCallback(window, callbackManagers::);
+        glfwSetWindowIconifyCallback(window, callbackManagers::iconifyCallbackManager);
+        //glfwSetWindowRefreshCallback(window, callbackManagers::);
+        //glfwSetWindowMaximizeCallback(window, callbackManagers::);
+        //glfwSetFramebufferSizeCallback(window, callbackManagers::);
+        //glfwSetWindowContentScaleCallback(window, callbackManagers::);
+
+        ImContext = ImGui::CreateContext();
+        ImGui::SetCurrentContext(ImContext);
+        IO = &ImGui::GetIO();
+        IO->ConfigFlags |= ImGuiFlags;
+        ImGui_ImplGlfw_InitForOpenGL(window, true);
+        ImGui_ImplOpenGL3_Init(nullptr);
+        ImGui::StyleColorsDark();
     }
 
     void Window::createWindow(windowData data) {
-        if(!window) {
-            instancesList.push_back(this);
-            instances++;
+        PNT_NO_WINDOW_ASSERT(window);
 
-            strcpy(this->data.title, data.title);
-            this->data.width = data.width;
-            this->data.height = data.height;
+        instancesList.push_back(this);
+        instances++;
 
-            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-            glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        strcpy(this->data.title, data.title);
+        this->data.width = data.width;
+        this->data.height = data.height;
 
-            window = glfwCreateWindow(data.width, data.height, data.title, NULL, NULL);
-            glfwSetWindowUserPointer(window, this);
-            glfwMakeContextCurrent(window);
-            gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-            setPosition(data.xpos, data.ypos);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-            glfwSetKeyCallback(window, callbackManagers::keyCallbackManager);
-            glfwSetCharCallback(window, callbackManagers::charCallbackManager);
-            glfwSetDropCallback(window, callbackManagers::dropCallbackManager);
-            //glfwSetErrorCallback(callbackManagers::);
-            glfwSetScrollCallback(window, callbackManagers::scrollCallbackManager);
-            //glfwSetMonitorCallback(callbackManagers::);
-            //glfwSetCharModsCallback(window, callbackManagers::);
-            //glfwSetJoystickCallback(callbackManagers::);
-            glfwSetCursorPosCallback(window, callbackManagers::cursorPosCallbackManager);
-            glfwSetWindowPosCallback(window, callbackManagers::windowposCallbackManager);
-            glfwSetWindowSizeCallback(window, callbackManagers::windowsizeCallbackManager);
-            //glfwSetCursorEnterCallback(window, callbackManagers::);
-            glfwSetMouseButtonCallback(window, callbackManagers::mousebuttonCallbackManager);
-            //glfwSetWindowCloseCallback(window, callbackManagers::);
-            //glfwSetWindowFocusCallback(window, callbackManagers::);
-            glfwSetWindowIconifyCallback(window, callbackManagers::iconifyCallbackManager);
-            //glfwSetWindowRefreshCallback(window, callbackManagers::);
-            //glfwSetWindowMaximizeCallback(window, callbackManagers::);
-            //glfwSetFramebufferSizeCallback(window, callbackManagers::);
-            //glfwSetWindowContentScaleCallback(window, callbackManagers::);
+        window = glfwCreateWindow(data.width, data.height, data.title, NULL, NULL);
+        glfwSetWindowUserPointer(window, this);
+        glfwMakeContextCurrent(window);
+        gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+        setPosition(data.xpos, data.ypos);
 
-            ImContext = ImGui::CreateContext();
-            ImGui::SetCurrentContext(ImContext);
-            IO = &ImGui::GetIO();
-            IO->ConfigFlags |= data.ImGuiFlags;
-            ImGui_ImplGlfw_InitForOpenGL(window, true);
-            ImGui_ImplOpenGL3_Init(nullptr);
-            ImGui::StyleColorsDark();
-        }
+        glfwSetKeyCallback(window, callbackManagers::keyCallbackManager);
+        glfwSetCharCallback(window, callbackManagers::charCallbackManager);
+        glfwSetDropCallback(window, callbackManagers::dropCallbackManager);
+        //glfwSetErrorCallback(callbackManagers::);
+        glfwSetScrollCallback(window, callbackManagers::scrollCallbackManager);
+        //glfwSetMonitorCallback(callbackManagers::);
+        //glfwSetCharModsCallback(window, callbackManagers::);
+        //glfwSetJoystickCallback(callbackManagers::);
+        glfwSetCursorPosCallback(window, callbackManagers::cursorPosCallbackManager);
+        glfwSetWindowPosCallback(window, callbackManagers::windowposCallbackManager);
+        glfwSetWindowSizeCallback(window, callbackManagers::windowsizeCallbackManager);
+        //glfwSetCursorEnterCallback(window, callbackManagers::);
+        glfwSetMouseButtonCallback(window, callbackManagers::mousebuttonCallbackManager);
+        //glfwSetWindowCloseCallback(window, callbackManagers::);
+        //glfwSetWindowFocusCallback(window, callbackManagers::);
+        glfwSetWindowIconifyCallback(window, callbackManagers::iconifyCallbackManager);
+        //glfwSetWindowRefreshCallback(window, callbackManagers::);
+        //glfwSetWindowMaximizeCallback(window, callbackManagers::);
+        //glfwSetFramebufferSizeCallback(window, callbackManagers::);
+        //glfwSetWindowContentScaleCallback(window, callbackManagers::);
+
+        ImContext = ImGui::CreateContext();
+        ImGui::SetCurrentContext(ImContext);
+        IO = &ImGui::GetIO();
+        IO->ConfigFlags |= data.ImGuiFlags;
+        ImGui_ImplGlfw_InitForOpenGL(window, true);
+        ImGui_ImplOpenGL3_Init(nullptr);
+        ImGui::StyleColorsDark();
     }
 
-    void Window::destroyWindow()
-    {
-        if(window) {
-            instances--;
-            instancesList.erase(std::find(instancesList.begin(), instancesList.end(), this));
+    void Window::destroyWindow() {
+        PNT_WINDOW_ASSERT(window);
 
-            glfwDestroyWindow(window);
+        instances--;
+        instancesList.erase(std::find(instancesList.begin(), instancesList.end(), this));
 
-            window = nullptr;
-        }
+        glfwDestroyWindow(window);
+
+        window = nullptr;
     }
 
-    void Window::startFrame()
-    {
-        if(window) {
-            glfwMakeContextCurrent(window);
-            int width, height;
-            glfwGetFramebufferSize(window, &width, &height);
-            glViewport(0, 0, width, height);
-            glClearColor(data.clearColor[0], data.clearColor[1], data.clearColor[2], data.clearColor[3]);
-            glClear(GL_COLOR_BUFFER_BIT);
-            ImGui::SetCurrentContext(ImContext);
-            ImGui_ImplOpenGL3_NewFrame();
-            ImGui_ImplGlfw_NewFrame();
-            ImGui::NewFrame();
-        }
+    void Window::startFrame() {
+        PNT_WINDOW_ASSERT(window);
+        PNT_ENDFRAME_ASSERT(frame);
+
+        glfwMakeContextCurrent(window);
+        int width, height;
+        glfwGetFramebufferSize(window, &width, &height);
+        glViewport(0, 0, width, height);
+        glClearColor(data.clearColor[0], data.clearColor[1], data.clearColor[2], data.clearColor[3]);
+        glClear(GL_COLOR_BUFFER_BIT);
+        ImGui::SetCurrentContext(ImContext);
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+        frame = true;
     }
 
     void Window::endFrame() {
-        if(window) {
-            ImGui::Render();
-            ImGuiIO& io = ImGui::GetIO();
-            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-            glfwSwapBuffers(window);
-            GLFWwindow* backupContext = glfwGetCurrentContext();
-            ImGui::UpdatePlatformWindows();
-            ImGui::RenderPlatformWindowsDefault();
-            glfwMakeContextCurrent(backupContext);
-        }
+        PNT_WINDOW_ASSERT(window);
+        PNT_NEWFRAME_ASSERT(frame);
+
+        ImGui::Render();
+        ImGuiIO& io = ImGui::GetIO();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        glfwSwapBuffers(window);
+        GLFWwindow* backupContext = glfwGetCurrentContext();
+        ImGui::UpdatePlatformWindows();
+        ImGui::RenderPlatformWindowsDefault();
+        glfwMakeContextCurrent(backupContext);
+        frame = false;
     }
 
     void Window::setEventCallback(void(*newEventCallback)(Window*, windowEvent)) {
-        if(window) {
-            data.eventCallback = newEventCallback;
-        }
+        PNT_WINDOW_ASSERT(window);
+
+        data.eventCallback = newEventCallback;
     }
 
     void Window::setWindowData(windowData newData) {
-        if(window) {
-            data.eventCallback = newData.eventCallback;
-            setTitle(newData.title);
-            setDimentions(newData.width, newData.height);
-            setPosition(newData.xpos, newData.ypos);
-            setVsyncMode(newData.vsyncMode);
-            newData.hidden ? show() : hide();
-            newData.iconified ? minimize() : maximize();
-            setClearColor(newData.clearColor[0], newData.clearColor[1], newData.clearColor[2], newData.clearColor[3]);
-        }
+        PNT_WINDOW_ASSERT(window);
+
+        data.eventCallback = newData.eventCallback;
+        setTitle(newData.title);
+        setDimentions(newData.width, newData.height);
+        setPosition(newData.xpos, newData.ypos);
+        setVsyncMode(newData.vsyncMode);
+        newData.hidden ? show() : hide();
+        newData.iconified ? minimize() : maximize();
+        setClearColor(newData.clearColor[0], newData.clearColor[1], newData.clearColor[2], newData.clearColor[3]);
     }
 
     void Window::setTitle(const char* title) {
-        if(window) {
-            strcpy(data.title, title);
-            glfwSetWindowTitle(window, title);
-        }
+        PNT_WINDOW_ASSERT(window);
+
+        strcpy(data.title, title);
+        glfwSetWindowTitle(window, title);
     }
 
     void Window::setIcon(const image& icon) {
-        if(window) {
-            if(icon.valid()) {
-                GLFWimage glfwImage;
-                glfwImage.width = icon.getWidth();
-                glfwImage.height = icon.getHeight();
-                glfwImage.pixels = icon.getPixels();
-                glfwSetWindowIcon(window, 1, &glfwImage);
-            } else {
-                glfwSetWindowIcon(window, 0, nullptr);
-            }
+        PNT_WINDOW_ASSERT(window);
+
+        if(icon.valid()) {
+            GLFWimage glfwImage;
+            glfwImage.width = icon.getWidth();
+            glfwImage.height = icon.getHeight();
+            glfwImage.pixels = icon.getPixels();
+            glfwSetWindowIcon(window, 1, &glfwImage);
+        } else {
+            glfwSetWindowIcon(window, 0, nullptr);
         }
     }
 
     void Window::setDimentions(uint16_t width, uint16_t height) {
-        if(window) {
-            glfwSetWindowSize(window, width, height);
-        }
+        PNT_WINDOW_ASSERT(window);
+
+        glfwSetWindowSize(window, width, height);
     }
 
     void Window::setPosition(uint16_t xpos, uint16_t ypos) {
-        if(window) {
-            glfwSetWindowPos(window, xpos, ypos);
-            callbackManagers::windowposCallbackManager(window, xpos, ypos);
-        }
+        PNT_WINDOW_ASSERT(window);
+
+        glfwSetWindowPos(window, xpos, ypos);
+        callbackManagers::windowposCallbackManager(window, xpos, ypos);
     }
 
     void Window::hide() {
-        if(window) {
-            glfwHideWindow(window);
-        }
+        PNT_WINDOW_ASSERT(window);
+
+        glfwHideWindow(window);
     }
 
     void Window::show() {
-        if(window) {
-            glfwShowWindow(window);
-        }
+        PNT_WINDOW_ASSERT(window);
+
+        glfwShowWindow(window);
     }
 
     void Window::minimize() {
-        if(window) {
-            glfwIconifyWindow(window);
-        }
+        PNT_WINDOW_ASSERT(window);
+
+        glfwIconifyWindow(window);
     }
 
     void Window::maximize() {
-        if(window) {
-            glfwRestoreWindow(window);
-        }
+        PNT_WINDOW_ASSERT(window);
+
+        glfwRestoreWindow(window);
     }
 
     void Window::setVsyncMode(int8_t vsyncMode) {
-        if(window) {
-            data.vsyncMode = vsyncMode;
-            glfwSwapInterval(vsyncMode);
-        }
+        PNT_WINDOW_ASSERT(window);
+
+        data.vsyncMode = vsyncMode;
+        glfwSwapInterval(vsyncMode);
     }
 
     void Window::setClearColor(float red, float green, float blue, float alpha) {
-        if(window) {
-            data.clearColor[0] = red;
-            data.clearColor[1] = green;
-            data.clearColor[2] = blue;
-            data.clearColor[3] = alpha;
-        }
+        PNT_WINDOW_ASSERT(window);
+
+        data.clearColor[0] = red;
+        data.clearColor[1] = green;
+        data.clearColor[2] = blue;
+        data.clearColor[3] = alpha;
     }
 
     void Window::setShouldClose(bool shouldClose) {
-        if(window) {
-            glfwSetWindowShouldClose(window, shouldClose);
-        }
+        PNT_WINDOW_ASSERT(window);
+
+        glfwSetWindowShouldClose(window, shouldClose);
     }
 
     void Window::pushEvent(windowEvent event) {
-        if(window) {
-            eventQueue.push_back(event);
-        }
+        PNT_WINDOW_ASSERT(window);
+
+        eventQueue.push_back(event);
     }
 
     void Window::setAspectRatio(uint32_t numerator, uint32_t denominator) {
-        if(window) {
-            glfwSetWindowAspectRatio(window, numerator, denominator);
-        }
+        PNT_WINDOW_ASSERT(window);
+
+        glfwSetWindowAspectRatio(window, numerator, denominator);
     }
 
     const char *Window::getTitle() {
-        if(window) {
-            return data.title;
-        }
-        return 0;
+        PNT_WINDOW_ASSERT(window);
+
+        return data.title;
     }
 
     uint16_t Window::getWidth() {
-        if(window) {
-            return data.width;
-        }
-        return 0;
+        PNT_WINDOW_ASSERT(window);
+
+        return data.width;
     }
 
     uint16_t Window::getHeight() {
-        if(window) {
-            return data.height;
-        }
-        return 0;
+        PNT_WINDOW_ASSERT(window);
+
+        return data.height;
     }
 
     uint16_t Window::getXPos() {
-        if(window) {
-            return data.xpos;
-        }
-        return 0;
+        PNT_WINDOW_ASSERT(window);
+
+        return data.xpos;
     }
 
     uint16_t Window::getYPos() {
-        if(window) {
-            return data.ypos;
-        }
-        return 0;
+        PNT_WINDOW_ASSERT(window);
+
+        return data.ypos;
     }
 
     bool Window::getHidden() {
-        if(window) {
-            return data.hidden;
-        }
-        return 0;
+        PNT_WINDOW_ASSERT(window);
+
+        return data.hidden;
     }
 
     bool Window::getIconified() {
-        if(window) {
-            return data.iconified;
-        }
-        return 0;
+        PNT_WINDOW_ASSERT(window);
+
+        return data.iconified;
     }
 
     bool Window::shouldClose() {
-        if(window) {
-            return glfwWindowShouldClose(window);
-        }
-        return 0;
+        PNT_WINDOW_ASSERT(window);
+
+        return glfwWindowShouldClose(window);
     }
 
     // Callback definitions.
