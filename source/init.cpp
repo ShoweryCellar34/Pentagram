@@ -6,14 +6,20 @@
 #include <window.hpp>
 
 namespace PNT {
+    extern std::shared_ptr<spdlog::logger> logger;
+
     // Init/deinit definitions.
 
     bool init() {
+        logger.get()->set_pattern("%d-%m-%Y %H:%M:%S %l : %v");
+        logger.get()->flush_on(spdlog::level::trace);
+        logger.get()->info("[PNT]Initializing Pentagram");
         glfwSetErrorCallback(errorCallback);
         return glfwInit();
     }
 
     void deinit() {
+        logger.get()->info("[PNT]Shutting down Pentagram");
         for(Window* window : Window::instancesList) {
             window->destroyWindow();
         }

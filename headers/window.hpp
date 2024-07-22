@@ -47,12 +47,14 @@ namespace PNT {
         static inline size_t instances;
         static inline std::vector<Window*> instancesList;
         GLFWwindow* window = nullptr;
+        bool closed = true;
         bool frame = false;
         windowData data;
         std::vector<windowEvent> eventQueue;
         ImGuiContext* ImContext;
         ImGuiIO* IO;
 
+        void createWindowIntern(const char* title, uint32_t width, uint32_t height, uint32_t xpos, uint32_t ypos, uint32_t ImGuiFlags);
     public:
         /// @brief Window object empty default constuctor, can be used later with "createWindow()" method.
         Window();
@@ -68,7 +70,7 @@ namespace PNT {
 
         /// @brief Window object constuctor.
         /// @param data The desired "windowData" object for the window.
-        Window(windowData data);
+        Window(const windowData& data);
 
         ~Window();
 
@@ -83,7 +85,7 @@ namespace PNT {
 
         /// @brief Creates the window, you can use this in conjunction with the "Window()" constructor that tskes no arguments to create the window on screen later.
         /// @param data The desired "windowData" object for the window.
-        void createWindow(windowData data);
+        void createWindow(const windowData& data);
 
         void destroyWindow();
 

@@ -14,23 +14,7 @@
 namespace PNT {
     // Window definitions.
 
-    Window::Window() = default;
-
-    Window::Window(const char *title, uint32_t width, uint32_t height, uint32_t xpos, uint32_t ypos, uint32_t ImGuiFlags) {
-        createWindow(title, width, height, xpos, ypos, ImGuiFlags);
-    }
-
-    Window::Window(windowData data) {
-        createWindow(data);
-    }
-
-    Window::~Window() {
-        destroyWindow();
-    }
-
-    void Window::createWindow(const char *title, uint32_t width, uint32_t height, uint32_t xpos, uint32_t ypos, uint32_t ImGuiFlags) {
-        PNT_NO_WINDOW_ASSERT(window);
-
+    void Window::createWindowIntern(const char *title, uint32_t width, uint32_t height, uint32_t xpos, uint32_t ypos, uint32_t ImGuiFlags) {
         instancesList.push_back(this);
         instances++;
 
@@ -75,67 +59,47 @@ namespace PNT {
         ImGui_ImplGlfw_InitForOpenGL(window, true);
         ImGui_ImplOpenGL3_Init(nullptr);
         ImGui::StyleColorsDark();
+        closed = false;
     }
 
-    void Window::createWindow(windowData data) {
+    Window::Window() = default;
+
+    Window::Window(const char *title, uint32_t width, uint32_t height, uint32_t xpos, uint32_t ypos, uint32_t ImGuiFlags) {
+        createWindow(title, width, height, xpos, ypos, ImGuiFlags);
+    }
+
+    Window::Window(const windowData& data) {
+        createWindow(data);
+    }
+
+    Window::~Window() {
+        destroyWindow();
+    }
+
+    void Window::createWindow(const char *title, uint32_t width, uint32_t height, uint32_t xpos, uint32_t ypos, uint32_t ImGuiFlags) {
         PNT_NO_WINDOW_ASSERT(window);
 
-        instancesList.push_back(this);
-        instances++;
+        createWindowIntern(title, width, height, xpos, ypos, ImGuiFlags);
+    }
 
-        strcpy(this->data.title, data.title);
-        this->data.width = data.width;
-        this->data.height = data.height;
+    void Window::createWindow(const windowData& data) {
+        PNT_NO_WINDOW_ASSERT(window);
 
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-        window = glfwCreateWindow(data.width, data.height, data.title, NULL, NULL);
-        glfwSetWindowUserPointer(window, this);
-        glfwMakeContextCurrent(window);
-        gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-        setPosition(data.xpos, data.ypos);
-
-        glfwSetKeyCallback(window, callbackManagers::keyCallbackManager);
-        glfwSetCharCallback(window, callbackManagers::charCallbackManager);
-        glfwSetDropCallback(window, callbackManagers::dropCallbackManager);
-        //glfwSetErrorCallback(callbackManagers::);
-        glfwSetScrollCallback(window, callbackManagers::scrollCallbackManager);
-        //glfwSetMonitorCallback(callbackManagers::);
-        //glfwSetCharModsCallback(window, callbackManagers::);
-        //glfwSetJoystickCallback(callbackManagers::);
-        glfwSetCursorPosCallback(window, callbackManagers::cursorPosCallbackManager);
-        glfwSetWindowPosCallback(window, callbackManagers::windowposCallbackManager);
-        glfwSetWindowSizeCallback(window, callbackManagers::windowsizeCallbackManager);
-        //glfwSetCursorEnterCallback(window, callbackManagers::);
-        glfwSetMouseButtonCallback(window, callbackManagers::mousebuttonCallbackManager);
-        //glfwSetWindowCloseCallback(window, callbackManagers::);
-        //glfwSetWindowFocusCallback(window, callbackManagers::);
-        glfwSetWindowIconifyCallback(window, callbackManagers::iconifyCallbackManager);
-        //glfwSetWindowRefreshCallback(window, callbackManagers::);
-        //glfwSetWindowMaximizeCallback(window, callbackManagers::);
-        //glfwSetFramebufferSizeCallback(window, callbackManagers::);
-        //glfwSetWindowContentScaleCallback(window, callbackManagers::);
-
-        ImContext = ImGui::CreateContext();
-        ImGui::SetCurrentContext(ImContext);
-        IO = &ImGui::GetIO();
-        IO->ConfigFlags |= data.ImGuiFlags;
-        ImGui_ImplGlfw_InitForOpenGL(window, true);
-        ImGui_ImplOpenGL3_Init(nullptr);
-        ImGui::StyleColorsDark();
+        createWindowIntern(data.title, data.width, data.height, data.xpos, data.ypos, data.ImGuiFlags);
     }
 
     void Window::destroyWindow() {
-        PNT_WINDOW_ASSERT(window);
+        if(!closed) {
+            PNT_WINDOW_ASSERT(window);
 
-        instances--;
-        instancesList.erase(std::find(instancesList.begin(), instancesList.end(), this));
+            instances--;
+            instancesList.erase(std::find(instancesList.begin(), instancesList.end(), this));
 
-        glfwDestroyWindow(window);
+            glfwDestroyWindow(window);
 
-        window = nullptr;
+            window = nullptr;
+            closed = true;
+        }
     }
 
     void Window::startFrame() {
