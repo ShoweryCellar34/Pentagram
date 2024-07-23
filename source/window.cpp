@@ -15,6 +15,8 @@ namespace PNT {
     // Window definitions.
 
     void Window::createWindowIntern(const char *title, uint32_t width, uint32_t height, uint32_t xpos, uint32_t ypos, uint32_t ImGuiFlags) {
+        logger.get()->info("[PNT]Creating window \"{}\"", title);
+
         instancesList.push_back(this);
         instances++;
 
@@ -90,7 +92,7 @@ namespace PNT {
 
     void Window::destroyWindow() {
         if(!closed) {
-            PNT_WINDOW_ASSERT(window);
+            logger.get()->info("[PNT]Destroying window \"{}\"", data.title);
 
             instances--;
             instancesList.erase(std::find(instancesList.begin(), instancesList.end(), this));
@@ -236,11 +238,15 @@ namespace PNT {
     void Window::pushEvent(windowEvent event) {
         PNT_WINDOW_ASSERT(window);
 
+        logger.get()->info("[PNT]Pushing event of type \"{}\" for window \"{}\"", event.getTypename(), data.title);
+
         eventQueue.push_back(event);
     }
 
     void Window::setAspectRatio(uint32_t numerator, uint32_t denominator) {
         PNT_WINDOW_ASSERT(window);
+
+        logger.get()->info("[PNT]Setting aspect ratio for window \"{}\"", data.title);
 
         glfwSetWindowAspectRatio(window, numerator, denominator);
     }

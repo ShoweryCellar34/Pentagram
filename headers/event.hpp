@@ -73,6 +73,8 @@ namespace PNT {
         windowsizeEvent windowsize;
         mousebuttonEvent mousebutton;
         bool iconified;
+
+        const char* getTypename();
     };
 
     windowEvent createKeyEvent(int key, int scancode, int action, int mods);

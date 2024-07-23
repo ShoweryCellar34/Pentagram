@@ -1,6 +1,7 @@
 #include <event.hpp>
 
 #include <cstring>
+#include <string>
 #include <GLFW/glfw3.h>
 #include <window.hpp>
 #include <enumerations.hpp>
@@ -130,5 +131,38 @@ namespace PNT {
         event.iconified = iconified;
 
         return event;
+    }
+    const char *windowEvent::getTypename() {
+        switch(type) {
+        case PNT_EVENT_TYPE_CHAR:
+            return "Text input";
+
+        case PNT_EVENT_TYPE_CURSORPOS:
+            return "Cursor position";
+
+        case PNT_EVENT_TYPE_DROP:
+            return "File(s) droped";
+
+        case PNT_EVENT_TYPE_ICONIFY:
+            return "Minimized/Maximized";
+
+        case PNT_EVENT_TYPE_KEYBOARD:
+            return "Key press";
+
+        case PNT_EVENT_TYPE_MOUSEBUTTON:
+            return "Mouse button";
+
+        case PNT_EVENT_TYPE_SCROLL:
+            return "Scroll";
+
+        case PNT_EVENT_TYPE_WINDOWPOS:
+            return "Window position";
+
+        case PNT_EVENT_TYPE_WINDOWSIZE:
+            return "Window size";
+
+        default:
+            return strcat("Unregistered event name with code ", std::to_string(type).c_str());
+        }
     }
 }

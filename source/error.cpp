@@ -10,12 +10,15 @@ void PNT::assertMsg(const char *file, int line, int code) {
     case 0:
         strcpy(buffer, "[PNT]Window null or not created yet, this occured at: {}:{}");
         break;
+
     case 1:
         strcpy(buffer, "[PNT]Window not null or already created, this occured at: {}:{}");
         break;
+
     case 2:
         strcpy(buffer, "[PNT]Newframe required, this occured at: {}:{}");
         break;
+
     case 3:
         strcpy(buffer, "[PNT]Endframe required, this occured at: {}:{}");
         break;
