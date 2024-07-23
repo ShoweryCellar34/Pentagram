@@ -162,7 +162,7 @@ namespace PNT {
             return "Window size";
 
         default:
-            return strcat("Unregistered event name with code ", std::to_string(type).c_str());
+            return "Unregistered event name";
         }
     }
 }
