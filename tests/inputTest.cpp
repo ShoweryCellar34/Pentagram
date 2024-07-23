@@ -54,7 +54,7 @@ int main(int argc, char *argv[]) {
     }
 
     PNT::image logo("res/textures/logo/ghoul.png");
-    PNT::Window window("keyboardInputTest", 500, 500, 700, 700, ImGuiConfigFlags_ViewportsEnable);
+    PNT::Window window("inputTest", 500, 500, 700, 700, ImGuiConfigFlags_ViewportsEnable);
     window.setIcon(logo);
     window.setEventCallback(&eventCallback);
 
