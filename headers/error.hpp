@@ -1,7 +1,6 @@
 #pragma once
 
 #include <spdlog/spdlog.h>
-#include <spdlog/sinks/stdout_color_sinks.h>
 
 #define PNT_WINDOW_ASSERT(x) if(!x) PNT::assertMsg(__FILE__, __LINE__, 0)
 #define PNT_NO_WINDOW_ASSERT(x) if(x) PNT::assertMsg(__FILE__, __LINE__, 1)

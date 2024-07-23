@@ -1,7 +1,13 @@
 #include <error.hpp>
 
+#include <spdlog/sinks/stdout_color_sinks.h>
+#include <spdlog/sinks/daily_file_sink.h>
+
 namespace PNT {
-    std::shared_ptr<spdlog::logger> logger = spdlog::stdout_color_mt("Pentagram console log");
+    auto consoleSink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+    auto fileSink = std::make_shared<spdlog::sinks::daily_file_sink_mt>("logs/", 0, 0, true);
+    std::vector<spdlog::sink_ptr> sinks{consoleSink, fileSink};
+    std::shared_ptr<spdlog::logger> logger = std::make_shared<spdlog::logger>("Pentagram log", sinks.begin(), sinks.end());
 }
 
 void PNT::assertMsg(const char *file, int line, int code) {
