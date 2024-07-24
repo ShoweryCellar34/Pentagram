@@ -8,8 +8,6 @@
 #define PNT_ENDFRAME_ASSERT(x) if(x) PNT::assertMsg(__FILE__, __LINE__, 3)
 
 namespace PNT {
-    extern std::shared_ptr<spdlog::logger> logger;
-
     void assertMsg(const char* file, int line, int code);
 
     void errorCallback(int errorCode, const char* errorDescription);

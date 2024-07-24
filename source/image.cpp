@@ -1,11 +1,15 @@
 #include <image.hpp>
 
+#include <memory>
+#include <spdlog/spdlog.h>
 #include <stb_image.h>
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
 #include <glad.h>
 
 namespace PNT {
+    extern std::shared_ptr<spdlog::logger> logger;
+
     // Image definitions.
 
     image::image() : width(100), height(100) {
@@ -16,6 +20,8 @@ namespace PNT {
     }
 
     image::image(const image& original) {
+        logger.get()->info("[PNT]Copying image with width: {} and height: {}", width, height);
+
         width = original.width;
         height = original.height;
         channels = original.channels;
@@ -36,7 +42,12 @@ namespace PNT {
     }
 
     void image::load(const char* path) {
+        logger.get()->info("[PNT]Loading image from path \"{}\"", path);
+
         pixels = stbi_load(path, &width, &height, &this->channels, 4);
+        if(pixels = nullptr) {
+            logger.get()->warn("Failed to load image");
+        }
     }
 
     void image::ImGuiDraw(ImVec2 dimensions) const {
@@ -64,6 +75,8 @@ namespace PNT {
     }
 
     void image::loadOnGPU() {
+        logger.get()->info("[PNT]Loading image onto GPU with width: {} and height: {}", width, height);
+
         if(!textureID) {
             glGenTextures(1, &textureID);
             glBindTexture(GL_TEXTURE_2D, textureID);
@@ -80,8 +93,12 @@ namespace PNT {
 
     void image::unloadOffGPU() {
         if(textureID) {
+            logger.get()->info("[PNT]Unloading image off GPU");
+
             glDeleteTextures(1, &textureID);
             textureID = 0;
+        } else {
+            logger.get()->warn("[PNT]Tried to unload a off GPU when image was not on GPU");
         }
     }
 

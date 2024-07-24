@@ -12,6 +12,8 @@
 #include <image.hpp>
 
 namespace PNT {
+    extern std::shared_ptr<spdlog::logger> logger;
+
     // Window definitions.
 
     void Window::createWindowIntern(const char *title, uint32_t width, uint32_t height, uint32_t xpos, uint32_t ypos, uint32_t ImGuiFlags) {
@@ -165,6 +167,8 @@ namespace PNT {
     void Window::setIcon(const image& icon) {
         PNT_WINDOW_ASSERT(window);
 
+        logger.get()->info("[PNT]Setting icon for window \"{}\"", data.title);
+
         if(icon.valid()) {
             GLFWimage glfwImage;
             glfwImage.width = icon.getWidth();
@@ -172,6 +176,7 @@ namespace PNT {
             glfwImage.pixels = icon.getPixels();
             glfwSetWindowIcon(window, 1, &glfwImage);
         } else {
+            logger.get()->warn("[PNT]Icon failed to set");
             glfwSetWindowIcon(window, 0, nullptr);
         }
     }

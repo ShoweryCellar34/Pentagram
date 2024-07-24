@@ -10,8 +10,8 @@ namespace PNT {
         uint32_t shaderID = 0;
         uint32_t type = 0;
         char* source = new char[1];
-        char errorBuffer[1024];
-        int success = 0;
+        char errorBuffer[1024] = {0};
+        int success = 1;
 
     public:
         shader();
@@ -22,6 +22,13 @@ namespace PNT {
         shader(const char* source, uint32_t type);
 
         ~shader();
+
+        /// @brief Creates the shader.
+        /// @param type The desired type of shader to create.
+        void createShader(uint32_t type);
+
+        /// @brief Destroys the shader.
+        void destroyShader();
 
         /// @brief Changes the shader source code, call "compile()" after this to push changes onto GPU.
         /// @param source The desired shader source code.
@@ -55,7 +62,7 @@ namespace PNT {
     class program {
     private:
         uint32_t programID = 0;
-        char errorBuffer[1024];
+        char errorBuffer[1024] = {0};
         int success = 0;
 
     public:
