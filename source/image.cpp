@@ -45,7 +45,7 @@ namespace PNT {
         logger.get()->info("[PNT]Loading image from path \"{}\"", path);
 
         pixels = stbi_load(path, &width, &height, &this->channels, 4);
-        if(pixels = nullptr) {
+        if(pixels == nullptr) {
             logger.get()->warn("Failed to load image");
         }
     }
