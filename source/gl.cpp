@@ -20,9 +20,7 @@ namespace PNT {
     }
 
     shader::~shader() {
-        if(source) {
-            delete[] source;
-        }
+        delete[] source;
         destroyShader();
     }
 
@@ -40,8 +38,13 @@ namespace PNT {
     void shader::setData(const char* source) {
         logger.get()->info("[PNT]Setting data for shader with ID: {}", shaderID);
 
-        this->source = new char[strlen(source)];
-        strcpy(this->source, source);
+        if(strlen(source) > 0) {
+            this->source = new char[strlen(source)];
+            strcpy(this->source, source);
+        } else {
+            this->source = new char[1];
+            this->source[0] = 0;
+        }
         glShaderSource(shaderID, 1, &source, NULL);
         glGetShaderiv(shaderID, GL_COMPILE_STATUS, &success);
         if(!success) {
