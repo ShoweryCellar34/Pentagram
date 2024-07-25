@@ -83,9 +83,9 @@ namespace PNT {
 
     size_t file::getCharacterCount() {
         if(fileStream.is_open()) {
-            size_t old = fileStream.tellg();
+            size_t old = (size_t)fileStream.tellg();
             fileStream.seekg(0);
-            size_t begin = fileStream.tellg();
+            size_t begin = (size_t)fileStream.tellg();
             fileStream.seekg(0, std::ios::end);
             size_t result = (size_t)fileStream.tellg() - begin;
 

@@ -60,7 +60,7 @@ namespace PNT {
 
     void image::ImGuiDraw(uint32_t width, uint32_t height) const {
         if(textureID) {
-            ImGui::Image((void*)(intptr_t)textureID, ImVec2(width, height));
+            ImGui::Image((void*)(intptr_t)textureID, ImVec2((float)width, (float)height));
         } else {
             ImGui::Text("Image not loaded on GPU");
         }
