@@ -20,7 +20,9 @@ namespace PNT {
     }
 
     shader::~shader() {
-        delete source;
+        if(source) {
+            delete[] source;
+        }
         destroyShader();
     }
 
