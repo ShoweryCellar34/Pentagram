@@ -31,7 +31,7 @@ namespace PNT {
         void destroyShader();
 
         /// @brief Changes the shader source code, call "compile()" after this to push changes onto GPU.
-        /// @param source The desired shader source code.
+        /// @param source The desired shader source code (must be null terminated).
         void setData(const char* source);
 
         /// @brief Gets the shader ID.
