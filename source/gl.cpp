@@ -115,7 +115,7 @@ namespace PNT {
 
         programID = glCreateProgram();
         for(size_t i = 0; i < shaders.size(); i++) {
-            glAttachShader(programID, shaders.begin()[i]->getID());
+            attachShader(shaders.begin()[i]->getID());
         }
     }
 
@@ -126,7 +126,7 @@ namespace PNT {
 
         programID = glCreateProgram();
         for(size_t i = 0; i < shaders.size(); i++) {
-            glAttachShader(programID, shaders.begin()[i]);
+            attachShader(shaders.begin()[i]);
         }
     }
 

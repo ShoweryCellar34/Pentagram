@@ -251,7 +251,7 @@ namespace PNT {
     void Window::setAspectRatio(uint32_t numerator, uint32_t denominator) {
         PNT_WINDOW_ASSERT(window);
 
-        logger.get()->info("[PNT]Setting aspect ratio for window \"{}\"", data.title);
+        logger.get()->info("[PNT]Setting aspect ratio: {}, {} for window \"{}\"", numerator, denominator,data.title);
 
         glfwSetWindowAspectRatio(window, numerator, denominator);
     }
