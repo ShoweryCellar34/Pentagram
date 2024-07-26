@@ -28,6 +28,22 @@ void PNT::assertMsg(const char *file, int line, int code) {
     case 3:
         strcpy(buffer, "[PNT]Endframe required, this occured at: {}:{}");
         break;
+
+    case 4:
+        strcpy(buffer, "[PNT]Shader ID is 0 (0 indicates not created yet), this occured at: {}:{}");
+        break;
+
+    case 5:
+        strcpy(buffer, "[PNT]Shader ID is not 0 (0 indicates not created yet), this occured at: {}:{}");
+        break;
+
+    case 6:
+        strcpy(buffer, "[PNT]Program ID is 0 (0 indicates not created yet), this occured at: {}:{}");
+        break;
+
+    case 7:
+        strcpy(buffer, "[PNT]Program ID is not 0 (0 indicates not created yet), this occured at: {}:{}");
+        break;
     }
     logger.get()->error(buffer, file, line);
     exit(EXIT_FAILURE);

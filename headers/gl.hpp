@@ -18,7 +18,7 @@ namespace PNT {
 
         /// @brief Image object constructor.
         /// @param source The desired shader source code.
-        /// @param type The desired shader type.
+        /// @param type The desired type of shader to create.
         shader(const char* source, uint32_t type);
 
         ~shader();
@@ -75,6 +75,18 @@ namespace PNT {
         /// @brief Program object constructor for handling shaders.
         /// @param shaders Shaders to link into the program, they can be ether "PNT::shader*" or a shader identifier of type "uint32_t" contained in curly brackets (only one type at a time).
         program(std::initializer_list<uint32_t> shaders);
+
+        ~program();
+
+        /// @brief Create the program.
+        /// @param shaders Shaders to link into the program, they can be ether "PNT::shader*" or a shader identifier of type "uint32_t" contained in curly brackets (only one type at a time).
+        void createProgram(std::initializer_list<PNT::shader*> shaders);
+
+        /// @brief Create the program.
+        /// @param shaders Shaders to link into the program, they can be ether "PNT::shader*" or a shader identifier of type "uint32_t" contained in curly brackets (only one type at a time).
+        void createProgram(std::initializer_list<uint32_t> shaders);
+
+        void destroyProgram();
 
         /// @brief Links a shader to the program, call "link()" after this to relink the program and push changes onto the GPU.
         /// @param object Can be a "PNT::shader*" or a shader identifier of type "uint32_t".

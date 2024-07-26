@@ -4,6 +4,7 @@
 #include <cstring>
 #include <spdlog/spdlog.h>
 #include <glad.h>
+#include <error.hpp>
 
 namespace PNT {
     extern std::shared_ptr<spdlog::logger> logger;
@@ -25,17 +26,23 @@ namespace PNT {
     }
 
     void shader::createShader(uint32_t type) {
+        PNT_NO_SHADER_ID(shaderID);
+
         shaderID = glCreateShader(type);
     }
 
     void shader::destroyShader() {
-        if(shaderID) {
-            glDeleteShader(shaderID);
-            shaderID = 0;
-        }
+        PNT_SHADER_ID(shaderID);
+
+        logger.get()->info("[PNT]Creating shader");
+
+        glDeleteShader(shaderID);
+        shaderID = 0;
     }
 
     void shader::setData(const char* source) {
+        PNT_SHADER_ID(shaderID);
+
         logger.get()->info("[PNT]Setting data for shader with ID: {}", shaderID);
 
         if(strlen(source) > 0) {
@@ -88,49 +95,81 @@ namespace PNT {
     }
 
     program::program(std::initializer_list<PNT::shader*> shaders) {
-        errorBuffer[0] = 0;
+        createProgram(shaders);
+    }
+
+    program::program(std::initializer_list<uint32_t> shaders) {
+        createProgram(shaders);
+    }
+
+    program::~program() {
+        destroyProgram();
+    }
+
+    void program::createProgram(std::initializer_list<PNT::shader*> shaders) {
+        PNT_NO_PROGRAM_ID(programID);
+
         programID = glCreateProgram();
         for(size_t i = 0; i < shaders.size(); i++) {
             glAttachShader(programID, shaders.begin()[i]->getID());
         }
     }
 
-    program::program(std::initializer_list<uint32_t> shaders) {
+    void program::createProgram(std::initializer_list<uint32_t> shaders) {
+        PNT_NO_PROGRAM_ID(programID);
+
         programID = glCreateProgram();
         for(size_t i = 0; i < shaders.size(); i++) {
             glAttachShader(programID, shaders.begin()[i]);
         }
     }
 
+    void program::destroyProgram() {
+        PNT_PROGRAM_ID(programID);
+
+        glDeleteProgram(programID);
+        programID = 0;
+    }
+
     void program::attachShader(shader* object) {
+        PNT_PROGRAM_ID(programID);
+
         logger.get()->info("[PNT]Attatching shader to program with ID: {}", programID);
 
         if(!object->getID()) {
             glAttachShader(programID, object->getID());
         } else {
-            logger.get()->warn("[PNT]Attempted to attach shader with ID 0 (0 is invaild)");
+            logger.get()->warn("[PNT]Attempted to attach shader with ID 0 (0 indicates not created yet)");
         }
     }
 
     void program::attachShader(uint32_t object) {
+        PNT_PROGRAM_ID(programID);
+
         logger.get()->info("[PNT]Attatching shader to program with ID: {}", programID);
 
         if(!object) {
             glAttachShader(programID, object);
         } else {
-            logger.get()->warn("[PNT]Attempted to attach shader with ID 0 (0 is invaild)");
+            logger.get()->warn("[PNT]Attempted to attach shader with ID 0 (0 indicates not created yet)");
         }
     }
 
     void program::detachShader(shader* object) {
+        PNT_PROGRAM_ID(programID);
+
         glDetachShader(programID, object->getID());
     }
 
     void program::detachShader(uint32_t object) {
+        PNT_PROGRAM_ID(programID);
+
         glDetachShader(programID, object);
     }
 
     void program::link() {
+        PNT_PROGRAM_ID(programID);
+
         logger.get()->info("[PNT]Linking program with ID: {}", programID);
 
         glLinkProgram(programID);
@@ -142,6 +181,8 @@ namespace PNT {
     }
 
     void program::use() {
+        PNT_PROGRAM_ID(programID);
+
         glUseProgram(programID);
     }
 

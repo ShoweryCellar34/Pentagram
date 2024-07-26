@@ -7,6 +7,12 @@
 #define PNT_NEWFRAME_ASSERT(x) if(!x) PNT::assertMsg(__FILE__, __LINE__, 2)
 #define PNT_ENDFRAME_ASSERT(x) if(x) PNT::assertMsg(__FILE__, __LINE__, 3)
 
+#define PNT_SHADER_ID(x) if(!x) PNT::assertMsg(__FILE__, __LINE__, 4)
+#define PNT_NO_SHADER_ID(x) if(x) PNT::assertMsg(__FILE__, __LINE__, 5)
+
+#define PNT_PROGRAM_ID(x) if(!x) PNT::assertMsg(__FILE__, __LINE__, 6)
+#define PNT_NO_PROGRAM_ID(x) if(x) PNT::assertMsg(__FILE__, __LINE__, 7)
+
 namespace PNT {
     void assertMsg(const char* file, int line, int code);
 
