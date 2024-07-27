@@ -56,7 +56,7 @@ namespace PNT {
         }
         glShaderSource(shaderID, 1, &source, NULL);
         glGetShaderiv(shaderID, GL_COMPILE_STATUS, &success);
-        if(!success) {
+        if(success) {
             glGetShaderInfoLog(shaderID, 1024, NULL, errorBuffer);
             logger.get()->warn("[PNT]Failed to set shader data with error \"{}\"", errorBuffer);
         } else {
