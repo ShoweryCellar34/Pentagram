@@ -11,7 +11,7 @@ namespace PNT {
     // Init/deinit definitions.
 
     bool init() {
-        logger.get()->set_pattern("%d-%m-%Y %H:%M:%S %l : %v");
+        logger.get()->set_pattern("%d-%m-%Y %H:%M:%S %l : %v", spdlog::pattern_time_type::utc);
         logger.get()->flush_on(spdlog::level::trace);
         logger.get()->info("[PNT]Initializing Pentagram");
         glfwSetErrorCallback(errorCallback);

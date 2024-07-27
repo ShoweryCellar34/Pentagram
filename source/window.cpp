@@ -167,7 +167,7 @@ namespace PNT {
     void Window::setIcon(const image& icon) {
         PNT_WINDOW_ASSERT(window);
 
-        logger.get()->info("[PNT]Setting icon for window \"{}\"", data.title);
+        logger.get()->debug("[PNT]Setting icon for window \"{}\"", data.title);
 
         if(icon.valid()) {
             GLFWimage glfwImage;
@@ -243,7 +243,7 @@ namespace PNT {
     void Window::pushEvent(windowEvent event) {
         PNT_WINDOW_ASSERT(window);
 
-        logger.get()->info("[PNT]Pushing event of type \"{}\" for window \"{}\"", event.getTypename(), data.title);
+        logger.get()->debug("[PNT]Pushing event of type \"{}\" for window \"{}\"", event.getTypename(), data.title);
 
         eventQueue.push_back(event);
     }
@@ -251,7 +251,7 @@ namespace PNT {
     void Window::setAspectRatio(uint32_t numerator, uint32_t denominator) {
         PNT_WINDOW_ASSERT(window);
 
-        logger.get()->info("[PNT]Setting aspect ratio: {}, {} for window \"{}\"", numerator, denominator,data.title);
+        logger.get()->debug("[PNT]Setting aspect ratio: {}, {} for window \"{}\"", numerator, denominator,data.title);
 
         glfwSetWindowAspectRatio(window, numerator, denominator);
     }

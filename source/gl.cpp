@@ -11,8 +11,7 @@ namespace PNT {
 
     // Shader definitions.
 
-    shader::shader() {
-    }
+    shader::shader() = default;
 
     shader::shader(const char* source, uint32_t type) {
         errorBuffer[0] = 0;
@@ -45,7 +44,7 @@ namespace PNT {
     void shader::setData(const char* source) {
         PNT_SHADER_ID(shaderID);
 
-        logger.get()->info("[PNT]Setting data for shader with ID: {}", shaderID);
+        logger.get()->debug("[PNT]Setting data for shader with ID: {}", shaderID);
 
         if(strlen(source) > 0) {
             this->source = new char[strlen(source)];
@@ -142,7 +141,7 @@ namespace PNT {
     void program::attachShader(shader* object) {
         PNT_PROGRAM_ID(programID);
 
-        logger.get()->info("[PNT]Attatching shader with ID: {} to program with ID: {}", object->getID(), programID);
+        logger.get()->debug("[PNT]Attatching shader with ID: {} to program with ID: {}", object->getID(), programID);
 
         if(object->getID()) {
             glAttachShader(programID, object->getID());
@@ -154,7 +153,7 @@ namespace PNT {
     void program::attachShader(uint32_t object) {
         PNT_PROGRAM_ID(programID);
 
-        logger.get()->info("[PNT]Attatching shader with ID: {} to program with ID: {}", object, programID);
+        logger.get()->debug("[PNT]Attatching shader with ID: {} to program with ID: {}", object, programID);
 
         if(object) {
             glAttachShader(programID, object);
@@ -166,7 +165,7 @@ namespace PNT {
     void program::detachShader(shader* object) {
         PNT_PROGRAM_ID(programID);
 
-        logger.get()->info("[PNT]Detching shader with ID: {} to program with ID: {}", object->getID(), programID);
+        logger.get()->debug("[PNT]Detching shader with ID: {} to program with ID: {}", object->getID(), programID);
 
         glDetachShader(programID, object->getID());
     }
@@ -174,7 +173,7 @@ namespace PNT {
     void program::detachShader(uint32_t object) {
         PNT_PROGRAM_ID(programID);
 
-        logger.get()->info("[PNT]Detching shader with ID: {} to program with ID: {}", object, programID);
+        logger.get()->debug("[PNT]Detching shader with ID: {} to program with ID: {}", object, programID);
 
         glDetachShader(programID, object);
     }
@@ -182,7 +181,7 @@ namespace PNT {
     void program::link() {
         PNT_PROGRAM_ID(programID);
 
-        logger.get()->info("[PNT]Linking program with ID: {}", programID);
+        logger.get()->debug("[PNT]Linking program with ID: {}", programID);
 
         glLinkProgram(programID);
         glGetProgramiv(programID, GL_LINK_STATUS, &success);

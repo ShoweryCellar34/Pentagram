@@ -12,15 +12,18 @@ namespace PNT {
 
     // Image definitions.
 
-    image::image() : width(100), height(100) {
+    image::image() {
+        logger.get()->info("[PNT]Creating image");
     };
 
     image::image(const char* path) {
+        logger.get()->info("[PNT]Creating image");
+
         load(path);
     }
 
     image::image(const image& original) {
-        logger.get()->info("[PNT]Copying image with width: {} and height: {}", width, height);
+        logger.get()->debug("[PNT]Copying image with width: {} and height: {}", width, height);
 
         width = original.width;
         height = original.height;
@@ -33,6 +36,8 @@ namespace PNT {
     }
 
     image::~image() {
+        logger.get()->info("[PNT]Destroying image");
+
         if(textureID) {
             unloadOffGPU();
         }
@@ -42,7 +47,7 @@ namespace PNT {
     }
 
     void image::load(const char* path) {
-        logger.get()->info("[PNT]Loading image from path \"{}\"", path);
+        logger.get()->debug("[PNT]Loading image from path \"{}\"", path);
 
         pixels = stbi_load(path, &width, &height, &this->channels, 4);
         if(pixels == nullptr) {
@@ -75,7 +80,7 @@ namespace PNT {
     }
 
     void image::loadOnGPU() {
-        logger.get()->info("[PNT]Loading image onto GPU with width: {} and height: {}", width, height);
+        logger.get()->debug("[PNT]Loading image onto GPU with width: {} and height: {}", width, height);
 
         if(!textureID) {
             glGenTextures(1, &textureID);
@@ -93,7 +98,7 @@ namespace PNT {
 
     void image::unloadOffGPU() {
         if(textureID) {
-            logger.get()->info("[PNT]Unloading image off GPU");
+            logger.get()->debug("[PNT]Unloading image off GPU");
 
             glDeleteTextures(1, &textureID);
             textureID = 0;
