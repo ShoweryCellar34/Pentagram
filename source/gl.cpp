@@ -144,7 +144,7 @@ namespace PNT {
 
         logger.get()->info("[PNT]Attatching shader with ID: {} to program with ID: {}", object->getID(), programID);
 
-        if(!object->getID()) {
+        if(object->getID()) {
             glAttachShader(programID, object->getID());
         } else {
             logger.get()->warn("[PNT]Attempted to attach shader with ID 0 (0 indicates not created yet)");
@@ -156,7 +156,7 @@ namespace PNT {
 
         logger.get()->info("[PNT]Attatching shader with ID: {} to program with ID: {}", object, programID);
 
-        if(!object) {
+        if(object) {
             glAttachShader(programID, object);
         } else {
             logger.get()->warn("[PNT]Attempted to attach shader with ID 0 (0 indicates not created yet)");
