@@ -7,9 +7,9 @@ struct ImVec2;
 namespace PNT {
     class image {
     private:
-        int width = 100, height = 100, channels = 0;
-        unsigned char* pixels = nullptr;
-        unsigned int textureID = 0;
+        int width, height, channels;
+        unsigned char* pixels;
+        unsigned int textureID;
 
     public:
         image();

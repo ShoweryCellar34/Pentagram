@@ -16,6 +16,21 @@ namespace PNT {
 
     // Window definitions.
 
+    Window::Window() : window(nullptr), closed(true), frame(false), data(), eventQueue(), ImContext(nullptr), IO(nullptr) {
+    }
+
+    Window::Window(const char *title, uint32_t width, uint32_t height, uint32_t xpos, uint32_t ypos, uint32_t ImGuiFlags) : window(nullptr), closed(true), frame(false), data(), eventQueue(), ImContext(nullptr), IO(nullptr) {
+        createWindow(title, width, height, xpos, ypos, ImGuiFlags);
+    }
+
+    Window::Window(const windowData& data) : window(nullptr), closed(true), frame(false), data(), eventQueue(), ImContext(nullptr), IO(nullptr) {
+        createWindow(data);
+    }
+
+    Window::~Window() {
+        destroyWindow();
+    }
+
     void Window::createWindowIntern(const char *title, uint32_t width, uint32_t height, uint32_t xpos, uint32_t ypos, uint32_t ImGuiFlags) {
         PNT_REQUIRE_INIT();
 
@@ -66,20 +81,6 @@ namespace PNT {
         ImGui_ImplOpenGL3_Init(nullptr);
         ImGui::StyleColorsDark();
         closed = false;
-    }
-
-    Window::Window() = default;
-
-    Window::Window(const char *title, uint32_t width, uint32_t height, uint32_t xpos, uint32_t ypos, uint32_t ImGuiFlags) {
-        createWindow(title, width, height, xpos, ypos, ImGuiFlags);
-    }
-
-    Window::Window(const windowData& data) {
-        createWindow(data);
-    }
-
-    Window::~Window() {
-        destroyWindow();
     }
 
     void Window::createWindow(const char *title, uint32_t width, uint32_t height, uint32_t xpos, uint32_t ypos, uint32_t ImGuiFlags) {

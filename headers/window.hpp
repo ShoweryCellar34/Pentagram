@@ -13,16 +13,6 @@ namespace PNT {
     struct windowEvent;
     class image;
 
-    struct windowData {
-        void(*eventCallback)(Window*, windowEvent) = nullptr;
-        char title[256];
-        uint32_t width = 0, height = 0, xpos = 0, ypos = 0, ImGuiFlags = 0;
-        bool hidden = false;
-        bool iconified = false;
-        int8_t vsyncMode = 0;
-        float clearColor[4] = {0.0f, 0.0f, 0.0f, 0.0f};
-    };
-
     class callbackManagers {
     private:
         friend class Window;
@@ -36,6 +26,19 @@ namespace PNT {
         static void windowsizeCallbackManager(GLFWwindow*, int, int);
         static void mousebuttonCallbackManager(GLFWwindow*, int, int, int);
         static void iconifyCallbackManager(GLFWwindow*, int);
+    };
+
+    struct windowData {
+        void(*eventCallback)(Window*, windowEvent);
+        char title[256];
+        uint32_t width, height, xpos, ypos, ImGuiFlags;
+        bool hidden = false;
+        bool iconified = false;
+        int8_t vsyncMode = 0;
+        float clearColor[4] = {0.0f, 0.0f, 0.0f, 0.0f};
+
+        windowData() : eventCallback(nullptr), title{0}, width(128), height(128), xpos(200), ypos(200), ImGuiFlags(0) {
+        }
     };
 
     class Window {

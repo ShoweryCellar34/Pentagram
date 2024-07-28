@@ -12,17 +12,17 @@ namespace PNT {
 
     // Image definitions.
 
-    image::image() {
+    image::image() : width(128), height(128), channels(0), pixels(nullptr), textureID(0) {
         logger.get()->info("[PNT]Creating image");
     };
 
-    image::image(const char* path) {
+    image::image(const char* path) : width(128), height(128), channels(0), pixels(nullptr), textureID(0) {
         logger.get()->info("[PNT]Creating image");
 
         load(path);
     }
 
-    image::image(const image& original) {
+    image::image(const image& original) : width(128), height(128), channels(0), pixels(nullptr), textureID(0) {
         logger.get()->debug("[PNT]Copying image with width: {} and height: {}", width, height);
 
         width = original.width;
