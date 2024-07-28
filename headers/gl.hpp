@@ -7,11 +7,11 @@ namespace PNT {
     /// @brief Shader class for handling shaders.
     class shader {
     private:
-        uint32_t shaderID = 0;
-        uint32_t type = 0;
+        uint32_t shaderID;
+        uint32_t type;
         char* source = new char[1];
-        char errorBuffer[1024] = {0};
-        int success = 1;
+        char errorBuffer[1024];
+        int success;
 
     public:
         shader();
@@ -61,9 +61,9 @@ namespace PNT {
     /// @brief Program class for using shaders, compatible with "PNT::shader" and shader identifier of type "uint32_t" to be linked in.
     class program {
     private:
-        uint32_t programID = 0;
-        char errorBuffer[1024] = {0};
-        int success = 0;
+        uint32_t programID;
+        char errorBuffer[1024];
+        int success;
 
     public:
         program();

@@ -11,9 +11,10 @@ namespace PNT {
 
     // Shader definitions.
 
-    shader::shader() = default;
+    shader::shader() : shaderID(0), type(0), source(0), errorBuffer{0}, success(0) {
+    }
 
-    shader::shader(const char* source, uint32_t type) {
+    shader::shader(const char* source, uint32_t type) : shaderID(0), type(0), source(0), errorBuffer{0}, success(0) {
         errorBuffer[0] = 0;
         createShader(type);
         setData(source);
@@ -92,14 +93,14 @@ namespace PNT {
 
     // Program definitions.
 
-    program::program() {
+    program::program() : programID(0), errorBuffer{0}, success(0) {
     }
 
-    program::program(std::initializer_list<PNT::shader*> shaders) {
+    program::program(std::initializer_list<PNT::shader*> shaders) : programID(0), errorBuffer{0}, success(0) {
         createProgram(shaders);
     }
 
-    program::program(std::initializer_list<uint32_t> shaders) {
+    program::program(std::initializer_list<uint32_t> shaders) : programID(0), errorBuffer{0}, success(0) {
         createProgram(shaders);
     }
 
