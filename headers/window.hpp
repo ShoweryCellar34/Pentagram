@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <vector>
+#include <chrono>
 
 struct GLFWwindow;
 struct ImGuiContext;
@@ -57,6 +58,9 @@ namespace PNT {
         std::vector<windowEvent> eventQueue;
         ImGuiContext* ImContext;
         ImGuiIO* IO;
+
+        std::chrono::_V2::system_clock::time_point newframe;
+        std::chrono::_V2::system_clock::time_point endframe;
 
         void createWindowIntern(const char* title, uint32_t width, uint32_t height, uint32_t xpos, uint32_t ypos, uint32_t ImGuiFlags);
     public:
@@ -165,6 +169,10 @@ namespace PNT {
         /// @param numerator The desired aspect ratio numerator (-1 for anything).
         /// @param denominator The desired aspect ratio denominator (-1 for anything).
         void setAspectRatio(uint32_t numerator, uint32_t denominator);
+
+        /// @brief Gets the time to calculate the last frame.
+        /// @return The time in nanoseconds between the last newframe and endframe pair.
+        std::chrono::duration<double> getDeltaTime();
 
         /// @brief Retrives the user pointer set by the "setUserPointer()" method.
         /// @return A raw pointer set by the user.

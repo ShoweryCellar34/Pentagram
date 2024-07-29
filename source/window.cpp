@@ -110,6 +110,8 @@ namespace PNT {
     }
 
     void Window::startFrame() {
+        newframe = std::chrono::high_resolution_clock::now();
+
         PNT_WINDOW_ASSERT(window);
         PNT_ENDFRAME_ASSERT(frame);
 
@@ -139,6 +141,8 @@ namespace PNT {
         ImGui::RenderPlatformWindowsDefault();
         glfwMakeContextCurrent(backupContext);
         frame = false;
+
+        endframe = std::chrono::high_resolution_clock::now();
     }
 
     void Window::setEventCallback(void(*newEventCallback)(Window*, windowEvent)) {
@@ -261,6 +265,10 @@ namespace PNT {
         logger.get()->debug("[PNT]Setting aspect ratio: {}, {} for window \"{}\"", numerator, denominator,data.title);
 
         glfwSetWindowAspectRatio(window, numerator, denominator);
+    }
+
+    std::chrono::duration<double> Window::getDeltaTime() {
+        return endframe - newframe;
     }
 
     void* Window::getUserPointer() {
