@@ -19,6 +19,10 @@ namespace PNT {
         setData(source);
     }
 
+    shader::shader(shader &) {
+        logger.get()->error("COPYYYYYYYY");
+    }
+
     shader::~shader() {
         delete[] source;
         destroyShader();
