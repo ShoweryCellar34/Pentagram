@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
     }
 
     PNT::image image("res/textures/logo/ghoul.png");
-    PNT::Window window("imageDragTest", image.getWidth(), image.getHeight(), 500, 500, 0);
+    PNT::Window window("imageDragTest", image.getWidth(), image.getHeight(), 200, 200, 0);
     window.setUserPointer(&image);
     window.setAspectRatio(image.getWidth(), image.getHeight());
     window.setEventCallback(eventCallback);
