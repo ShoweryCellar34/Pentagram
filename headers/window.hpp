@@ -36,8 +36,9 @@ namespace PNT {
         bool iconified = false;
         int8_t vsyncMode = 0;
         float clearColor[4] = {0.0f, 0.0f, 0.0f, 0.0f};
+        void* userPointer;
 
-        windowData() : eventCallback(nullptr), title{0}, width(128), height(128), xpos(200), ypos(200), ImGuiFlags(0) {
+        windowData() : eventCallback(nullptr), title{0}, width(128), height(128), xpos(200), ypos(200), ImGuiFlags(0), userPointer(nullptr) {
         }
     };
 
@@ -102,6 +103,15 @@ namespace PNT {
         /// @param newEventCallback The desired function pointer for the event callback with signature "PNT::Window*, PNT::windowEvent" (use nullptr to clear callback).
         void setEventCallback(void(*newEventCallback)(Window*, windowEvent));
 
+        /// @brief Pushes an event to the event stack.
+        /// @param event The desired event to push, you can create events with the numerous "create...Event(...);" functions.
+        /// @warning glfw has no event queue manipulation that I know of, so all custom events push by this function will be proccesed before glfw events.
+        void pushEvent(windowEvent event);
+
+        /// @brief Sets a pointer for the window that can be retrived later.
+        /// @param pointer The desired user defined pointer for the window.
+        void setUserPointer(void* pointer);
+
         /// @brief Sets the data struct of the window.
         /// @param newData The desired PNT::windowData for the window.
         void setWindowData(windowData newData);
@@ -156,10 +166,9 @@ namespace PNT {
         /// @param denominator The desired aspect ratio denominator (-1 for anything).
         void setAspectRatio(uint32_t numerator, uint32_t denominator);
 
-        /// @brief Pushes an event to the event stack.
-        /// @param event The desired event to push, you can create events with the numerous "create...Event(...);" functions.
-        /// @warning glfw has no event queue manipulation that I know of, so all custom events push by this function will be proccesed before glfw events.
-        void pushEvent(windowEvent event);
+        /// @brief Retrives the user pointer set by the "setUserPointer()" method.
+        /// @return A raw pointer set by the user.
+        void* getUserPointer();
 
         /// @brief Gets the window title.
         /// @return The window title (DO NOT MODIFY).

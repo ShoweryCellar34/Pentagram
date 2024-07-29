@@ -147,6 +147,18 @@ namespace PNT {
         data.eventCallback = newEventCallback;
     }
 
+    void Window::pushEvent(windowEvent event) {
+        PNT_WINDOW_ASSERT(window);
+
+        logger.get()->debug("[PNT]Pushing event of type \"{}\" for window \"{}\"", event.getTypename(), data.title);
+
+        eventQueue.push_back(event);
+    }
+
+    void Window::setUserPointer(void* pointer) {
+        data.userPointer = pointer;
+    }
+
     void Window::setWindowData(windowData newData) {
         PNT_WINDOW_ASSERT(window);
 
@@ -243,20 +255,16 @@ namespace PNT {
         glfwSetWindowShouldClose(window, shouldClose);
     }
 
-    void Window::pushEvent(windowEvent event) {
-        PNT_WINDOW_ASSERT(window);
-
-        logger.get()->debug("[PNT]Pushing event of type \"{}\" for window \"{}\"", event.getTypename(), data.title);
-
-        eventQueue.push_back(event);
-    }
-
     void Window::setAspectRatio(uint32_t numerator, uint32_t denominator) {
         PNT_WINDOW_ASSERT(window);
 
         logger.get()->debug("[PNT]Setting aspect ratio: {}, {} for window \"{}\"", numerator, denominator,data.title);
 
         glfwSetWindowAspectRatio(window, numerator, denominator);
+    }
+
+    void* Window::getUserPointer() {
+        return data.userPointer;
     }
 
     const char *Window::getTitle() {

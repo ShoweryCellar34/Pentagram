@@ -1,22 +1,21 @@
 #include <Pentagram.hpp>
 #include <depracated/file.hpp>
 
-PNT::image image;
-
 void eventCallback(PNT::Window* window, PNT::windowEvent event) {
+    PNT::image* image = (PNT::image*)window->getUserPointer();
     switch(event.type) {
     case PNT_EVENT_TYPE_DROP:
-        image.unloadOffGPU();
-        image.load(event.dropFiles.paths[0]);
-        window->setDimentions(image.getWidth(), image.getHeight());
-        window->setAspectRatio(image.getWidth(), image.getHeight());
-        image.loadOnGPU();
+        image->unloadOffGPU();
+        image->load(event.dropFiles.paths[0]);
+        window->setDimentions(image->getWidth(), image->getHeight());
+        window->setAspectRatio(image->getWidth(), image->getHeight());
+        image->loadOnGPU();
         break;
     case PNT_EVENT_TYPE_KEYBOARD:
         if(event.keyboard.action == GLFW_PRESS) {
             switch(event.keyboard.key) {
             case GLFW_KEY_R:
-                window->setDimentions(image.getWidth(), image.getHeight());
+                window->setDimentions(image->getWidth(), image->getHeight());
                 break;
 
             case GLFW_KEY_ESCAPE:
@@ -34,8 +33,9 @@ int main(int argc, char *argv[]) {
         exit(EXIT_FAILURE);
     }
 
-    image.load("res/textures/logo/ghoul.png");
+    PNT::image image("res/textures/logo/ghoul.png");
     PNT::Window window("imageDragTest", image.getWidth(), image.getHeight(), 500, 500, 0);
+    window.setUserPointer(&image);
     window.setAspectRatio(image.getWidth(), image.getHeight());
     window.setEventCallback(eventCallback);
 
