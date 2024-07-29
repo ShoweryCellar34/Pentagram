@@ -21,8 +21,6 @@ namespace PNT {
         /// @param type The desired type of shader to create.
         shader(const char* source, uint32_t type);
 
-        shader(shader&);
-
         ~shader();
 
         /// @brief Creates the shader.
