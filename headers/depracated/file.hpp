@@ -1,5 +1,3 @@
-#pragma message("\nYou have included the file API which will not be worked on anymore. this will stay in the depracated section for use, but may be replaced with a resource system.\n")
-
 #pragma once
 
 #include <fstream>
