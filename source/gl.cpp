@@ -11,11 +11,10 @@ namespace PNT {
 
     // Shader definitions.
 
-    shader::shader() : shaderID(0), type(0), source(0), errorBuffer{0}, success(0) {
+    shader::shader() : shaderID(0), type(0), source(new char[1]{0}), errorBuffer{0}, success(0) {
     }
 
-    shader::shader(const char* source, uint32_t type) : shaderID(0), type(0), source(0), errorBuffer{0}, success(0) {
-        errorBuffer[0] = 0;
+    shader::shader(const char* source, uint32_t type) : shaderID(0), type(0), source(new char[1]{0}), errorBuffer{0}, success(0) {
         createShader(type);
         setData(source);
     }
@@ -47,6 +46,7 @@ namespace PNT {
 
         logger.get()->debug("[PNT]Setting data for shader with ID: {}", shaderID);
 
+        delete[] (this->source);
         if(strlen(source) > 0) {
             this->source = new char[strlen(source)];
             strcpy(this->source, source);

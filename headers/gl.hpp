@@ -9,7 +9,7 @@ namespace PNT {
     private:
         uint32_t shaderID;
         uint32_t type;
-        char* source = new char[1];
+        char* source;
         char errorBuffer[1024];
         int success;
 
