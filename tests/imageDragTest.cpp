@@ -11,6 +11,7 @@ void eventCallback(PNT::Window* window, PNT::windowEvent event) {
         window->setAspectRatio(image->getWidth(), image->getHeight());
         image->loadOnGPU();
         break;
+
     case PNT_EVENT_TYPE_KEYBOARD:
         if(event.keyboard.action == GLFW_PRESS) {
             switch(event.keyboard.key) {
@@ -24,6 +25,7 @@ void eventCallback(PNT::Window* window, PNT::windowEvent event) {
             }
         }
         break;
+
     case PNT_EVENT_TYPE_WINDOWSIZE:
         if(event.windowsize.width != event.windowsize.height) {
             window->setDimentions(event.windowsize.height, event.windowsize.height);

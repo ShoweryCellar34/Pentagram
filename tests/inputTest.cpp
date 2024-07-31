@@ -42,6 +42,7 @@ void eventCallback(PNT::Window *window, PNT::windowEvent event) {
             }
             window->setPosition(window->getXPos() + ((uint16_t)movment[0] * step), window->getYPos() + ((uint16_t)movment[1] * step));
             break;
+
         case PNT_EVENT_TYPE_CURSORPOS:
             printf("Cursor position changed to: %f, %f\n", event.cursorpos.xpos, event.cursorpos.ypos);
             break;
