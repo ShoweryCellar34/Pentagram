@@ -143,6 +143,7 @@ namespace PNT {
         frame = false;
 
         endframe = std::chrono::high_resolution_clock::now();
+        deltaTime = endframe - newframe;
     }
 
     void Window::setEventCallback(void(*newEventCallback)(Window*, windowEvent)) {
@@ -268,7 +269,7 @@ namespace PNT {
     }
 
     std::chrono::duration<double> Window::getDeltaTime() {
-        return endframe - newframe;
+        return deltaTime;
     }
 
     void* Window::getUserPointer() {
