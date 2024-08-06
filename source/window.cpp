@@ -268,57 +268,57 @@ namespace PNT {
         glfwSetWindowAspectRatio(window, numerator, denominator);
     }
 
-    std::chrono::duration<double> Window::getDeltaTime() {
+    std::chrono::duration<double> Window::getDeltaTime() const {
         return deltaTime;
     }
 
-    void* Window::getUserPointer() {
+    void* Window::getUserPointer() const {
         return data.userPointer;
     }
 
-    const char *Window::getTitle() {
+    const char *Window::getTitle() const {
         PNT_WINDOW_ASSERT(window);
 
         return data.title;
     }
 
-    uint16_t Window::getWidth() {
+    uint16_t Window::getWidth() const {
         PNT_WINDOW_ASSERT(window);
 
         return data.width;
     }
 
-    uint16_t Window::getHeight() {
+    uint16_t Window::getHeight() const {
         PNT_WINDOW_ASSERT(window);
 
         return data.height;
     }
 
-    uint16_t Window::getXPos() {
+    uint16_t Window::getXPos() const {
         PNT_WINDOW_ASSERT(window);
 
         return data.xpos;
     }
 
-    uint16_t Window::getYPos() {
+    uint16_t Window::getYPos() const {
         PNT_WINDOW_ASSERT(window);
 
         return data.ypos;
     }
 
-    bool Window::getHidden() {
+    bool Window::getHidden() const {
         PNT_WINDOW_ASSERT(window);
 
         return data.hidden;
     }
 
-    bool Window::getIconified() {
+    bool Window::getIconified() const {
         PNT_WINDOW_ASSERT(window);
 
         return data.iconified;
     }
 
-    bool Window::shouldClose() {
+    bool Window::shouldClose() const {
         PNT_WINDOW_ASSERT(window);
 
         return glfwWindowShouldClose(window);

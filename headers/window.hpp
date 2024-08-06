@@ -173,42 +173,42 @@ namespace PNT {
 
         /// @brief Gets the time to calculate the last frame.
         /// @return The time in nanoseconds between the last newframe and endframe pair.
-        std::chrono::duration<double> getDeltaTime();
+        std::chrono::duration<double> getDeltaTime() const;
 
         /// @brief Retrives the user pointer set by the "setUserPointer()" method.
         /// @return A raw pointer set by the user.
-        void* getUserPointer();
+        void* getUserPointer() const;
 
         /// @brief Gets the window title.
         /// @return The window title (DO NOT MODIFY).
-        const char* getTitle();
+        const char* getTitle() const;
 
         /// @brief Gets the width of the window.
         /// @return The window width.
-        uint16_t getWidth();
+        uint16_t getWidth() const;
 
         /// @brief Gets the height of the window.
         /// @return The window height.
-        uint16_t getHeight();
+        uint16_t getHeight() const;
 
         /// @brief Gets the X position of the window.
         /// @return The window X position.
-        uint16_t getXPos();
+        uint16_t getXPos() const;
 
         /// @brief Gets the Y position of the window.
         /// @return The window Y position.
-        uint16_t getYPos();
+        uint16_t getYPos() const;
 
         /// @brief Gets the hidden state of the window.
         /// @return True if the window is hidden (not on screen of on taskbar), and false if otherwise.
-        bool getHidden();
+        bool getHidden() const;
 
         /// @brief Gets the iconified state of the window.
         /// @return True if the window is minimised (on the taskbar), and false if otherwise.
-        bool getIconified();
+        bool getIconified() const;
 
         /// @brief Check if the currect window should close.
         /// @return True if the window should close.
-        bool shouldClose();
+        bool shouldClose() const;
     };
 }
