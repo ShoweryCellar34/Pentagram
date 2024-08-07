@@ -110,7 +110,7 @@ namespace PNT {
     }
 
     void Window::startFrame() {
-        newframe = std::chrono::high_resolution_clock::now();
+        newframe = std::chrono::steady_clock::now();
 
         PNT_WINDOW_ASSERT(window);
         PNT_ENDFRAME_ASSERT(frame);
@@ -142,7 +142,7 @@ namespace PNT {
         glfwMakeContextCurrent(backupContext);
         frame = false;
 
-        endframe = std::chrono::high_resolution_clock::now();
+        endframe = std::chrono::steady_clock::now();
         deltaTime = endframe - newframe;
     }
 
