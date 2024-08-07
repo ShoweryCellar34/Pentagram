@@ -46,7 +46,7 @@ namespace PNT {
 
         logger.get()->debug("[PNT]Setting data for shader with ID: {}", shaderID);
 
-        delete[] (this->source);
+        delete[] this->source;
         if(strlen(source) > 0) {
             this->source = new char[strlen(source)];
             strcpy(this->source, source);
