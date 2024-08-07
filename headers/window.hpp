@@ -59,8 +59,8 @@ namespace PNT {
         ImGuiContext* ImContext;
         ImGuiIO* IO;
 
-        std::chrono::_V2::system_clock::time_point newframe;
-        std::chrono::_V2::system_clock::time_point endframe;
+        std::chrono::steady_clock::time_point newframe;
+        std::chrono::steady_clock::time_point endframe;
         std::chrono::duration<double> deltaTime;
 
         void createWindowIntern(const char* title, uint32_t width, uint32_t height, uint32_t xpos, uint32_t ypos, uint32_t ImGuiFlags);
