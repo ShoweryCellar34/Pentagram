@@ -8,11 +8,11 @@ namespace PNT {
     /// @brief Shader class for handling shaders.
     class shader {
     private:
-        uint32_t shaderID;
-        uint32_t type;
-        char* source;
-        char errorBuffer[1024];
-        int success;
+        uint32_t m_shaderID;
+        uint32_t m_type;
+        char* m_source;
+        char m_errorBuffer[1024];
+        int m_success;
 
     public:
         shader();

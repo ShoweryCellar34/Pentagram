@@ -16,14 +16,14 @@ namespace PNT {
 
     // Window definitions.
 
-    Window::Window() : window(nullptr), closed(true), frame(false), data(), eventQueue(), ImContext(nullptr), IO(nullptr) {
+    Window::Window() : m_window(nullptr), m_closed(true), m_frame(false), m_data(), m_eventQueue(), m_ImContext(nullptr), m_IO(nullptr) {
     }
 
-    Window::Window(const char *title, uint32_t width, uint32_t height, uint32_t xpos, uint32_t ypos, uint32_t ImGuiFlags) : window(nullptr), closed(true), frame(false), data(), eventQueue(), ImContext(nullptr), IO(nullptr) {
+    Window::Window(const char *title, uint32_t width, uint32_t height, uint32_t xpos, uint32_t ypos, uint32_t ImGuiFlags) : m_window(nullptr), m_closed(true), m_frame(false), m_data(), m_eventQueue(), m_ImContext(nullptr), m_IO(nullptr) {
         createWindow(title, width, height, xpos, ypos, ImGuiFlags);
     }
 
-    Window::Window(const windowData& data) : window(nullptr), closed(true), frame(false), data(), eventQueue(), ImContext(nullptr), IO(nullptr) {
+    Window::Window(const windowData& data) : m_window(nullptr), m_closed(true), m_frame(false), m_data(), m_eventQueue(), m_ImContext(nullptr), m_IO(nullptr) {
         createWindow(data);
     }
 
@@ -36,138 +36,138 @@ namespace PNT {
 
         logger.get()->info("[PNT]Creating window \"{}\"", title);
 
-        instancesList.push_back(this);
-        instances++;
+        m_instancesList.push_back(this);
+        m_instances++;
 
-        this->data.title = title;
-        data.width = width;
-        data.height = height;
+        this->m_data.title = title;
+        m_data.width = width;
+        m_data.height = height;
 
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-        window = glfwCreateWindow(width, height, title, NULL, NULL);
-        glfwSetWindowUserPointer(window, this);
-        glfwMakeContextCurrent(window);
+        m_window = glfwCreateWindow(width, height, title, NULL, NULL);
+        glfwSetWindowUserPointer(m_window, this);
+        glfwMakeContextCurrent(m_window);
         gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
         setPosition(xpos, ypos);
 
-        glfwSetKeyCallback(window, callbackManagers::keyCallbackManager);
-        glfwSetCharCallback(window, callbackManagers::charCallbackManager);
-        glfwSetDropCallback(window, callbackManagers::dropCallbackManager);
-        glfwSetScrollCallback(window, callbackManagers::scrollCallbackManager);
+        glfwSetKeyCallback(m_window, callbackManagers::keyCallbackManager);
+        glfwSetCharCallback(m_window, callbackManagers::charCallbackManager);
+        glfwSetDropCallback(m_window, callbackManagers::dropCallbackManager);
+        glfwSetScrollCallback(m_window, callbackManagers::scrollCallbackManager);
         //glfwSetMonitorCallback(callbackManagers::);
         //glfwSetCharModsCallback(window, callbackManagers::);
         //glfwSetJoystickCallback(callbackManagers::);
-        glfwSetCursorPosCallback(window, callbackManagers::cursorPosCallbackManager);
-        glfwSetWindowPosCallback(window, callbackManagers::windowposCallbackManager);
-        glfwSetWindowSizeCallback(window, callbackManagers::windowsizeCallbackManager);
+        glfwSetCursorPosCallback(m_window, callbackManagers::cursorPosCallbackManager);
+        glfwSetWindowPosCallback(m_window, callbackManagers::windowposCallbackManager);
+        glfwSetWindowSizeCallback(m_window, callbackManagers::windowsizeCallbackManager);
         //glfwSetCursorEnterCallback(window, callbackManagers::);
-        glfwSetMouseButtonCallback(window, callbackManagers::mousebuttonCallbackManager);
+        glfwSetMouseButtonCallback(m_window, callbackManagers::mousebuttonCallbackManager);
         //glfwSetWindowCloseCallback(window, callbackManagers::);
         //glfwSetWindowFocusCallback(window, callbackManagers::);
-        glfwSetWindowIconifyCallback(window, callbackManagers::iconifyCallbackManager);
+        glfwSetWindowIconifyCallback(m_window, callbackManagers::iconifyCallbackManager);
         //glfwSetWindowRefreshCallback(window, callbackManagers::);
         //glfwSetWindowMaximizeCallback(window, callbackManagers::);
         //glfwSetFramebufferSizeCallback(window, callbackManagers::);
         //glfwSetWindowContentScaleCallback(window, callbackManagers::);
 
-        ImContext = ImGui::CreateContext();
-        ImGui::SetCurrentContext(ImContext);
-        IO = &ImGui::GetIO();
-        IO->ConfigFlags |= ImGuiFlags;
-        ImGui_ImplGlfw_InitForOpenGL(window, true);
+        m_ImContext = ImGui::CreateContext();
+        ImGui::SetCurrentContext(m_ImContext);
+        m_IO = &ImGui::GetIO();
+        m_IO->ConfigFlags |= ImGuiFlags;
+        ImGui_ImplGlfw_InitForOpenGL(m_window, true);
         ImGui_ImplOpenGL3_Init(nullptr);
         ImGui::StyleColorsDark();
-        closed = false;
+        m_closed = false;
     }
 
     void Window::createWindow(const char *title, uint32_t width, uint32_t height, uint32_t xpos, uint32_t ypos, uint32_t ImGuiFlags) {
-        PNT_NO_WINDOW_ASSERT(window);
+        PNT_NO_WINDOW_ASSERT(m_window);
 
         createWindowIntern(title, width, height, xpos, ypos, ImGuiFlags);
     }
 
     void Window::createWindow(const windowData& data) {
-        PNT_NO_WINDOW_ASSERT(window);
+        PNT_NO_WINDOW_ASSERT(m_window);
 
         createWindowIntern(data.title.c_str(), data.width, data.height, data.xpos, data.ypos, data.ImGuiFlags);
     }
 
     void Window::destroyWindow() {
-        if(!closed) {
-            logger.get()->info("[PNT]Destroying window \"{}\"", data.title);
+        if(!m_closed) {
+            logger.get()->info("[PNT]Destroying window \"{}\"", m_data.title);
 
-            instances--;
-            instancesList.erase(std::find(instancesList.begin(), instancesList.end(), this));
+            m_instances--;
+            m_instancesList.erase(std::find(m_instancesList.begin(), m_instancesList.end(), this));
 
-            glfwDestroyWindow(window);
+            glfwDestroyWindow(m_window);
 
-            window = nullptr;
-            closed = true;
+            m_window = nullptr;
+            m_closed = true;
         }
     }
 
     void Window::startFrame() {
         newframe = std::chrono::steady_clock::now();
 
-        PNT_WINDOW_ASSERT(window);
-        PNT_ENDFRAME_ASSERT(frame);
+        PNT_WINDOW_ASSERT(m_window);
+        PNT_ENDFRAME_ASSERT(m_frame);
 
-        glfwMakeContextCurrent(window);
+        glfwMakeContextCurrent(m_window);
         int width, height;
-        glfwGetFramebufferSize(window, &width, &height);
+        glfwGetFramebufferSize(m_window, &width, &height);
         glViewport(0, 0, width, height);
-        glClearColor(data.clearColor[0], data.clearColor[1], data.clearColor[2], data.clearColor[3]);
+        glClearColor(m_data.clearColor[0], m_data.clearColor[1], m_data.clearColor[2], m_data.clearColor[3]);
         glClear(GL_COLOR_BUFFER_BIT);
-        ImGui::SetCurrentContext(ImContext);
+        ImGui::SetCurrentContext(m_ImContext);
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
-        frame = true;
+        m_frame = true;
     }
 
     void Window::endFrame() {
-        PNT_WINDOW_ASSERT(window);
-        PNT_NEWFRAME_ASSERT(frame);
+        PNT_WINDOW_ASSERT(m_window);
+        PNT_NEWFRAME_ASSERT(m_frame);
 
         ImGui::Render();
         ImGuiIO& io = ImGui::GetIO();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-        glfwSwapBuffers(window);
+        glfwSwapBuffers(m_window);
         GLFWwindow* backupContext = glfwGetCurrentContext();
         ImGui::UpdatePlatformWindows();
         ImGui::RenderPlatformWindowsDefault();
         glfwMakeContextCurrent(backupContext);
-        frame = false;
+        m_frame = false;
 
         endframe = std::chrono::steady_clock::now();
         deltaTime = endframe - newframe;
     }
 
     void Window::setEventCallback(void(*newEventCallback)(Window*, windowEvent)) {
-        PNT_WINDOW_ASSERT(window);
+        PNT_WINDOW_ASSERT(m_window);
 
-        data.eventCallback = newEventCallback;
+        m_data.eventCallback = newEventCallback;
     }
 
     void Window::pushEvent(windowEvent event) {
-        PNT_WINDOW_ASSERT(window);
+        PNT_WINDOW_ASSERT(m_window);
 
-        logger.get()->debug("[PNT]Pushing event of type \"{}\" for window \"{}\"", event.getTypename(), data.title);
+        logger.get()->debug("[PNT]Pushing event of type \"{}\" for window \"{}\"", event.getTypename(), m_data.title);
 
-        eventQueue.push_back(event);
+        m_eventQueue.push_back(event);
     }
 
     void Window::setUserPointer(void* pointer) {
-        data.userPointer = pointer;
+        m_data.userPointer = pointer;
     }
 
     void Window::setWindowData(windowData newData) {
-        PNT_WINDOW_ASSERT(window);
+        PNT_WINDOW_ASSERT(m_window);
 
-        data.eventCallback = newData.eventCallback;
+        m_data.eventCallback = newData.eventCallback;
         setTitle(newData.title);
         setDimentions(newData.width, newData.height);
         setPosition(newData.xpos, newData.ypos);
@@ -178,101 +178,101 @@ namespace PNT {
     }
 
     void Window::setTitle(const char* title) {
-        PNT_WINDOW_ASSERT(window);
+        PNT_WINDOW_ASSERT(m_window);
 
-        this->data.title = title;
-        glfwSetWindowTitle(window, title);
+        this->m_data.title = title;
+        glfwSetWindowTitle(m_window, title);
     }
 
     void Window::setTitle(std::string title) {
-        PNT_WINDOW_ASSERT(window);
+        PNT_WINDOW_ASSERT(m_window);
 
-        this->data.title = title;
-        glfwSetWindowTitle(window, title.c_str());
+        this->m_data.title = title;
+        glfwSetWindowTitle(m_window, title.c_str());
     }
 
     void Window::setIcon(const image& icon) {
-        PNT_WINDOW_ASSERT(window);
+        PNT_WINDOW_ASSERT(m_window);
 
-        logger.get()->debug("[PNT]Setting icon for window \"{}\"", data.title);
+        logger.get()->debug("[PNT]Setting icon for window \"{}\"", m_data.title);
 
         if(icon.valid()) {
             GLFWimage glfwImage;
             glfwImage.width = icon.getWidth();
             glfwImage.height = icon.getHeight();
             glfwImage.pixels = icon.getPixels();
-            glfwSetWindowIcon(window, 1, &glfwImage);
+            glfwSetWindowIcon(m_window, 1, &glfwImage);
         } else {
             logger.get()->warn("[PNT]Icon failed to set");
-            glfwSetWindowIcon(window, 0, nullptr);
+            glfwSetWindowIcon(m_window, 0, nullptr);
         }
     }
 
     void Window::setDimentions(uint16_t width, uint16_t height) {
-        PNT_WINDOW_ASSERT(window);
+        PNT_WINDOW_ASSERT(m_window);
 
-        glfwSetWindowSize(window, width, height);
+        glfwSetWindowSize(m_window, width, height);
     }
 
     void Window::setPosition(uint16_t xpos, uint16_t ypos) {
-        PNT_WINDOW_ASSERT(window);
+        PNT_WINDOW_ASSERT(m_window);
 
-        glfwSetWindowPos(window, xpos, ypos);
-        callbackManagers::windowposCallbackManager(window, xpos, ypos);
+        glfwSetWindowPos(m_window, xpos, ypos);
+        callbackManagers::windowposCallbackManager(m_window, xpos, ypos);
     }
 
     void Window::hide() {
-        PNT_WINDOW_ASSERT(window);
+        PNT_WINDOW_ASSERT(m_window);
 
-        glfwHideWindow(window);
+        glfwHideWindow(m_window);
     }
 
     void Window::show() {
-        PNT_WINDOW_ASSERT(window);
+        PNT_WINDOW_ASSERT(m_window);
 
-        glfwShowWindow(window);
+        glfwShowWindow(m_window);
     }
 
     void Window::minimize() {
-        PNT_WINDOW_ASSERT(window);
+        PNT_WINDOW_ASSERT(m_window);
 
-        glfwIconifyWindow(window);
+        glfwIconifyWindow(m_window);
     }
 
     void Window::maximize() {
-        PNT_WINDOW_ASSERT(window);
+        PNT_WINDOW_ASSERT(m_window);
 
-        glfwRestoreWindow(window);
+        glfwRestoreWindow(m_window);
     }
 
     void Window::setVsyncMode(int8_t vsyncMode) {
-        PNT_WINDOW_ASSERT(window);
+        PNT_WINDOW_ASSERT(m_window);
 
-        data.vsyncMode = vsyncMode;
+        m_data.vsyncMode = vsyncMode;
         glfwSwapInterval(vsyncMode);
     }
 
     void Window::setClearColor(float red, float green, float blue, float alpha) {
-        PNT_WINDOW_ASSERT(window);
+        PNT_WINDOW_ASSERT(m_window);
 
-        data.clearColor[0] = red;
-        data.clearColor[1] = green;
-        data.clearColor[2] = blue;
-        data.clearColor[3] = alpha;
+        m_data.clearColor[0] = red;
+        m_data.clearColor[1] = green;
+        m_data.clearColor[2] = blue;
+        m_data.clearColor[3] = alpha;
     }
 
     void Window::setShouldClose(bool shouldClose) {
-        PNT_WINDOW_ASSERT(window);
+        PNT_WINDOW_ASSERT(m_window);
 
-        glfwSetWindowShouldClose(window, shouldClose);
+        glfwSetWindowShouldClose(m_window, shouldClose);
     }
 
     void Window::setAspectRatio(uint32_t numerator, uint32_t denominator) {
-        PNT_WINDOW_ASSERT(window);
+        PNT_WINDOW_ASSERT(m_window);
 
-        logger.get()->debug("[PNT]Setting aspect ratio: {}, {} for window \"{}\"", numerator, denominator,data.title);
+        logger.get()->debug("[PNT]Setting aspect ratio: {}, {} for window \"{}\"", numerator, denominator,m_data.title);
 
-        glfwSetWindowAspectRatio(window, numerator, denominator);
+        glfwSetWindowAspectRatio(m_window, numerator, denominator);
     }
 
     std::chrono::duration<double> Window::getDeltaTime() const {
@@ -280,124 +280,124 @@ namespace PNT {
     }
 
     void* Window::getUserPointer() const {
-        return data.userPointer;
+        return m_data.userPointer;
     }
 
     std::string Window::getTitle() const {
-        PNT_WINDOW_ASSERT(window);
+        PNT_WINDOW_ASSERT(m_window);
 
-        return data.title;
+        return m_data.title;
     }
 
     uint16_t Window::getWidth() const {
-        PNT_WINDOW_ASSERT(window);
+        PNT_WINDOW_ASSERT(m_window);
 
-        return data.width;
+        return m_data.width;
     }
 
     uint16_t Window::getHeight() const {
-        PNT_WINDOW_ASSERT(window);
+        PNT_WINDOW_ASSERT(m_window);
 
-        return data.height;
+        return m_data.height;
     }
 
     uint16_t Window::getXPos() const {
-        PNT_WINDOW_ASSERT(window);
+        PNT_WINDOW_ASSERT(m_window);
 
-        return data.xpos;
+        return m_data.xpos;
     }
 
     uint16_t Window::getYPos() const {
-        PNT_WINDOW_ASSERT(window);
+        PNT_WINDOW_ASSERT(m_window);
 
-        return data.ypos;
+        return m_data.ypos;
     }
 
     bool Window::getHidden() const {
-        PNT_WINDOW_ASSERT(window);
+        PNT_WINDOW_ASSERT(m_window);
 
-        return data.hidden;
+        return m_data.hidden;
     }
 
     bool Window::getIconified() const {
-        PNT_WINDOW_ASSERT(window);
+        PNT_WINDOW_ASSERT(m_window);
 
-        return data.iconified;
+        return m_data.iconified;
     }
 
     bool Window::shouldClose() const {
-        PNT_WINDOW_ASSERT(window);
+        PNT_WINDOW_ASSERT(m_window);
 
-        return glfwWindowShouldClose(window);
+        return glfwWindowShouldClose(m_window);
     }
 
     // Callback definitions.
 
     void callbackManagers::keyCallbackManager(GLFWwindow* glfwWindow, int key, int scancode, int action, int mods) {
         Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));
-        if(!window->IO->WantCaptureKeyboard && window->data.eventCallback != nullptr) {
-            window->data.eventCallback(window, createKeyEvent(key, scancode, action, mods));
+        if(!window->m_IO->WantCaptureKeyboard && window->m_data.eventCallback != nullptr) {
+            window->m_data.eventCallback(window, createKeyEvent(key, scancode, action, mods));
         }
     }
 
     void callbackManagers::charCallbackManager(GLFWwindow* glfwWindow, unsigned int codepoint) {
         Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));
-        if(!window->IO->WantCaptureKeyboard && window->data.eventCallback != nullptr) {
-            window->data.eventCallback(window, createCharEvent(codepoint));
+        if(!window->m_IO->WantCaptureKeyboard && window->m_data.eventCallback != nullptr) {
+            window->m_data.eventCallback(window, createCharEvent(codepoint));
         }
     }
 
     void callbackManagers::dropCallbackManager(GLFWwindow* glfwWindow, int path_count, const char** paths) {
         Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));
-        if(window->data.eventCallback != nullptr) {
-            window->data.eventCallback(window, createDropEvent(path_count, paths));
+        if(window->m_data.eventCallback != nullptr) {
+            window->m_data.eventCallback(window, createDropEvent(path_count, paths));
         }
     }
 
     void callbackManagers::scrollCallbackManager(GLFWwindow* glfwWindow, double xoffset, double yoffset) {
         Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));
-        if(!window->IO->WantCaptureMouse && window->data.eventCallback != nullptr) {
-            window->data.eventCallback(window, createScrollEvent(xoffset, yoffset));
+        if(!window->m_IO->WantCaptureMouse && window->m_data.eventCallback != nullptr) {
+            window->m_data.eventCallback(window, createScrollEvent(xoffset, yoffset));
         }
     }
 
     void callbackManagers::cursorPosCallbackManager(GLFWwindow* glfwWindow, double xpos, double ypos) {
         Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));
-        if(!window->IO->WantCaptureMouse && window->data.eventCallback != nullptr) {
-            window->data.eventCallback(window, createCursorposEvent(xpos, ypos));
+        if(!window->m_IO->WantCaptureMouse && window->m_data.eventCallback != nullptr) {
+            window->m_data.eventCallback(window, createCursorposEvent(xpos, ypos));
         }
     }
 
     void callbackManagers::windowposCallbackManager(GLFWwindow* glfwWindow, int xpos, int ypos) {
         Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));
-        window->data.xpos = xpos;
-        window->data.ypos = ypos;
-        if(window->data.eventCallback != nullptr) {
-            window->data.eventCallback(window, createWindowposEvent(xpos, ypos));
+        window->m_data.xpos = xpos;
+        window->m_data.ypos = ypos;
+        if(window->m_data.eventCallback != nullptr) {
+            window->m_data.eventCallback(window, createWindowposEvent(xpos, ypos));
         }
     }
 
     void callbackManagers::windowsizeCallbackManager(GLFWwindow* glfwWindow, int width, int height) {
         Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));
-        window->data.width = width;
-        window->data.height = height;
-        if(window->data.eventCallback != nullptr) {
-            window->data.eventCallback(window, createWindowsizeEvent(width, height));
+        window->m_data.width = width;
+        window->m_data.height = height;
+        if(window->m_data.eventCallback != nullptr) {
+            window->m_data.eventCallback(window, createWindowsizeEvent(width, height));
         }
     }
 
     void callbackManagers::mousebuttonCallbackManager(GLFWwindow* glfwWindow, int button, int action, int mods) {
         Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));
-        if(!window->IO->WantCaptureMouse && window->data.eventCallback != nullptr) {
-            window->data.eventCallback(window, createMousebuttonEvent(button, action, mods));
+        if(!window->m_IO->WantCaptureMouse && window->m_data.eventCallback != nullptr) {
+            window->m_data.eventCallback(window, createMousebuttonEvent(button, action, mods));
         }
     }
 
     void callbackManagers::iconifyCallbackManager(GLFWwindow* glfwWindow, int iconified) {
         Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));
-        window->data.iconified = iconified;
-        if(window->data.eventCallback != nullptr) {
-            window->data.eventCallback(window, createIconifyEvent(iconified));
+        window->m_data.iconified = iconified;
+        if(window->m_data.eventCallback != nullptr) {
+            window->m_data.eventCallback(window, createIconifyEvent(iconified));
         }
     }
 }

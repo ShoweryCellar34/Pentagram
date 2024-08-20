@@ -10,10 +10,10 @@ namespace PNT {
     // Event definitions.
 
     void processEvents() {
-        for(Window* window : Window::instancesList) {
-            while(window->eventQueue.size()) {
-                window->data.eventCallback(window, window->eventQueue.back());
-                window->eventQueue.pop_back();
+        for(Window* window : Window::m_instancesList) {
+            while(window->m_eventQueue.size()) {
+                window->m_data.eventCallback(window, window->m_eventQueue.back());
+                window->m_eventQueue.pop_back();
             }
         }
         glfwPollEvents();

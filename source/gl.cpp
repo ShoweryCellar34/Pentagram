@@ -11,86 +11,86 @@ namespace PNT {
 
     // Shader definitions.
 
-    shader::shader() : shaderID(0), type(0), source(nullptr), errorBuffer{0}, success(0) {
+    shader::shader() : m_shaderID(0), m_type(0), m_source(nullptr), m_errorBuffer{0}, m_success(0) {
     }
 
-    shader::shader(const char* source, uint32_t type) : shaderID(0), type(0), source(nullptr), errorBuffer{0}, success(0) {
+    shader::shader(const char* source, uint32_t type) : m_shaderID(0), m_type(0), m_source(nullptr), m_errorBuffer{0}, m_success(0) {
         createShader(type);
         setData(source);
     }
 
     shader::~shader() {
-        delete[] source;
+        delete[] m_source;
         destroyShader();
     }
 
     void shader::createShader(uint32_t type) {
-        PNT_NO_SHADER_ID(shaderID);
+        PNT_NO_SHADER_ID(m_shaderID);
 
         logger.get()->info("[PNT]Creating shader");
 
-        shaderID = glCreateShader(type);
+        m_shaderID = glCreateShader(type);
     }
 
     void shader::destroyShader() {
-        PNT_SHADER_ID(shaderID);
+        PNT_SHADER_ID(m_shaderID);
 
         logger.get()->info("[PNT]Destroying shader");
 
-        glDeleteShader(shaderID);
-        shaderID = 0;
+        glDeleteShader(m_shaderID);
+        m_shaderID = 0;
     }
 
     void shader::setData(const char* source) {
-        PNT_SHADER_ID(shaderID);
+        PNT_SHADER_ID(m_shaderID);
 
-        logger.get()->debug("[PNT]Setting data for shader with ID: {}", shaderID);
+        logger.get()->debug("[PNT]Setting data for shader with ID: {}", m_shaderID);
 
-        if(this->source != nullptr) {
-            delete[] this->source;
+        if(this->m_source != nullptr) {
+            delete[] this->m_source;
         }
         if(strlen(source) > 0) {
-            this->source = new char[strlen(source) + 1];
-            strcpy(this->source, source);
+            this->m_source = new char[strlen(source) + 1];
+            strcpy(this->m_source, source);
         } else {
-            this->source = new char[1];
-            this->source[0] = 0;
+            this->m_source = new char[1];
+            this->m_source[0] = 0;
         }
-        glShaderSource(shaderID, 1, &source, NULL);
-        glGetShaderiv(shaderID, GL_COMPILE_STATUS, &success);
-        if(success) {
-            glGetShaderInfoLog(shaderID, 1024, NULL, errorBuffer);
-            logger.get()->warn("[PNT]Failed to set shader data with error \"{}\"", errorBuffer);
+        glShaderSource(m_shaderID, 1, &source, NULL);
+        glGetShaderiv(m_shaderID, GL_COMPILE_STATUS, &m_success);
+        if(m_success) {
+            glGetShaderInfoLog(m_shaderID, 1024, NULL, m_errorBuffer);
+            logger.get()->warn("[PNT]Failed to set shader data with error \"{}\"", m_errorBuffer);
         } else {
-            success = 1;
+            m_success = 1;
             for(int i = 0; i < 1024; i++) {
-                errorBuffer[i] = 0;
+                m_errorBuffer[i] = 0;
             }
         }
     }
 
     uint32_t shader::getID() {
-        return shaderID;
+        return m_shaderID;
     }
 
     uint32_t shader::getType() {
-        return type;
+        return m_type;
     }
 
     char* shader::getSource() {
-        return source;
+        return m_source;
     }
 
     std::string shader::getError() {
-        return (std::string)errorBuffer;
+        return (std::string)m_errorBuffer;
     }
 
     void shader::compile() {
-        glCompileShader(shaderID);
+        glCompileShader(m_shaderID);
     }
 
     bool shader::valid() {
-        return success;
+        return m_success;
     }
 
     // Program definitions.

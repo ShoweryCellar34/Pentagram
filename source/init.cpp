@@ -26,7 +26,7 @@ namespace PNT {
         PNT_REQUIRE_INIT();
 
         logger.get()->info("[PNT]Shutting down Pentagram");
-        for(Window* window : Window::instancesList) {
+        for(Window* window : Window::m_instancesList) {
             window->destroyWindow();
         }
         spdlog::shutdown();

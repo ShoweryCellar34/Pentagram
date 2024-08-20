@@ -49,15 +49,15 @@ namespace PNT {
         friend void deinit();
         friend void processEvents();
 
-        static inline size_t instances;
-        static inline std::vector<Window*> instancesList;
-        GLFWwindow* window = nullptr;
-        bool closed = true;
-        bool frame = false;
-        windowData data;
-        std::vector<windowEvent> eventQueue;
-        ImGuiContext* ImContext;
-        ImGuiIO* IO;
+        static inline size_t m_instances;
+        static inline std::vector<Window*> m_instancesList;
+        GLFWwindow* m_window = nullptr;
+        bool m_closed = true;
+        bool m_frame = false;
+        windowData m_data;
+        std::vector<windowEvent> m_eventQueue;
+        ImGuiContext* m_ImContext;
+        ImGuiIO* m_IO;
 
         std::chrono::steady_clock::time_point newframe;
         std::chrono::steady_clock::time_point endframe;
