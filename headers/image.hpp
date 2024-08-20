@@ -1,13 +1,14 @@
 #pragma once
 
 #include <stdint.h>
+#include <string>
 
 struct ImVec2;
 
 namespace PNT {
     class image {
     private:
-        int width, height, channels;
+        uint32_t width, height, channels;
         unsigned char* pixels;
         unsigned int textureID;
 
@@ -25,6 +26,10 @@ namespace PNT {
         /// @brief Loads an image from disk.
         /// @param path Image path on disk.
         void load(const char* path);
+
+        /// @brief Loads an image from disk.
+        /// @param path Image path on disk.
+        void load(std::string path);
 
         /// @brief Creates an ImGui draw call for the image (Requires loadOnGPU()).
         /// @param dimensions The desired display width and height for the image in "ImVec2" format.

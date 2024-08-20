@@ -49,7 +49,22 @@ namespace PNT {
     void image::load(const char* path) {
         logger.get()->debug("[PNT]Loading image from path \"{}\"", path);
 
-        pixels = stbi_load(path, &width, &height, &this->channels, 4);
+        if(pixels != nullptr) {
+            stbi_image_free(pixels);
+        }
+        pixels = stbi_load(path, (int*)&width, (int*)&height, (int*)&this->channels, 4);
+        if(pixels == nullptr) {
+            logger.get()->warn("Failed to load image");
+        }
+    }
+
+    void image::load(std::string path) {
+        logger.get()->debug("[PNT]Loading image from path \"{}\"", path);
+
+        if(pixels != nullptr) {
+            stbi_image_free(pixels);
+        }
+        pixels = stbi_load(path.c_str(), (int*)&width, (int*)&height, (int*)&this->channels, 4);
         if(pixels == nullptr) {
             logger.get()->warn("Failed to load image");
         }

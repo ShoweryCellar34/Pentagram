@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+#include <string>
 #include <stdint.h>
 #include <stddef.h>
 
@@ -22,17 +24,7 @@ namespace PNT {
     };
 
     struct dropEvent {
-        size_t pathCount;
-        char** paths;
-
-        void setData(size_t pathCount, char** paths);
-
-        dropEvent();
-
-        ~dropEvent();
-
-    private:
-        bool init = false;
+        std::vector<std::string> paths;
     };
 
     struct scrollEvent {

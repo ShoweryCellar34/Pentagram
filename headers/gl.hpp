@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <string>
 #include <initializer_list>
 
 namespace PNT {
@@ -47,8 +48,8 @@ namespace PNT {
         char* getSource();
 
         /// @brief Gets the shader compile error.
-        /// @return The error buffer (DO NOT MODIFY).
-        const char* getError();
+        /// @return The error buffer.
+        std::string getError();
 
         /// @brief Compiles the shader, call this after "setData()" to push changes to GPU.
         void compile();

@@ -31,7 +31,7 @@ namespace PNT {
 
     struct windowData {
         void(*eventCallback)(Window*, windowEvent);
-        char title[256];
+        std::string title;
         uint32_t width, height, xpos, ypos, ImGuiFlags;
         bool hidden = false;
         bool iconified = false;
@@ -124,6 +124,9 @@ namespace PNT {
         /// @brief Sets the window title.
         /// @param title The desired window title.
         void setTitle(const char* title);
+        /// @brief Sets the window title.
+        /// @param title The desired window title.
+        void setTitle(std::string title);
 
         /// @brief Sets the window icon.
         /// @param image The desired PNT::image for the window icon.
@@ -180,8 +183,8 @@ namespace PNT {
         void* getUserPointer() const;
 
         /// @brief Gets the window title.
-        /// @return The window title (DO NOT MODIFY).
-        const char* getTitle() const;
+        /// @return The window title.
+        std::string getTitle() const;
 
         /// @brief Gets the width of the window.
         /// @return The window width.

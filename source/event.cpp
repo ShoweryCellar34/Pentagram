@@ -19,27 +19,6 @@ namespace PNT {
         glfwPollEvents();
     }
 
-    void dropEvent::setData(size_t pathCount, char** paths) {
-        init = true;
-        this->paths = new char*[pathCount];
-        for(size_t i = 0; i < pathCount; i++) {
-            this->paths[i] = new char[strlen(paths[i]) + 1];
-            strcpy(this->paths[i], paths[i]);
-        }
-    }
-
-    dropEvent::dropEvent() : init(false) {
-    }
-
-    dropEvent::~dropEvent() {
-        if(init) {
-            for(size_t i = 0; i < pathCount; i++) {
-                delete[] this->paths[i];
-            }
-            delete[] paths;
-        }
-    }
-
     // Event creation function definitions.
 
     windowEvent createKeyEvent(int key, int scancode, int action, int mods) {
@@ -67,8 +46,9 @@ namespace PNT {
         windowEvent event;
 
         event.type = PNT_EVENT_TYPE_DROP;
-        event.dropFiles.pathCount = pathCount;
-        event.dropFiles.setData(pathCount, (char**)paths);
+        for(size_t i = 0; i < pathCount; i++) {
+            event.dropFiles.paths.push_back(paths[i]);
+        }
 
         return event;
     }

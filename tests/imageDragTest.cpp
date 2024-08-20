@@ -25,12 +25,6 @@ void eventCallback(PNT::Window* window, PNT::windowEvent event) {
             }
         }
         break;
-
-    case PNT_EVENT_TYPE_WINDOWSIZE:
-        if(event.windowsize.width != event.windowsize.height) {
-            window->setDimentions(event.windowsize.height, event.windowsize.height);
-        }
-        break;
     }
 }
 

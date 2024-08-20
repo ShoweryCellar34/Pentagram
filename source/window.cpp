@@ -39,7 +39,7 @@ namespace PNT {
         instancesList.push_back(this);
         instances++;
 
-        strcpy(data.title, title);
+        this->data.title = title;
         data.width = width;
         data.height = height;
 
@@ -92,7 +92,7 @@ namespace PNT {
     void Window::createWindow(const windowData& data) {
         PNT_NO_WINDOW_ASSERT(window);
 
-        createWindowIntern(data.title, data.width, data.height, data.xpos, data.ypos, data.ImGuiFlags);
+        createWindowIntern(data.title.c_str(), data.width, data.height, data.xpos, data.ypos, data.ImGuiFlags);
     }
 
     void Window::destroyWindow() {
@@ -180,8 +180,15 @@ namespace PNT {
     void Window::setTitle(const char* title) {
         PNT_WINDOW_ASSERT(window);
 
-        strcpy(data.title, title);
+        this->data.title = title;
         glfwSetWindowTitle(window, title);
+    }
+
+    void Window::setTitle(std::string title) {
+        PNT_WINDOW_ASSERT(window);
+
+        this->data.title = title;
+        glfwSetWindowTitle(window, title.c_str());
     }
 
     void Window::setIcon(const image& icon) {
@@ -276,7 +283,7 @@ namespace PNT {
         return data.userPointer;
     }
 
-    const char *Window::getTitle() const {
+    std::string Window::getTitle() const {
         PNT_WINDOW_ASSERT(window);
 
         return data.title;
