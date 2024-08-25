@@ -19,11 +19,13 @@ namespace PNT {
     Window::Window() : m_window(nullptr), m_closed(true), m_frame(false), m_data(), m_eventQueue(), m_ImContext(nullptr), m_IO(nullptr) {
     }
 
-    Window::Window(const char *title, uint32_t width, uint32_t height, uint32_t xpos, uint32_t ypos, uint32_t ImGuiFlags) : m_window(nullptr), m_closed(true), m_frame(false), m_data(), m_eventQueue(), m_ImContext(nullptr), m_IO(nullptr) {
+    Window::Window(const char *title, uint32_t width, uint32_t height, uint32_t xpos, uint32_t ypos, uint32_t ImGuiFlags) : m_window(nullptr),
+         m_closed(true), m_frame(false), m_data(), m_eventQueue(), m_ImContext(nullptr), m_IO(nullptr) {
         createWindow(title, width, height, xpos, ypos, ImGuiFlags);
     }
 
-    Window::Window(const windowData& data) : m_window(nullptr), m_closed(true), m_frame(false), m_data(), m_eventQueue(), m_ImContext(nullptr), m_IO(nullptr) {
+    Window::Window(const windowData& data) : m_window(nullptr), m_closed(true), m_frame(false), m_data(), m_eventQueue(), m_ImContext(nullptr), 
+        m_IO(nullptr) {
         createWindow(data);
     }
 
