@@ -14,3 +14,5 @@
 #include <spdlog/spdlog.h>
 #include <glm/ext.hpp>
 #include <stb_image.h>
+
+extern std::shared_ptr<spdlog::logger> userLogger;

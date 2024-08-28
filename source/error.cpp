@@ -5,10 +5,15 @@
 
 namespace PNT {
     auto consoleSink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-    auto fileSink = std::make_shared<spdlog::sinks::daily_file_sink_mt>("logs/", 0, 0, true);
+    auto fileSink = std::make_shared<spdlog::sinks::daily_file_sink_mt>("pentagramLogs/", 0, 0, true);
     std::vector<spdlog::sink_ptr> sinks{consoleSink, fileSink};
     std::shared_ptr<spdlog::logger> logger = std::make_shared<spdlog::logger>("Pentagram log", sinks.begin(), sinks.end());
 }
+
+auto userConsoleSink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+auto userFileSink = std::make_shared<spdlog::sinks::daily_file_sink_mt>("logs/", 0, 0, true);
+std::vector<spdlog::sink_ptr> userSinks{userConsoleSink, userFileSink};
+std::shared_ptr<spdlog::logger> userLogger = std::make_shared<spdlog::logger>("Log", userSinks.begin(), userSinks.end());
 
 void PNT::assertMsg(const char *file, int line, int code) {
     char buffer[256] = {0};
