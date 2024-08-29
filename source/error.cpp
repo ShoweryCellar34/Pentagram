@@ -1,4 +1,4 @@
-#include <error.hpp>
+#include "error.hpp"
 
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/sinks/daily_file_sink.h>
@@ -15,7 +15,7 @@ auto userFileSink = std::make_shared<spdlog::sinks::daily_file_sink_mt>("logs/",
 std::vector<spdlog::sink_ptr> userSinks{userConsoleSink, userFileSink};
 std::shared_ptr<spdlog::logger> userLogger = std::make_shared<spdlog::logger>("Log", userSinks.begin(), userSinks.end());
 
-void PNT::assertMsg(const char *file, int line, int code) {
+void PNT::assertMsg(const char* file, int line, int code) {
     char buffer[256] = {0};
     switch(code) {
     case 0:
