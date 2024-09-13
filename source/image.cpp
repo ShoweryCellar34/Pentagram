@@ -1,4 +1,4 @@
-#include "image.hpp"
+#include <image.hpp>
 
 #include <memory>
 #include <spdlog/spdlog.h>
