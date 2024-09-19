@@ -47,7 +47,7 @@ namespace PNT {
 
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        // glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); THIS IS DEATHLINE FOR INTEL
 
         m_window = glfwCreateWindow(width, height, title, NULL, NULL);
         glfwSetWindowUserPointer(m_window, this);
