@@ -118,11 +118,6 @@ namespace PNT {
         PNT_ENDFRAME_ASSERT(m_frame);
 
         glfwMakeContextCurrent(m_window);
-        int width, height;
-        glfwGetFramebufferSize(m_window, &width, &height);
-        glViewport(0, 0, width, height);
-        glClearColor(m_data.clearColor[0], m_data.clearColor[1], m_data.clearColor[2], m_data.clearColor[3]);
-        glClear(GL_COLOR_BUFFER_BIT);
         ImGui::SetCurrentContext(m_ImContext);
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
@@ -135,13 +130,20 @@ namespace PNT {
         PNT_NEWFRAME_ASSERT(m_frame);
 
         ImGui::Render();
-        ImGuiIO& io = ImGui::GetIO();
+
+        int width, height;
+        glfwGetFramebufferSize(m_window, &width, &height);
+        glViewport(0, 0, width, height);
+        glClearColor(m_data.clearColor[0], m_data.clearColor[1], m_data.clearColor[2], m_data.clearColor[3]);
+        glClear(GL_COLOR_BUFFER_BIT);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        if (m_IO->ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
+            GLFWwindow* backup_current_context = glfwGetCurrentContext();
+            ImGui::UpdatePlatformWindows();
+            ImGui::RenderPlatformWindowsDefault();
+            glfwMakeContextCurrent(backup_current_context);
+        }
         glfwSwapBuffers(m_window);
-        GLFWwindow* backupContext = glfwGetCurrentContext();
-        ImGui::UpdatePlatformWindows();
-        ImGui::RenderPlatformWindowsDefault();
-        glfwMakeContextCurrent(backupContext);
         m_frame = false;
 
         endframe = std::chrono::steady_clock::now();
