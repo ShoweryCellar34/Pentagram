@@ -62,7 +62,7 @@ void PNT::assertMsg(const char* file, int line, int code) {
     exit(EXIT_FAILURE);
 }
 
-void PNT::errorCallback(int errorCode, const char *errorDescription) {
+void PNT::errorCallback(int errorCode, const char* errorDescription) {
     logger.get()->error("[PNTinternal] !PNT CORE ERROR! GLFW has crashed with code: {}, and message: {}", errorCode, errorDescription);
     exit(EXIT_FAILURE);
 }
