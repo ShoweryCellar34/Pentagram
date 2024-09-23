@@ -6,3 +6,8 @@ run this command with [git](https://git-scm.com/) installed to clone this reposi
 ```
 git clone --recursive https://github.com/ShoweryCellar34/Pentagram.git 
 ```
+## Platform support
+Penagram uses strictly cross-platform libraries \(Windows, Mac, and Linux support\) and [CMake](https://cmake.org/), and is primary tested on Windows 11 but has been tested on Ubuntu 24.
+
+## How to use with cmake
+Pentagram was designed only with cmake support in mind so precompiled binaries aren't provided.
