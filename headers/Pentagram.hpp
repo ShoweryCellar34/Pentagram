@@ -7,7 +7,7 @@
 #include "gl.hpp"
 #include "image.hpp"
 
-#include <glad.h>
+#include <glad/gl.h>
 #include <imgui.h>
 #include <misc/cpp/imgui_stdlib.h>
 #include <GLFW/glfw3.h>

@@ -5,18 +5,17 @@
 #include <stb_image.h>
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
-#include <glad.h>
+#include <glad/gl.h>
 
 namespace PNT {
     extern std::shared_ptr<spdlog::logger> logger;
 
     // Image definitions.
 
-    image::image() : m_width(128), m_height(128), m_channels(0), m_pixels(nullptr), m_textureID(0) {
-        logger.get()->info("[PNT]Creating image");
+    image::image(GladGLContext* openglContext) : m_openglContext(openglContext), m_width(128), m_height(128), m_channels(0), m_pixels(nullptr), m_textureID(0) {
     };
 
-    image::image(const char* path) : m_width(128), m_height(128), m_channels(0), m_pixels(nullptr), m_textureID(0) {
+    image::image(const char* path, GladGLContext* openglContext) : m_openglContext(openglContext), m_width(128), m_height(128), m_channels(0), m_pixels(nullptr), m_textureID(0) {
         logger.get()->info("[PNT]Creating image");
 
         load(path);
@@ -25,6 +24,7 @@ namespace PNT {
     image::image(const image& original) : m_width(128), m_height(128), m_channels(0), m_pixels(nullptr), m_textureID(0) {
         logger.get()->debug("[PNT]Copying image with width: {} and height: {}", m_width, m_height);
 
+        m_openglContext = original.m_openglContext;
         m_width = original.m_width;
         m_height = original.m_height;
         m_channels = original.m_channels;
@@ -87,27 +87,27 @@ namespace PNT {
     }
 
     void image::imageSettings(unsigned int min, unsigned int mag, unsigned int S, unsigned int T) {
-        glBindTexture(GL_TEXTURE_2D, m_textureID);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, S);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, T);
+        m_openglContext->BindTexture(GL_TEXTURE_2D, m_textureID);
+        m_openglContext->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min);
+        m_openglContext->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag);
+        m_openglContext->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, S);
+        m_openglContext->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, T);
     }
 
     void image::loadOnGPU() {
         logger.get()->debug("[PNT]Loading image onto GPU with width: {} and height: {}", m_width, m_height);
 
         if(!m_textureID) {
-            glGenTextures(1, &m_textureID);
-            glBindTexture(GL_TEXTURE_2D, m_textureID);
+            m_openglContext->GenTextures(1, &m_textureID);
+            m_openglContext->BindTexture(GL_TEXTURE_2D, m_textureID);
 
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            m_openglContext->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+            m_openglContext->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+            m_openglContext->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            m_openglContext->TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_pixels);
-            glGenerateMipmap(GL_TEXTURE_2D);
+            m_openglContext->TexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_pixels);
+            m_openglContext->GenerateMipmap(GL_TEXTURE_2D);
         }
     }
 
@@ -115,7 +115,7 @@ namespace PNT {
         if(m_textureID) {
             logger.get()->debug("[PNT]Unloading image off GPU");
 
-            glDeleteTextures(1, &m_textureID);
+            m_openglContext->DeleteTextures(1, &m_textureID);
             m_textureID = 0;
         } else {
             logger.get()->warn("[PNT]Tried to unload a off GPU when image was not on GPU");

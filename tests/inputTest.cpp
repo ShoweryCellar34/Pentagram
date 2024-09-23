@@ -54,8 +54,8 @@ int main(int argc, char *argv[]) {
         exit(EXIT_FAILURE);
     }
 
-    PNT::image logo("res/textures/logo/ghoul.png");
     PNT::Window window("inputTest", 500, 500, 200, 200, ImGuiConfigFlags_ViewportsEnable);
+    PNT::image logo("res/textures/logo/ghoul.png", window.getGL());
     window.setIcon(logo);
     window.setEventCallback(&eventCallback);
 

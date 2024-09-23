@@ -3,21 +3,26 @@
 #include <stdint.h>
 #include <string>
 
+struct GladGLContext;
 struct ImVec2;
 
 namespace PNT {
     class image {
     private:
+        GladGLContext* m_openglContext;
         uint32_t m_width, m_height, m_channels;
         unsigned char* m_pixels;
         unsigned int m_textureID;
 
     public:
-        image();
+        /// @brief Image object constructor.
+        /// @param openglContext The desired OpenGL context to put the image in.
+        image(GladGLContext* openglContext);
 
         /// @brief Image object constructor.
         /// @param path The desired image path.
-        image(const char* path);
+        /// @param openglContext The desired OpenGL context to put the image in.
+        image(const char* path, GladGLContext* openglContext);
 
         image(const image& original);
 

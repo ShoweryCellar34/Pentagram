@@ -2,9 +2,9 @@
 #include <depracated/file.hpp>
 
 void eventCallback(PNT::Window* window, PNT::windowEvent event) {
-    PNT::image* image = (PNT::image*)window->getUserPointer();
     switch(event.type) {
     case PNT_EVENT_TYPE_DROP:
+        PNT::image* image = (PNT::image*)window->getUserPointer();
         image->unloadOffGPU();
         image->load(event.dropFiles.paths[0]);
         window->setDimentions(image->getWidth(), image->getHeight());
@@ -35,25 +35,27 @@ int main(int argc, char *argv[]) {
         exit(EXIT_FAILURE);
     }
 
-    PNT::image image("res/textures/logo/ghoul.png");
-    PNT::Window window("imageDragTest", image.getWidth(), image.getHeight(), 200, 200, 0);
+    PNT::Window window("imageDragTest", 500, 500, 200, 200, 0);
+    GladGLContext* gl = window.getGL();
+    PNT::image image("res/textures/logo/ghoul.png", gl);
     window.setUserPointer(&image);
+    window.setDimentions(image.getWidth(), image.getHeight());
     window.setAspectRatio(image.getWidth(), image.getHeight());
     window.setEventCallback(eventCallback);
 
     // Vertex shader.
     PNT::file file("res/shaders/vertex.glsl");
-    PNT::shader vertexShader(file.getContents().c_str(), GL_VERTEX_SHADER);
+    PNT::shader vertexShader(file.getContents().c_str(), GL_VERTEX_SHADER, gl);
     vertexShader.compile();
 
     // Fragment shader.
     file.close();
     file.open("res/shaders/fragment.glsl");
-    PNT::shader fragmentShader(file.getContents().c_str(), GL_FRAGMENT_SHADER);
+    PNT::shader fragmentShader(file.getContents().c_str(), GL_FRAGMENT_SHADER, gl);
     fragmentShader.compile();
 
     // Shader program.
-    PNT::program shader({&vertexShader, &fragmentShader});
+    PNT::program shader({&vertexShader, &fragmentShader}, gl);
     shader.link();
 
     float vertices[] = {
@@ -67,22 +69,22 @@ int main(int argc, char *argv[]) {
         1, 2, 3
     };
     unsigned int VBO, VAO, EBO;
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
+    gl->GenVertexArrays(1, &VAO);
+    gl->GenBuffers(1, &VBO);
+    gl->GenBuffers(1, &EBO);
 
-    glBindVertexArray(VAO);
+    gl->BindVertexArray(VAO);
 
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    gl->BindBuffer(GL_ARRAY_BUFFER, VBO);
+    gl->BufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    gl->BindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    gl->BufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
+    gl->VertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+    gl->EnableVertexAttribArray(0);
 
-    glUniform1i(glGetUniformLocation(shader.getID(), "texture"), image.getID());
+    gl->Uniform1i(gl->GetUniformLocation(shader.getID(), "texture"), image.getID());
 
     window.startFrame();
 
@@ -97,8 +99,8 @@ int main(int argc, char *argv[]) {
 
         shader.use();
 
-        glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        gl->BindVertexArray(VAO);
+        gl->DrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         window.endFrame();
     }

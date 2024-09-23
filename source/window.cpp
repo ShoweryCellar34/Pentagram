@@ -1,7 +1,7 @@
 #include <window.hpp>
 
 #include <algorithm>
-#include <glad.h>
+#include <glad/gl.h>
 #include <GLFW/glfw3.h>
 #include <imgui.h>
 #include <misc/cpp/imgui_stdlib.h>
@@ -33,8 +33,11 @@ namespace PNT {
         destroyWindow();
     }
 
+    GladGLContext gl;
     void Window::createWindowIntern(const char *title, uint32_t width, uint32_t height, uint32_t xpos, uint32_t ypos, uint32_t ImGuiFlags) {
         PNT_REQUIRE_INIT();
+
+        m_openglContext = &gl;
 
         logger.get()->info("[PNT]Creating window \"{}\"", title);
 
@@ -53,7 +56,7 @@ namespace PNT {
         m_window = glfwCreateWindow(width, height, title, NULL, NULL);
         glfwSetWindowUserPointer(m_window, this);
         glfwMakeContextCurrent(m_window);
-        gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+        gladLoadGLContext(m_openglContext, (GLADloadfunc)glfwGetProcAddress);
         setPosition(xpos, ypos);
 
         glfwSetKeyCallback(m_window, callbackManagers::keyCallbackManager);
@@ -80,7 +83,7 @@ namespace PNT {
         ImGui::SetCurrentContext(m_ImContext);
         m_IO = &ImGui::GetIO();
         m_IO->ConfigFlags |= ImGuiFlags;
-        ImGui_ImplGlfw_InitForOpenGL(m_window, true);
+        ImGui_ImplGlfw_InitForOpenGL(m_window, false);
         ImGui_ImplOpenGL3_Init(nullptr);
         ImGui::StyleColorsDark();
         m_closed = false;
@@ -134,9 +137,9 @@ namespace PNT {
 
         int width, height;
         glfwGetFramebufferSize(m_window, &width, &height);
-        glViewport(0, 0, width, height);
-        glClearColor(m_data.clearColor[0], m_data.clearColor[1], m_data.clearColor[2], m_data.clearColor[3]);
-        glClear(GL_COLOR_BUFFER_BIT);
+        m_openglContext->Viewport(0, 0, width, height);
+        m_openglContext->ClearColor(m_data.clearColor[0], m_data.clearColor[1], m_data.clearColor[2], m_data.clearColor[3]);
+        m_openglContext->Clear(GL_COLOR_BUFFER_BIT);
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         if (m_IO->ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
             GLFWwindow* backup_current_context = glfwGetCurrentContext();
@@ -328,6 +331,12 @@ namespace PNT {
         PNT_WINDOW_ASSERT(m_window);
 
         return m_data.iconified;
+    }
+
+    GladGLContext* Window::getGL() {
+        PNT_WINDOW_ASSERT(m_window);
+
+        return m_openglContext;
     }
 
     bool Window::shouldClose() const {

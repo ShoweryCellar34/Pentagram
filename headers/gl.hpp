@@ -4,10 +4,13 @@
 #include <string>
 #include <initializer_list>
 
+struct GladGLContext;
+
 namespace PNT {
     /// @brief Shader class for handling shaders.
     class shader {
     private:
+        GladGLContext* m_openglContext;
         uint32_t m_shaderID;
         uint32_t m_type;
         char* m_source;
@@ -15,12 +18,15 @@ namespace PNT {
         int m_success;
 
     public:
-        shader();
+        /// @brief Shader object constructor.
+        /// @param openglContext The desired OpenGL context to put the shader in.
+        shader(GladGLContext* openglContext);
 
-        /// @brief Image object constructor.
+        /// @brief Shader object constructor.
         /// @param source The desired shader source code.
         /// @param type The desired type of shader to create.
-        shader(const char* source, uint32_t type);
+        /// @param openglContext The desired OpenGL context to put the shader in.
+        shader(const char* source, uint32_t type, GladGLContext* openglContext);
 
         ~shader();
 
@@ -62,47 +68,52 @@ namespace PNT {
     /// @brief Program class for using shaders, compatible with "PNT::shader" and shader identifier of type "uint32_t" to be linked in.
     class program {
     private:
+        GladGLContext* m_openglContext;
         uint32_t programID;
         char errorBuffer[1024];
         int success;
 
     public:
-        program();
+        /// @brief Program object constructor for handling shaders.
+        /// @param openglContext The desired OpenGL context to put the program in.
+        program(GladGLContext* openglContext);
 
         /// @brief Program object constructor for handling shaders.
-        /// @param shaders Shaders to link into the program, they can be ether "PNT::shader*" or a shader identifier of type "uint32_t" contained in curly brackets (only one type at a time).
-        program(std::initializer_list<PNT::shader*> shaders);
+        /// @param shaders The desired shaders to link into the program, they can be ether "PNT::shader*" or a shader identifier of type "uint32_t" contained in curly brackets (only one type at a time).
+        /// @param openglContext The desired OpenGL context to put the program in.
+        program(std::initializer_list<PNT::shader*> shaders, GladGLContext* openglContext);
 
         /// @brief Program object constructor for handling shaders.
-        /// @param shaders Shaders to link into the program, they can be ether "PNT::shader*" or a shader identifier of type "uint32_t" contained in curly brackets (only one type at a time).
-        program(std::initializer_list<uint32_t> shaders);
+        /// @param shaders The desired shaders to link into the program, they can be ether "PNT::shader*" or a shader identifier of type "uint32_t" contained in curly brackets (only one type at a time).
+        /// @param openglContext The desired OpenGL context to put the program in.
+        program(std::initializer_list<uint32_t> shaders, GladGLContext* openglContext);
 
         ~program();
 
         /// @brief Create the program.
-        /// @param shaders Shaders to link into the program, they can be ether "PNT::shader*" or a shader identifier of type "uint32_t" contained in curly brackets (only one type at a time).
+        /// @param shaders The desired shaders to link into the program, they can be ether "PNT::shader*" or a shader identifier of type "uint32_t" contained in curly brackets (only one type at a time).
         void createProgram(std::initializer_list<PNT::shader*> shaders);
 
         /// @brief Create the program.
-        /// @param shaders Shaders to link into the program, they can be ether "PNT::shader*" or a shader identifier of type "uint32_t" contained in curly brackets (only one type at a time).
+        /// @param shaders The desired shaders to link into the program, they can be ether "PNT::shader*" or a shader identifier of type "uint32_t" contained in curly brackets (only one type at a time).
         void createProgram(std::initializer_list<uint32_t> shaders);
 
         void destroyProgram();
 
         /// @brief Links a shader to the program, call "link()" after this to relink the program and push changes onto the GPU.
-        /// @param object Can be a "PNT::shader*" or a shader identifier of type "uint32_t".
+        /// @param object The desired shader object to link, can be a "PNT::shader*" or a shader identifier of type "uint32_t".
         void attachShader(shader* object);
 
         /// @brief Links a shader to the program, call "link()" after this to relink the program and push changes onto the GPU.
-        /// @param object Can be a "PNT::shader*" or a shader identifier of type "uint32_t".
+        /// @param object The desired shader object to link, can be a "PNT::shader*" or a shader identifier of type "uint32_t".
         void attachShader(uint32_t object);
 
         /// @brief Detaches the connected shader from the program.
-        /// @param object Can be a "PNT::shader*" or a shader identifier of type "uint32_t".
+        /// @param object The desired shader object to link, can be a "PNT::shader*" or a shader identifier of type "uint32_t".
         void detachShader(shader* object);
 
         /// @brief Detaches the connected shader from the program.
-        /// @param object Can be a "PNT::shader*" or a shader identifier of type "uint32_t".
+        /// @param object The desired shader object to link, can be a "PNT::shader*" or a shader identifier of type "uint32_t".
         void detachShader(uint32_t object);
 
         /// @brief Links the program, call this after "attachShader()" to push the changes onto the GPU.

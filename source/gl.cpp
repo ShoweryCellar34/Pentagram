@@ -3,7 +3,7 @@
 #include <memory>
 #include <cstring>
 #include <spdlog/spdlog.h>
-#include <glad.h>
+#include <glad/gl.h>
 #include <error.hpp>
 
 namespace PNT {
@@ -11,10 +11,10 @@ namespace PNT {
 
     // Shader definitions.
 
-    shader::shader() : m_shaderID(0), m_type(0), m_source(nullptr), m_errorBuffer{0}, m_success(0) {
+    shader::shader(GladGLContext* openglContext) : m_openglContext(openglContext), m_shaderID(0), m_type(0), m_source(nullptr), m_errorBuffer{0}, m_success(0) {
     }
 
-    shader::shader(const char* source, uint32_t type) : m_shaderID(0), m_type(0), m_source(nullptr), m_errorBuffer{0}, m_success(0) {
+    shader::shader(const char* source, uint32_t type, GladGLContext* openglContext) : m_openglContext(openglContext), m_shaderID(0), m_type(0), m_source(nullptr), m_errorBuffer{0}, m_success(0) {
         createShader(type);
         setData(source);
     }
@@ -29,7 +29,7 @@ namespace PNT {
 
         logger.get()->info("[PNT]Creating shader");
 
-        m_shaderID = glCreateShader(type);
+        m_shaderID = m_openglContext->CreateShader(type);
     }
 
     void shader::destroyShader() {
@@ -37,7 +37,7 @@ namespace PNT {
 
         logger.get()->info("[PNT]Destroying shader");
 
-        glDeleteShader(m_shaderID);
+        m_openglContext->DeleteShader(m_shaderID);
         m_shaderID = 0;
     }
 
@@ -56,10 +56,10 @@ namespace PNT {
             this->m_source = new char[1];
             this->m_source[0] = 0;
         }
-        glShaderSource(m_shaderID, 1, &source, NULL);
-        glGetShaderiv(m_shaderID, GL_COMPILE_STATUS, &m_success);
+        m_openglContext->ShaderSource(m_shaderID, 1, &source, NULL);
+        m_openglContext->GetShaderiv(m_shaderID, GL_COMPILE_STATUS, &m_success);
         if(m_success) {
-            glGetShaderInfoLog(m_shaderID, 1024, NULL, m_errorBuffer);
+            m_openglContext->GetShaderInfoLog(m_shaderID, 1024, NULL, m_errorBuffer);
             logger.get()->warn("[PNT]Failed to set shader data with error \"{}\"", m_errorBuffer);
         } else {
             m_success = 1;
@@ -86,7 +86,7 @@ namespace PNT {
     }
 
     void shader::compile() {
-        glCompileShader(m_shaderID);
+        m_openglContext->CompileShader(m_shaderID);
     }
 
     bool shader::valid() {
@@ -95,14 +95,14 @@ namespace PNT {
 
     // Program definitions.
 
-    program::program() : programID(0), errorBuffer{0}, success(0) {
+    program::program(GladGLContext* openglContext) : m_openglContext(openglContext), programID(0), errorBuffer{0}, success(0) {
     }
 
-    program::program(std::initializer_list<PNT::shader*> shaders) : programID(0), errorBuffer{0}, success(0) {
+    program::program(std::initializer_list<PNT::shader*> shaders, GladGLContext* openglContext) : m_openglContext(openglContext), programID(0), errorBuffer{0}, success(0) {
         createProgram(shaders);
     }
 
-    program::program(std::initializer_list<uint32_t> shaders) : programID(0), errorBuffer{0}, success(0) {
+    program::program(std::initializer_list<uint32_t> shaders, GladGLContext* openglContext) : m_openglContext(openglContext), programID(0), errorBuffer{0}, success(0) {
         createProgram(shaders);
     }
 
@@ -115,7 +115,7 @@ namespace PNT {
 
         logger.get()->info("[PNT]Creating program");
 
-        programID = glCreateProgram();
+        programID = m_openglContext->CreateProgram();
         for(size_t i = 0; i < shaders.size(); i++) {
             attachShader(shaders.begin()[i]->getID());
         }
@@ -126,7 +126,7 @@ namespace PNT {
 
         logger.get()->info("[PNT]Creating program");
 
-        programID = glCreateProgram();
+        programID = m_openglContext->CreateProgram();
         for(size_t i = 0; i < shaders.size(); i++) {
             attachShader(shaders.begin()[i]);
         }
@@ -137,7 +137,7 @@ namespace PNT {
 
         logger.get()->info("[PNT]Destroying program");
 
-        glDeleteProgram(programID);
+        m_openglContext->DeleteProgram(programID);
         programID = 0;
     }
 
@@ -147,7 +147,7 @@ namespace PNT {
         logger.get()->debug("[PNT]Attatching shader with ID: {} to program with ID: {}", object->getID(), programID);
 
         if(object->getID()) {
-            glAttachShader(programID, object->getID());
+            m_openglContext->AttachShader(programID, object->getID());
         } else {
             logger.get()->warn("[PNT]Attempted to attach shader with ID 0 (0 indicates not created yet)");
         }
@@ -159,7 +159,7 @@ namespace PNT {
         logger.get()->debug("[PNT]Attatching shader with ID: {} to program with ID: {}", object, programID);
 
         if(object) {
-            glAttachShader(programID, object);
+            m_openglContext->AttachShader(programID, object);
         } else {
             logger.get()->warn("[PNT]Attempted to attach shader with ID 0 (0 indicates not created yet)");
         }
@@ -170,7 +170,7 @@ namespace PNT {
 
         logger.get()->debug("[PNT]Detching shader with ID: {} to program with ID: {}", object->getID(), programID);
 
-        glDetachShader(programID, object->getID());
+        m_openglContext->DetachShader(programID, object->getID());
     }
 
     void program::detachShader(uint32_t object) {
@@ -178,7 +178,7 @@ namespace PNT {
 
         logger.get()->debug("[PNT]Detching shader with ID: {} to program with ID: {}", object, programID);
 
-        glDetachShader(programID, object);
+        m_openglContext->DetachShader(programID, object);
     }
 
     void program::link() {
@@ -186,10 +186,10 @@ namespace PNT {
 
         logger.get()->debug("[PNT]Linking program with ID: {}", programID);
 
-        glLinkProgram(programID);
-        glGetProgramiv(programID, GL_LINK_STATUS, &success);
+        m_openglContext->LinkProgram(programID);
+        m_openglContext->GetProgramiv(programID, GL_LINK_STATUS, &success);
         if(!success) {
-            glGetProgramInfoLog(programID, 1024, NULL, errorBuffer);
+            m_openglContext->GetProgramInfoLog(programID, 1024, NULL, errorBuffer);
             logger.get()->warn("[PNT]Failed to link program with error \"{}\"", errorBuffer);
         }
     }
@@ -197,7 +197,7 @@ namespace PNT {
     void program::use() {
         PNT_PROGRAM_ID(programID);
 
-        glUseProgram(programID);
+        m_openglContext->UseProgram(programID);
     }
 
     uint32_t program::getID() {

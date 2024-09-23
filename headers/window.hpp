@@ -9,6 +9,7 @@
 struct GLFWwindow;
 struct ImGuiContext;
 struct ImGuiIO;
+struct GladGLContext;
 
 namespace PNT {
     class Window;
@@ -53,6 +54,7 @@ namespace PNT {
         static inline size_t m_instances;
         static inline std::vector<Window*> m_instancesList;
         GLFWwindow* m_window = nullptr;
+        GladGLContext* m_openglContext;
         bool m_closed = true;
         bool m_frame = false;
         windowData m_data;
@@ -210,6 +212,10 @@ namespace PNT {
         /// @brief Gets the iconified state of the window.
         /// @return True if the window is minimised (on the taskbar), and false if otherwise.
         bool getIconified() const;
+
+        /// @brief Gets the OpenGL context.
+        /// @return The opengl context pointer.
+        GladGLContext* getGL();
 
         /// @brief Check if the currect window should close.
         /// @return True if the window should close.
