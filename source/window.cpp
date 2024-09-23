@@ -9,7 +9,6 @@
 #include <backends/imgui_impl_opengl3.h>
 #include <error.hpp>
 #include <event.hpp>
-#include <image.hpp>
 
 namespace PNT {
     extern std::shared_ptr<spdlog::logger> logger;
@@ -199,17 +198,13 @@ namespace PNT {
         glfwSetWindowTitle(m_window, title.c_str());
     }
 
-    void Window::setIcon(const image& icon) {
+    void Window::setIcon(const GLFWimage& icon) {
         PNT_WINDOW_ASSERT(m_window);
 
         logger.get()->debug("[PNT]Setting icon for window \"{}\"", m_data.title);
 
-        if(icon.valid()) {
-            GLFWimage glfwImage;
-            glfwImage.width = icon.getWidth();
-            glfwImage.height = icon.getHeight();
-            glfwImage.pixels = icon.getPixels();
-            glfwSetWindowIcon(m_window, 1, &glfwImage);
+        if(icon.pixels != nullptr) {
+            glfwSetWindowIcon(m_window, 1, &icon);
         } else {
             logger.get()->warn("[PNT]Icon failed to set");
             glfwSetWindowIcon(m_window, 0, nullptr);

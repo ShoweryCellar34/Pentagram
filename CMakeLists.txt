@@ -25,8 +25,7 @@ set(GLAD_LIBRARY_TYPE "STATIC")
 add_subdirectory(vendors/glad)
 
 file(GLOB pentagram source/*.cpp)
-file(GLOB pentagramDepracated source/depracated/*.cpp)
-add_library(Pentagram STATIC ${pentagram} ${pentagramDepracated})
+add_library(Pentagram STATIC ${pentagram})
 set_target_properties(Pentagram PROPERTIES LINKER_LANGUAGE CXX)
 
 if(MSVC)
@@ -37,20 +36,3 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wall -Wextra -pedantic -fsaniti
 endif()
 target_link_libraries(Pentagram spdlog::spdlog glm::glm glfw imgui glad stb)
 target_include_directories(Pentagram PUBLIC headers)
-
-option(PNT_BUILD_TESTS "Build Pentagram tests" true)
-
-if(${PNT_BUILD_TESTS})
-
-add_custom_target(PNT_copy_resources ALL COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/tests/res ${PROJECT_BINARY_DIR}/res COMMENT "Copying Pentagram test resources into binary directory")
-
-file(GLOB tests tests/*.cpp)
-foreach(test ${tests})
-
-get_filename_component(test_name ${test} NAME_WE)
-add_executable(${test_name} ${test})
-target_link_libraries(${test_name} Pentagram)
-add_dependencies(${test_name} PNT_copy_resources)
-
-endforeach(test ${tests})
-endif()

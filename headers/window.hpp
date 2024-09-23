@@ -7,6 +7,7 @@
 #include <chrono>
 
 struct GLFWwindow;
+struct GLFWimage;
 struct ImGuiContext;
 struct ImGuiIO;
 struct GladGLContext;
@@ -133,7 +134,7 @@ namespace PNT {
 
         /// @brief Sets the window icon.
         /// @param image The desired PNT::image for the window icon.
-        void setIcon(const image& image);
+        void setIcon(const GLFWimage& image);
 
         /// @brief Sets the dimentions of the window.
         /// @param width The desired window width.
