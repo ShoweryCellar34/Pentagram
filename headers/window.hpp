@@ -6,6 +6,7 @@
 #include <vector>
 #include <chrono>
 
+struct GLFWmonitor;
 struct GLFWwindow;
 struct GLFWimage;
 struct ImGuiContext;
@@ -16,6 +17,8 @@ namespace PNT {
     class Window;
     struct windowEvent;
     class image;
+
+    void monitorCallback(GLFWmonitor*, int);
 
     class callbackManagers {
     private:
@@ -206,7 +209,7 @@ namespace PNT {
 
         /// @brief Gets the window focus.
         /// @return The focus of the window, true if focused and false if not focused.
-        bool getFocus();
+        bool getFocus() const;
 
         /// @brief Gets the X position of the window.
         /// @return The window X position.
@@ -226,7 +229,7 @@ namespace PNT {
 
         /// @brief Gets the OpenGL context.
         /// @return The opengl context pointer.
-        GladGLContext* getGL();
+        GladGLContext* getGL() const;
 
         /// @brief Check if the currect window should close.
         /// @return True if the window should close.

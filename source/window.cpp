@@ -64,20 +64,20 @@ namespace PNT {
         glfwSetCharCallback(m_window, callbackManagers::charCallbackManager);
         glfwSetDropCallback(m_window, callbackManagers::dropCallbackManager);
         glfwSetScrollCallback(m_window, callbackManagers::scrollCallbackManager);
-        //glfwSetCharModsCallback(window, callbackManagers::);
+        //glfwSetCharModsCallback(m_window, callbackManagers::);
         //glfwSetJoystickCallback(callbackManagers::);
         glfwSetCursorPosCallback(m_window, callbackManagers::cursorPosCallbackManager);
         glfwSetWindowPosCallback(m_window, callbackManagers::windowposCallbackManager);
         glfwSetWindowSizeCallback(m_window, callbackManagers::windowsizeCallbackManager);
         glfwSetCursorEnterCallback(m_window, callbackManagers::cursorEnterCallback);
         glfwSetMouseButtonCallback(m_window, callbackManagers::mousebuttonCallbackManager);
-        //glfwSetWindowCloseCallback(window, callbackManagers::);
-        //glfwSetWindowFocusCallback(window, callbackManagers::);
+        //glfwSetWindowCloseCallback(m_window, callbackManagers::);
+        glfwSetWindowFocusCallback(m_window, callbackManagers::windowFocusCallback);
         glfwSetWindowIconifyCallback(m_window, callbackManagers::iconifyCallbackManager);
-        //glfwSetWindowRefreshCallback(window, callbackManagers::);
-        //glfwSetWindowMaximizeCallback(window, callbackManagers::);
-        //glfwSetFramebufferSizeCallback(window, callbackManagers::);
-        //glfwSetWindowContentScaleCallback(window, callbackManagers::);
+        //glfwSetWindowRefreshCallback(m_window, callbackManagers::);
+        //glfwSetWindowMaximizeCallback(m_window, callbackManagers::);
+        //glfwSetFramebufferSizeCallback(m_window, callbackManagers::);
+        //glfwSetWindowContentScaleCallback(m_window, callbackManagers::);
 
         m_ImContext = ImGui::CreateContext();
         ImGui::SetCurrentContext(m_ImContext);
@@ -216,12 +216,14 @@ namespace PNT {
         PNT_WINDOW_ASSERT(m_window);
 
         glfwSetWindowSize(m_window, width, height);
+        callbackManagers::windowsizeCallbackManager(m_window, width, height);
     }
 
     void Window::setFocused() {
         PNT_WINDOW_ASSERT(m_window);
 
         glfwFocusWindow(m_window);
+        callbackManagers::windowFocusCallback(m_window, 1);
     }
 
     void Window::setPosition(uint16_t xpos, uint16_t ypos) {
@@ -247,12 +249,14 @@ namespace PNT {
         PNT_WINDOW_ASSERT(m_window);
 
         glfwIconifyWindow(m_window);
+        callbackManagers::iconifyCallbackManager(m_window, 1);
     }
 
     void Window::maximize() {
         PNT_WINDOW_ASSERT(m_window);
 
         glfwRestoreWindow(m_window);
+        callbackManagers::iconifyCallbackManager(m_window, 0);
     }
 
     void Window::setVsyncMode(int8_t vsyncMode) {
@@ -286,6 +290,8 @@ namespace PNT {
     }
 
     std::chrono::duration<double> Window::getDeltaTime() const {
+        PNT_WINDOW_ASSERT(m_window);
+
         return deltaTime;
     }
 
@@ -311,7 +317,7 @@ namespace PNT {
         return m_data.height;
     }
 
-    bool Window::getFocus() {
+    bool Window::getFocus() const {
         PNT_WINDOW_ASSERT(m_window);
 
         return m_data.focused;
@@ -341,7 +347,7 @@ namespace PNT {
         return m_data.iconified;
     }
 
-    GladGLContext* Window::getGL() {
+    GladGLContext* Window::getGL() const {
         PNT_WINDOW_ASSERT(m_window);
 
         return m_openglContext;
@@ -355,7 +361,9 @@ namespace PNT {
 
     // Callback definitions.
 
-    // ImGui_ImplGlfw_MonitorCallback
+    void monitorCallback(GLFWmonitor* monitor, int event) {
+        ImGui_ImplGlfw_MonitorCallback(monitor, event);
+    }
 
     void callbackManagers::keyCallbackManager(GLFWwindow* glfwWindow, int key, int scancode, int action, int mods) {
         Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));

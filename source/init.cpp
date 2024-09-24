@@ -20,6 +20,7 @@ namespace PNT {
         logger.get()->flush_on(spdlog::level::trace);
         logger.get()->info("[PNT]Initializing Pentagram");
         glfwSetErrorCallback(errorCallback);
+        glfwSetMonitorCallback(monitorCallback);
         return initialized;
     }
 

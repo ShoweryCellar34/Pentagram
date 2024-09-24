@@ -132,35 +132,53 @@ namespace PNT {
     }
     const char *windowEvent::getTypename() {
         switch(type) {
+        case PNT_EVENT_TYPE_KEYBOARD:
+            return "Key press";
+            break;
+
         case PNT_EVENT_TYPE_CHAR:
             return "Text input";
-
-        case PNT_EVENT_TYPE_CURSORPOS:
-            return "Cursor position";
+            break;
 
         case PNT_EVENT_TYPE_DROP:
             return "File(s) droped";
-
-        case PNT_EVENT_TYPE_ICONIFY:
-            return "Minimized/Maximized";
-
-        case PNT_EVENT_TYPE_KEYBOARD:
-            return "Key press";
-
-        case PNT_EVENT_TYPE_MOUSEBUTTON:
-            return "Mouse button";
+            break;
 
         case PNT_EVENT_TYPE_SCROLL:
             return "Scroll";
+            break;
+
+        case PNT_EVENT_TYPE_CURSORPOS:
+            return "Cursor position";
+            break;
 
         case PNT_EVENT_TYPE_WINDOWPOS:
             return "Window position";
+            break;
 
         case PNT_EVENT_TYPE_WINDOWSIZE:
             return "Window size";
+            break;
+
+        case PNT_EVENT_TYPE_CURSORENTER:
+            return "Coursor enter";
+            break;
+
+        case PNT_EVENT_TYPE_MOUSEBUTTON:
+            return "Mouse button";
+            break;
+
+        case PNT_EVENT_TYPE_WINDOWFOCUS:
+            return "WIndow focus";
+            break;
+
+        case PNT_EVENT_TYPE_ICONIFY:
+            return "Minimized/Maximized";
+            break;
 
         default:
             return "Unregistered event name";
+            break;
         }
     }
 }
