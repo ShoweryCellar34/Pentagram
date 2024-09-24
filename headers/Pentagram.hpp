@@ -4,8 +4,6 @@
 #include "window.hpp"
 #include "event.hpp"
 #include "enumerations.hpp"
-#include "gl.hpp"
-#include "image.hpp"
 
 #include <glad/gl.h>
 #include <imgui.h>

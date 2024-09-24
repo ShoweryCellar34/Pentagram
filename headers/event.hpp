@@ -47,10 +47,18 @@ namespace PNT {
         int height;
     };
 
+    struct cursorEnterEvent {
+        int entered;
+    };
+
     struct mousebuttonEvent {
         int button;
         int action;
         int mods;
+    };
+
+    struct windowfocusEvent {
+        int focused;
     };
 
     // Structure for events.
@@ -63,7 +71,9 @@ namespace PNT {
         cursorposEvent cursorpos;
         windowposEvent windowpos;
         windowsizeEvent windowsize;
+        cursorEnterEvent cursorenter;
         mousebuttonEvent mousebutton;
+        windowfocusEvent windowfocus;
         bool iconified;
 
         const char* getTypename();
@@ -76,6 +86,8 @@ namespace PNT {
     windowEvent createCursorposEvent(double xpos, double ypos);
     windowEvent createWindowposEvent(int xpos, int ypos);
     windowEvent createWindowsizeEvent(int width, int height);
+    windowEvent createCursorEnterEvent(int entered);
     windowEvent createMousebuttonEvent(int button, int action, int mods);
+    windowEvent createWindowFocusEvent(int focused);
     windowEvent createIconifyEvent(bool iconified);
 }

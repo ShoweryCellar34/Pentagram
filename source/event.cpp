@@ -93,6 +93,15 @@ namespace PNT {
         return event;
     }
 
+    windowEvent createCursorEnterEvent(int entered) {
+        windowEvent event;
+
+        event.type = PNT_EVENT_TYPE_CURSORENTER;
+        event.cursorenter.entered = entered;
+
+        return event;
+    }
+
     windowEvent createMousebuttonEvent(int button, int action, int mods) {
         windowEvent event;
 
@@ -100,6 +109,15 @@ namespace PNT {
         event.mousebutton.button = button;
         event.mousebutton.action = action;
         event.mousebutton.mods = mods;
+
+        return event;
+    }
+
+    windowEvent createWindowFocusEvent(int focused) {
+        windowEvent event;
+
+        event.type = PNT_EVENT_TYPE_WINDOWFOCUS;
+        event.windowfocus.focused = focused;
 
         return event;
     }

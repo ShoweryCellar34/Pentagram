@@ -1,6 +1,7 @@
 #include <window.hpp>
 
 #include <algorithm>
+#include <spdlog/spdlog.h>
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
 #include <imgui.h>
@@ -56,19 +57,19 @@ namespace PNT {
         glfwSetWindowUserPointer(m_window, this);
         glfwMakeContextCurrent(m_window);
         gladLoadGLContext(m_openglContext, (GLADloadfunc)glfwGetProcAddress);
+        setFocused();
         setPosition(xpos, ypos);
 
         glfwSetKeyCallback(m_window, callbackManagers::keyCallbackManager);
         glfwSetCharCallback(m_window, callbackManagers::charCallbackManager);
         glfwSetDropCallback(m_window, callbackManagers::dropCallbackManager);
         glfwSetScrollCallback(m_window, callbackManagers::scrollCallbackManager);
-        //glfwSetMonitorCallback(callbackManagers::);
         //glfwSetCharModsCallback(window, callbackManagers::);
         //glfwSetJoystickCallback(callbackManagers::);
         glfwSetCursorPosCallback(m_window, callbackManagers::cursorPosCallbackManager);
         glfwSetWindowPosCallback(m_window, callbackManagers::windowposCallbackManager);
         glfwSetWindowSizeCallback(m_window, callbackManagers::windowsizeCallbackManager);
-        //glfwSetCursorEnterCallback(window, callbackManagers::);
+        glfwSetCursorEnterCallback(m_window, callbackManagers::cursorEnterCallback);
         glfwSetMouseButtonCallback(m_window, callbackManagers::mousebuttonCallbackManager);
         //glfwSetWindowCloseCallback(window, callbackManagers::);
         //glfwSetWindowFocusCallback(window, callbackManagers::);
@@ -217,6 +218,12 @@ namespace PNT {
         glfwSetWindowSize(m_window, width, height);
     }
 
+    void Window::setFocused() {
+        PNT_WINDOW_ASSERT(m_window);
+
+        glfwFocusWindow(m_window);
+    }
+
     void Window::setPosition(uint16_t xpos, uint16_t ypos) {
         PNT_WINDOW_ASSERT(m_window);
 
@@ -304,6 +311,12 @@ namespace PNT {
         return m_data.height;
     }
 
+    bool Window::getFocus() {
+        PNT_WINDOW_ASSERT(m_window);
+
+        return m_data.focused;
+    }
+
     uint16_t Window::getXPos() const {
         PNT_WINDOW_ASSERT(m_window);
 
@@ -342,8 +355,16 @@ namespace PNT {
 
     // Callback definitions.
 
+    // ImGui_ImplGlfw_MonitorCallback
+
     void callbackManagers::keyCallbackManager(GLFWwindow* glfwWindow, int key, int scancode, int action, int mods) {
         Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));
+
+        ImGuiContext* oldImContext = ImGui::GetCurrentContext();
+        ImGui::SetCurrentContext(window->m_ImContext);
+        ImGui_ImplGlfw_KeyCallback(glfwWindow, key, scancode, action, mods);
+        ImGui::SetCurrentContext(oldImContext);
+
         if(!window->m_IO->WantCaptureKeyboard && window->m_data.eventCallback != nullptr) {
             window->m_data.eventCallback(window, createKeyEvent(key, scancode, action, mods));
         }
@@ -351,6 +372,12 @@ namespace PNT {
 
     void callbackManagers::charCallbackManager(GLFWwindow* glfwWindow, unsigned int codepoint) {
         Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));
+
+        ImGuiContext* oldImContext = ImGui::GetCurrentContext();
+        ImGui::SetCurrentContext(window->m_ImContext);
+        ImGui_ImplGlfw_CharCallback(glfwWindow, codepoint);
+        ImGui::SetCurrentContext(oldImContext);
+
         if(!window->m_IO->WantCaptureKeyboard && window->m_data.eventCallback != nullptr) {
             window->m_data.eventCallback(window, createCharEvent(codepoint));
         }
@@ -365,6 +392,12 @@ namespace PNT {
 
     void callbackManagers::scrollCallbackManager(GLFWwindow* glfwWindow, double xoffset, double yoffset) {
         Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));
+
+        ImGuiContext* oldImContext = ImGui::GetCurrentContext();
+        ImGui::SetCurrentContext(window->m_ImContext);
+        ImGui_ImplGlfw_ScrollCallback(glfwWindow, xoffset, yoffset);
+        ImGui::SetCurrentContext(oldImContext);
+
         if(!window->m_IO->WantCaptureMouse && window->m_data.eventCallback != nullptr) {
             window->m_data.eventCallback(window, createScrollEvent(xoffset, yoffset));
         }
@@ -372,6 +405,12 @@ namespace PNT {
 
     void callbackManagers::cursorPosCallbackManager(GLFWwindow* glfwWindow, double xpos, double ypos) {
         Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));
+
+        ImGuiContext* oldImContext = ImGui::GetCurrentContext();
+        ImGui::SetCurrentContext(window->m_ImContext);
+        ImGui_ImplGlfw_CursorPosCallback(glfwWindow, xpos, ypos);
+        ImGui::SetCurrentContext(oldImContext);
+
         if(!window->m_IO->WantCaptureMouse && window->m_data.eventCallback != nullptr) {
             window->m_data.eventCallback(window, createCursorposEvent(xpos, ypos));
         }
@@ -395,10 +434,43 @@ namespace PNT {
         }
     }
 
+    void callbackManagers::cursorEnterCallback(GLFWwindow* glfwWindow, int entered) {
+        Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));
+
+        ImGuiContext* oldImContext = ImGui::GetCurrentContext();
+        ImGui::SetCurrentContext(window->m_ImContext);
+        ImGui_ImplGlfw_CursorEnterCallback(glfwWindow, entered);
+        ImGui::SetCurrentContext(oldImContext);
+
+        if(window->m_data.eventCallback != nullptr) {
+            window->m_data.eventCallback(window, createCursorEnterEvent(entered));
+        }
+    }
+
     void callbackManagers::mousebuttonCallbackManager(GLFWwindow* glfwWindow, int button, int action, int mods) {
         Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));
+
+        ImGuiContext* oldImContext = ImGui::GetCurrentContext();
+        ImGui::SetCurrentContext(window->m_ImContext);
+        ImGui_ImplGlfw_MouseButtonCallback(glfwWindow, button, action, mods);
+        ImGui::SetCurrentContext(oldImContext);
+
         if(!window->m_IO->WantCaptureMouse && window->m_data.eventCallback != nullptr) {
             window->m_data.eventCallback(window, createMousebuttonEvent(button, action, mods));
+        }
+    }
+
+    void callbackManagers::windowFocusCallback(GLFWwindow* glfwWindow, int focused) {
+        Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));
+        window->m_data.focused = focused;
+
+        ImGuiContext* oldImContext = ImGui::GetCurrentContext();
+        ImGui::SetCurrentContext(window->m_ImContext);
+        ImGui_ImplGlfw_WindowFocusCallback(glfwWindow, focused);
+        ImGui::SetCurrentContext(oldImContext);
+
+        if(window->m_data.eventCallback != nullptr) {
+            window->m_data.eventCallback(window, createWindowFocusEvent(focused));
         }
     }
 

@@ -1,7 +1,5 @@
 #pragma once
 
-#include <spdlog/spdlog.h>
-
 #define PNT_REQUIRE_INIT() if(!initialized) PNT::assertMsg(__FILE__, __LINE__, 0)
 #define PNT_REQUIRE_DEINIT() if(initialized) PNT::assertMsg(__FILE__, __LINE__, 1)
 

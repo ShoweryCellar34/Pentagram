@@ -28,7 +28,9 @@ namespace PNT {
         static void cursorPosCallbackManager(GLFWwindow*, double, double);
         static void windowposCallbackManager(GLFWwindow*, int, int);
         static void windowsizeCallbackManager(GLFWwindow*, int, int);
+        static void cursorEnterCallback(GLFWwindow*, int);
         static void mousebuttonCallbackManager(GLFWwindow*, int, int, int);
+        static void windowFocusCallback(GLFWwindow*, int);
         static void iconifyCallbackManager(GLFWwindow*, int);
     };
 
@@ -36,13 +38,14 @@ namespace PNT {
         void(*eventCallback)(Window*, windowEvent);
         std::string title;
         uint32_t width, height, xpos, ypos, ImGuiFlags;
-        bool hidden = false;
-        bool iconified = false;
-        int8_t vsyncMode = 0;
-        float clearColor[4] = {0.0f, 0.0f, 0.0f, 0.0f};
+        bool focused;
+        bool hidden;
+        bool iconified;
+        int8_t vsyncMode;
+        float clearColor[4];
         void* userPointer;
 
-        windowData() : eventCallback(nullptr), title{0}, width(128), height(128), xpos(200), ypos(200), ImGuiFlags(0), userPointer(nullptr) {
+        windowData() : eventCallback(nullptr), title{0}, width(128), height(128), xpos(200), ypos(200), ImGuiFlags(0), focused(false), hidden(false), iconified(false), vsyncMode(0), clearColor{0.0f, 0.0f, 0.0f, 0.0f}, userPointer(nullptr) {
         }
     };
 
@@ -141,6 +144,9 @@ namespace PNT {
         /// @param height The desired window height.
         void setDimentions(uint16_t width, uint16_t height);
 
+        /// @brief Focuses the window.
+        void setFocused();
+
         /// @brief Sets the position of the window.
         /// @param xpos The desired x window position.
         /// @param ypos The desired y window position.
@@ -197,6 +203,10 @@ namespace PNT {
         /// @brief Gets the height of the window.
         /// @return The window height.
         uint16_t getHeight() const;
+
+        /// @brief Gets the window focus.
+        /// @return The focus of the window, true if focused and false if not focused.
+        bool getFocus();
 
         /// @brief Gets the X position of the window.
         /// @return The window X position.
