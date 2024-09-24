@@ -57,8 +57,6 @@ namespace PNT {
         glfwSetWindowUserPointer(m_window, this);
         glfwMakeContextCurrent(m_window);
         gladLoadGLContext(m_openglContext, (GLADloadfunc)glfwGetProcAddress);
-        setFocused();
-        setPosition(xpos, ypos);
 
         glfwSetKeyCallback(m_window, callbackManagers::keyCallbackManager);
         glfwSetCharCallback(m_window, callbackManagers::charCallbackManager);
@@ -86,6 +84,9 @@ namespace PNT {
         ImGui_ImplGlfw_InitForOpenGL(m_window, false);
         ImGui_ImplOpenGL3_Init(nullptr);
         ImGui::StyleColorsDark();
+
+        setFocused();
+        setPosition(xpos, ypos);
         m_closed = false;
     }
 
