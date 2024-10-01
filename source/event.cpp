@@ -47,7 +47,7 @@ namespace PNT {
 
         event.type = PNT_EVENT_TYPE_DROP;
         for(size_t i = 0; i < pathCount; i++) {
-            event.dropFiles.paths.push_back(paths[i]);
+            event.dropFiles.paths.emplace_back(paths[i]);
         }
 
         return event;

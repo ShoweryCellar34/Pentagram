@@ -41,7 +41,7 @@ namespace PNT {
 
         logger.get()->info("[PNT]Creating window \"{}\"", title);
 
-        m_instancesList.push_back(this);
+        m_instancesList.emplace_back(this);
         m_instances++;
 
         this->m_data.title = title;
@@ -166,7 +166,7 @@ namespace PNT {
 
         logger.get()->debug("[PNT]Pushing event of type \"{}\" for window \"{}\"", event.getTypename(), m_data.title);
 
-        m_eventQueue.push_back(event);
+        m_eventQueue.emplace_back(event);
     }
 
     void Window::setUserPointer(void* pointer) {
