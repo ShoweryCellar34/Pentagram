@@ -9,7 +9,10 @@ run this command with [git](https://git-scm.com/) installed to clone this reposi
 
 ## Platform support
 
-Penagram uses strictly cross-platform libraries \(Windows, Mac, and Linux support\) and [CMake](https://cmake.org/), and is tested on Windows 11/10.
+Penagram uses strictly cross-platform libraries \(Windows, Mac, and Linux support\) and [CMake](https://cmake.org/), and is tested on Arch linux X11 (with GNOME, idk if that matters), and has been tested on Windows 11/10.
+
+## Disclaimer
+Wayland is not supported as the restrictions on windows position query and modification with imgui \(internaly imgui calls a fuction that segfaults on wayland, may fix in futer DO NOT EXPECT\). Using linux works, but it is buggier that windows.
 
 ## How to use with cmake
 
