@@ -7,6 +7,7 @@ project(Pentagram LANGUAGES CXX C DESCRIPTION "A framwork for building apps" HOM
 
 set(GLFW_USE_HIBRID_HPG true)
 set(GLFW_LIBRARY_TYPE "STATIC" CACHE STRING "Library type override for GLFW (SHARED, STATIC, OBJECT, or empty to follow BUILD_SHARED_LIBS)")
+set(GLFW_BUILD_WAYLAND false CACHE BOOL "Build support for Wayland")
 add_subdirectory(vendors/glfw)
 
 add_subdirectory(vendors/glm)
