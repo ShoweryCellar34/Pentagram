@@ -33,11 +33,10 @@ namespace PNT {
         destroyWindow();
     }
 
-    GladGLContext gl;
     void Window::createWindowIntern(const char *title, uint32_t width, uint32_t height, uint32_t xpos, uint32_t ypos, uint32_t ImGuiFlags) {
         PNT_REQUIRE_INIT();
 
-        m_openglContext = &gl;
+        m_openglContext = new GladGLContext;
 
         logger.get()->info("[PNT]Creating window \"{}\"", title);
 
@@ -47,6 +46,7 @@ namespace PNT {
         this->m_data.title = title;
         m_data.width = width;
         m_data.height = height;
+        m_data.ImGuiFlags = ImGuiFlags;
 
         // Intel integrted graphics no likie-like these lines
         // glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -100,6 +100,23 @@ namespace PNT {
         PNT_NO_WINDOW_ASSERT(m_window);
 
         createWindowIntern(data.title.c_str(), data.width, data.height, data.xpos, data.ypos, data.ImGuiFlags);
+        setEventCallback(data.eventCallback);
+        if(data.focused) {
+            setFocused();
+        }
+        if(data.hidden) {
+            hide();
+        } else {
+            show();
+        }
+        if(data.iconified) {
+            minimize();
+        } else {
+            maximize();
+        }
+        setVsyncMode(data.vsyncMode);
+        setClearColor(data.clearColor[0], data.clearColor[1], data.clearColor[2], data.clearColor[3]);
+        setUserPointer(data.userPointer);
     }
 
     void Window::destroyWindow() {
@@ -110,6 +127,7 @@ namespace PNT {
             m_instancesList.erase(std::find(m_instancesList.begin(), m_instancesList.end(), this));
 
             glfwDestroyWindow(m_window);
+            delete m_openglContext;
 
             m_window = nullptr;
             m_closed = true;
@@ -300,6 +318,10 @@ namespace PNT {
         return m_data.userPointer;
     }
 
+    windowData Window::getWindowData() const {
+        return m_data;
+    }
+
     std::string Window::getTitle() const {
         PNT_WINDOW_ASSERT(m_window);
 
@@ -360,7 +382,7 @@ namespace PNT {
         return glfwWindowShouldClose(m_window);
     }
 
-    GLFWwindow* Window::getGLFWWindow() {
+    GLFWwindow* Window::getGLFWWindow() const {
         return m_window;
     }
 

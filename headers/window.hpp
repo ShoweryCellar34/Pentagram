@@ -195,6 +195,10 @@ namespace PNT {
         /// @return A raw pointer set by the user.
         void* getUserPointer() const;
 
+        /// @brief Gets the window data.
+        /// @return Returns the underlying data struct of the window.
+        windowData getWindowData() const;
+
         /// @brief Gets the window title.
         /// @return The window title.
         std::string getTitle() const;
@@ -237,6 +241,6 @@ namespace PNT {
 
         /// @brief Gets the glfw window.
         /// @return A pointer to the internal glfw window (BE CAREFUL).
-        GLFWwindow* getGLFWWindow();
+        GLFWwindow* getGLFWWindow() const;
     };
 }
