@@ -360,6 +360,10 @@ namespace PNT {
         return glfwWindowShouldClose(m_window);
     }
 
+    GLFWwindow* Window::getGLFWWindow() {
+        return m_window;
+    }
+
     // Callback definitions.
 
     void monitorCallback(GLFWmonitor* monitor, int event) {

@@ -234,5 +234,9 @@ namespace PNT {
         /// @brief Check if the currect window should close.
         /// @return True if the window should close.
         bool shouldClose() const;
+
+        /// @brief Gets the glfw window.
+        /// @return A pointer to the internal glfw window (BE CAREFUL).
+        GLFWwindow* getGLFWWindow();
     };
 }
