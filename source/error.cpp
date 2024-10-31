@@ -20,46 +20,46 @@ void PNT::assertMsg(const char* file, int line, int code) {
     char buffer[256] = {0};
     switch(code) {
     case 0:
-        strcpy(buffer, "[PNT]Pentagram not initialized yet, this occured at: {}:{}");
+        strcpy(buffer, "[PNT]Pentagram not initialized yet");
         break;
 
     case 1:
-        strcpy(buffer, "[PNT]Pentagram already initialized, this occured at: {}:{}");
+        strcpy(buffer, "[PNT]Pentagram already initialized");
         break;
 
     case 2:
-        strcpy(buffer, "[PNT]Window null or not created yet, this occured at: {}:{}");
+        strcpy(buffer, "[PNT]Window null or not created yet");
         break;
 
     case 3:
-        strcpy(buffer, "[PNT]Window not null or already created, this occured at: {}:{}");
+        strcpy(buffer, "[PNT]Window not null or already created");
         break;
 
     case 4:
-        strcpy(buffer, "[PNT]Newframe required, this occured at: {}:{}");
+        strcpy(buffer, "[PNT]Newframe required");
         break;
 
     case 5:
-        strcpy(buffer, "[PNT]Endframe required, this occured at: {}:{}");
+        strcpy(buffer, "[PNT]Endframe required");
         break;
 
     case 6:
-        strcpy(buffer, "[PNT]Shader ID is 0 (0 indicates not created yet), this occured at: {}:{}");
+        strcpy(buffer, "[PNT]Shader ID is 0 (0 indicates not created yet)");
         break;
 
     case 7:
-        strcpy(buffer, "[PNT]Shader ID is not 0 (0 indicates not created yet), this occured at: {}:{}");
+        strcpy(buffer, "[PNT]Shader ID is not 0 (0 indicates not created yet)");
         break;
 
     case 8:
-        strcpy(buffer, "[PNT]Program ID is 0 (0 indicates not created yet), this occured at: {}:{}");
+        strcpy(buffer, "[PNT]Program ID is 0 (0 indicates not created yet)");
         break;
 
     case 9:
-        strcpy(buffer, "[PNT]Program ID is not 0 (0 indicates not created yet), this occured at: {}:{}");
+        strcpy(buffer, "[PNT]Program ID is not 0 (0 indicates not created yet)");
         break;
     }
-    logger.get()->error(buffer, file, line);
+    logger.get()->error("{}, this occured at: {}:{}", buffer, file, line);
     exit(EXIT_FAILURE);
 }
 
