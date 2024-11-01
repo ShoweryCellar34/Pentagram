@@ -1,10 +1,10 @@
-#include <event.hpp>
+#include <PNT/event.hpp>
 
 #include <cstring>
 #include <string>
 #include <GLFW/glfw3.h>
-#include <window.hpp>
-#include <enumerations.hpp>
+#include <PNT/window.hpp>
+#include <PNT/enumerations.hpp>
 
 namespace PNT {
     // Event definitions.

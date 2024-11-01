@@ -1,10 +1,10 @@
-#include <init.hpp>
+#include <PNT/init.hpp>
 
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 #include <spdlog/spdlog.h>
-#include <error.hpp>
-#include <window.hpp>
+#include <PNT/error.hpp>
+#include <PNT/window.hpp>
 
 namespace PNT {
     bool initialized = false;

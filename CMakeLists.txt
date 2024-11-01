@@ -27,7 +27,7 @@ add_subdirectory(vendors/imgui)
 set(GLAD_LIBRARY_TYPE "STATIC")
 add_subdirectory(vendors/glad)
 
-file(GLOB pentagram source/*.cpp)
+file(GLOB pentagram source/*/*.cpp)
 add_library(Pentagram STATIC ${pentagram})
 set_target_properties(Pentagram PROPERTIES LINKER_LANGUAGE CXX)
 
