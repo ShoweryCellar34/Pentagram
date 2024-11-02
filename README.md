@@ -1,7 +1,7 @@
 
 # What is Pentagram?
 
-Pentagram is a basic application framework whuch uses GLFW, ImGui, GLAD, stb, glm, and spdlog for convenient, easy window creation and frameloop. I have created an [example app](https://github.com/ShoweryCellar34/Pentagram-Demo.git) for demonstration.
+Pentagram is a basic application framework which uses GLFW, ImGui, GLAD, stb, glm, and spdlog for convenient, easy window creation and frameloop. I have created an [example app](https://github.com/ShoweryCellar34/Pentagram-Demo.git) for demonstration.
 
 ## How to clone
 
