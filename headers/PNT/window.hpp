@@ -16,7 +16,6 @@ struct GladGLContext;
 namespace PNT {
     class Window;
     struct windowEvent;
-    class image;
 
     void monitorCallback(GLFWmonitor*, int);
 
