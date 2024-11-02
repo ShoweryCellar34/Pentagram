@@ -1,18 +1,19 @@
 
 # What is Pentagram?
 
-Pentagram is a basic application framework using GLFW, ImGui, GLAD, stb, glm, and spdlog for convenient, easy window creation and frameloop. I have created an [example app](https://github.com/ShoweryCellar34/Pentagram-Demo.git) for demonstration.
+Pentagram is a basic application framework which uses GLFW, ImGui, GLAD, stb, glm, and spdlog for convenient, easy window creation and frameloop. I have created an [example app](https://github.com/ShoweryCellar34/Pentagram-Demo.git) for demonstration.
 
 ## How to clone
 
-run this command with [git](https://git-scm.com/) installed to clone this repository: `git clone --recursive https://github.com/ShoweryCellar34/Pentagram.git`
+Run this command with [git](https://git-scm.com/) installed to clone this repository: `git clone --recursive https://github.com/ShoweryCellar34/Pentagram.git`
 
 ## Platform support
 
-Penagram uses strictly cross-platform libraries \(Windows, Mac, and Linux support\) and [CMake](https://cmake.org/), and is tested on Arch linux X11 (with GNOME, idk if that matters), and has been tested on Windows 11/10.
+Penagram uses strictly cross-platform libraries \(Windows, Mac, and Linux support\) and [CMake](https://cmake.org/), tested on Arch linux X11 (with GNOME, idk if that matters), and has been tested on Windows 11/10.
 
 ## Disclaimer
-Wayland is not supported as the restrictions on windows position query and modification with imgui \(internaly imgui calls a fuction that segfaults on wayland, may fix in futer DO NOT EXPECT\). Using linux works, but it is buggier that windows.
+
+Wayland is not supported as the restrictions on windows position query and modification with imgui \(internaly imgui calls a fuction that segfaults on wayland, may fix in the future. DO NOT EXPECT THIS\). Using linux works, but it is buggier that windows.
 
 ## How to use with cmake
 
