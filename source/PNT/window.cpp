@@ -1,4 +1,4 @@
-#include <window.hpp>
+#include <PNT/window.hpp>
 
 #include <algorithm>
 #include <spdlog/spdlog.h>
@@ -8,8 +8,8 @@
 #include <misc/cpp/imgui_stdlib.h>
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
-#include <error.hpp>
-#include <event.hpp>
+#include <PNT/error.hpp>
+#include <PNT/event.hpp>
 
 namespace PNT {
     extern std::shared_ptr<spdlog::logger> logger;
