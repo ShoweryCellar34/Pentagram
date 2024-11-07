@@ -6,16 +6,28 @@
 #include <spdlog/sinks/daily_file_sink.h>
 
 namespace PNT {
+#ifndef PNT_NO_CONSOLE_LOG
     auto consoleSink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
     auto fileSink = std::make_shared<spdlog::sinks::daily_file_sink_mt>("pentagramLogs/", 0, 0, true);
     std::vector<spdlog::sink_ptr> sinks{consoleSink, fileSink};
     std::shared_ptr<spdlog::logger> logger = std::make_shared<spdlog::logger>("Pentagram log", sinks.begin(), sinks.end());
+#endif
+#ifdef PNT_NO_CONSOLE_LOG
+    auto fileSink = std::make_shared<spdlog::sinks::daily_file_sink_mt>("pentagramLogs/", 0, 0, true);
+    std::vector<spdlog::sink_ptr> sinks{fileSink};
+    std::shared_ptr<spdlog::logger> logger = std::make_shared<spdlog::logger>("Pentagram log", sinks.begin(), sinks.end());
+#endif
 }
 
 auto userConsoleSink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
 auto userFileSink = std::make_shared<spdlog::sinks::daily_file_sink_mt>("logs/", 0, 0, true);
 std::vector<spdlog::sink_ptr> userSinks{userConsoleSink, userFileSink};
+#ifndef PNT_USER_LOGGER_NAME
 std::shared_ptr<spdlog::logger> userLogger = std::make_shared<spdlog::logger>("Log", userSinks.begin(), userSinks.end());
+#endif
+#ifdef PNT_USER_LOGGER_NAME
+std::shared_ptr<spdlog::logger> userLogger = std::make_shared<spdlog::logger>(PNT_USER_LOGGER_NAME, userSinks.begin(), userSinks.end());
+#endif
 
 void PNT::assertMsg(const char* file, int line, int code) {
     std::string buffer;
