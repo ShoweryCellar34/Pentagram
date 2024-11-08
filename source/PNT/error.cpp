@@ -32,45 +32,36 @@ std::shared_ptr<spdlog::logger> userLogger = std::make_shared<spdlog::logger>(PN
 void PNT::assertMsg(const char* file, int line, int code) {
     std::string buffer;
     switch(code) {
-    case 0:
-        buffer = "[PNT]Pentagram not initialized yet";
-        break;
-
-    case 1:
-        buffer = "[PNT]Pentagram already initialized";
-        break;
-
-    case 2:
-        buffer = "[PNT]Window null or not created yet";
-        break;
-
-    case 3:
-        buffer = "[PNT]Window not null or already created";
-        break;
-
-    case 4:
-        buffer = "[PNT]Newframe required";
-        break;
-
-    case 5:
-        buffer = "[PNT]Endframe required";
-        break;
-
-    case 6:
-        buffer = "[PNT]Shader ID is 0 (0 indicates not created yet)";
-        break;
-
-    case 7:
-        buffer = "[PNT]Shader ID is not 0 (0 indicates not created yet)";
-        break;
-
-    case 8:
-        buffer = "[PNT]Program ID is 0 (0 indicates not created yet)";
-        break;
-
-    case 9:
-        buffer = "[PNT]Program ID is not 0 (0 indicates not created yet)";
-        break;
+        case 0:
+            buffer = "[PNT]Pentagram not initialized yet";
+            break;
+        case 1:
+            buffer = "[PNT]Pentagram already initialized";
+            break;
+        case 2:
+            buffer = "[PNT]Window null or not created yet";
+            break;
+        case 3:
+            buffer = "[PNT]Window not null or already created";
+            break;
+        case 4:
+            buffer = "[PNT]Newframe required";
+            break;
+        case 5:
+            buffer = "[PNT]Endframe required";
+            break;
+        case 6:
+            buffer = "[PNT]Shader ID is 0 (0 indicates not created yet)";
+            break;
+        case 7:
+            buffer = "[PNT]Shader ID is not 0 (0 indicates not created yet)";
+            break;
+        case 8:
+            buffer = "[PNT]Program ID is 0 (0 indicates not created yet)";
+            break;
+        case 9:
+            buffer = "[PNT]Program ID is not 0 (0 indicates not created yet)";
+            break;
     }
     logger.get()->error("{}, this occured at: {}:{}", buffer, file, line);
     exit(EXIT_FAILURE);
