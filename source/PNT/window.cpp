@@ -20,7 +20,7 @@ namespace PNT {
     Window::Window() : m_window(nullptr), m_closed(true), m_frame(false), m_data(), m_eventQueue(), m_ImContext(nullptr), m_IO(nullptr) {
     }
 
-    Window::Window(const char *title, uint32_t width, uint32_t height, uint32_t xpos, uint32_t ypos, uint32_t ImGuiFlags) : m_window(nullptr),
+    Window::Window(const std::string& title, uint32_t width, uint32_t height, uint32_t xpos, uint32_t ypos, uint32_t ImGuiFlags) : m_window(nullptr),
          m_closed(true), m_frame(false), m_data(), m_eventQueue(), m_ImContext(nullptr), m_IO(nullptr) {
         createWindow(title, width, height, xpos, ypos, ImGuiFlags);
     }
@@ -34,7 +34,7 @@ namespace PNT {
         destroyWindow();
     }
 
-    void Window::createWindowIntern(const char *title, uint32_t width, uint32_t height, uint32_t xpos, uint32_t ypos, uint32_t ImGuiFlags) {
+    void Window::createWindowIntern(const std::string& title, uint32_t width, uint32_t height, uint32_t xpos, uint32_t ypos, uint32_t ImGuiFlags) {
         if(!initialized) {
             throw exception("Pentagram not initalized.", errorCodes::PNT_ERROR);
         }
@@ -56,7 +56,7 @@ namespace PNT {
         // glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
         // glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-        m_window = glfwCreateWindow(width, height, title, NULL, NULL);
+        m_window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
         glfwSetWindowUserPointer(m_window, this);
         glfwMakeContextCurrent(m_window);
         gladLoadGLContext(m_openglContext, (GLADloadfunc)glfwGetProcAddress);
@@ -93,17 +93,17 @@ namespace PNT {
         m_closed = false;
     }
 
-    void Window::createWindow(const char *title, uint32_t width, uint32_t height, uint32_t xpos, uint32_t ypos, uint32_t ImGuiFlags) {
-        if(m_window == nullptr) {
-            throw exception("Window not initalized.", errorCodes::PNT_ERROR);
+    void Window::createWindow(const std::string& title, uint32_t width, uint32_t height, uint32_t xpos, uint32_t ypos, uint32_t ImGuiFlags) {
+        if(m_window != nullptr) {
+            throw exception("Window already initalized.", errorCodes::PNT_ERROR);
         }
 
         createWindowIntern(title, width, height, xpos, ypos, ImGuiFlags);
     }
 
     void Window::createWindow(const windowData& data) {
-        if(m_window == nullptr) {
-            throw exception("Window not initalized.", errorCodes::PNT_ERROR);
+        if(m_window != nullptr) {
+            throw exception("Window already initalized.", errorCodes::PNT_ERROR);
         }
 
         createWindowIntern(data.title.c_str(), data.width, data.height, data.xpos, data.ypos, data.ImGuiFlags);
@@ -225,16 +225,7 @@ namespace PNT {
         setClearColor(newData.clearColor[0], newData.clearColor[1], newData.clearColor[2], newData.clearColor[3]);
     }
 
-    void Window::setTitle(const char* title) {
-        if(m_window == nullptr) {
-            throw exception("Window not initalized.", errorCodes::PNT_ERROR);
-        }
-
-        this->m_data.title = title;
-        glfwSetWindowTitle(m_window, title);
-    }
-
-    void Window::setTitle(std::string title) {
+    void Window::setTitle(const std::string& title) {
         if(m_window == nullptr) {
             throw exception("Window not initalized.", errorCodes::PNT_ERROR);
         }

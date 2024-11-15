@@ -92,7 +92,7 @@ namespace PNT {
         std::chrono::steady_clock::time_point endframe;
         std::chrono::duration<double> deltaTime;
 
-        void createWindowIntern(const char* title, uint32_t width, uint32_t height, uint32_t xpos, uint32_t ypos, uint32_t ImGuiFlags);
+        void createWindowIntern(const std::string& title, uint32_t width, uint32_t height, uint32_t xpos, uint32_t ypos, uint32_t ImGuiFlags);
     public:
         /// @brief Window object empty default constuctor, can be used later with "createWindow()" method.
         Window();
@@ -104,7 +104,7 @@ namespace PNT {
         /// @param xpos The desired x position.
         /// @param ypos The desired y position.
         /// @param ImGuiFlags The desired imgui configuration flags.
-        Window(const char* title, uint32_t width, uint32_t height, uint32_t xpos, uint32_t ypos, uint32_t ImGuiFlags);
+        Window(const std::string& title, uint32_t width, uint32_t height, uint32_t xpos, uint32_t ypos, uint32_t ImGuiFlags);
 
         /// @brief Window object constuctor.
         /// @param data The desired "windowData" object for the window.
@@ -119,7 +119,7 @@ namespace PNT {
         /// @param xpos The desired x position.
         /// @param ypos The desired y position.
         /// @param ImGuiFlags The desired imgui configuration flags.
-        void createWindow(const char* title, uint32_t width, uint32_t height, uint32_t xpos, uint32_t ypos, uint32_t ImGuiFlags = 0);
+        void createWindow(const std::string& title, uint32_t width, uint32_t height, uint32_t xpos, uint32_t ypos, uint32_t ImGuiFlags = 0);
 
         /// @brief Creates the window, you can use this in conjunction with the "Window()" constructor that tskes no arguments to create the window on screen later.
         /// @param data The desired "windowData" object for the window.
@@ -152,10 +152,7 @@ namespace PNT {
 
         /// @brief Sets the window title.
         /// @param title The desired window title.
-        void setTitle(const char* title);
-        /// @brief Sets the window title.
-        /// @param title The desired window title.
-        void setTitle(std::string title);
+        void setTitle(const std::string& title);
 
         /// @brief Sets the window icon.
         /// @param image The desired PNT::image for the window icon.
