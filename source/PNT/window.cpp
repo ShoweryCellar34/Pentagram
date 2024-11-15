@@ -12,6 +12,7 @@
 #include <PNT/event.hpp>
 
 namespace PNT {
+    extern bool initialized;
     extern std::shared_ptr<spdlog::logger> logger;
 
     // Window definitions.
@@ -34,7 +35,9 @@ namespace PNT {
     }
 
     void Window::createWindowIntern(const char *title, uint32_t width, uint32_t height, uint32_t xpos, uint32_t ypos, uint32_t ImGuiFlags) {
-        PNT_REQUIRE_INIT();
+        if(!initialized) {
+            throw exception("Pentagram not initalized.", errorCodes::PNT_ERROR);
+        }
 
         m_openglContext = new GladGLContext;
 
@@ -91,13 +94,17 @@ namespace PNT {
     }
 
     void Window::createWindow(const char *title, uint32_t width, uint32_t height, uint32_t xpos, uint32_t ypos, uint32_t ImGuiFlags) {
-        PNT_NO_WINDOW_ASSERT(m_window);
+        if(m_window == nullptr) {
+            throw exception("Window not initalized.", errorCodes::PNT_ERROR);
+        }
 
         createWindowIntern(title, width, height, xpos, ypos, ImGuiFlags);
     }
 
     void Window::createWindow(const windowData& data) {
-        PNT_NO_WINDOW_ASSERT(m_window);
+        if(m_window == nullptr) {
+            throw exception("Window not initalized.", errorCodes::PNT_ERROR);
+        }
 
         createWindowIntern(data.title.c_str(), data.width, data.height, data.xpos, data.ypos, data.ImGuiFlags);
         setEventCallback(data.eventCallback);
@@ -137,8 +144,12 @@ namespace PNT {
     void Window::startFrame() {
         newframe = std::chrono::steady_clock::now();
 
-        PNT_WINDOW_ASSERT(m_window);
-        PNT_ENDFRAME_ASSERT(m_frame);
+        if(m_window == nullptr) {
+            throw exception("Window not initalized.", errorCodes::PNT_ERROR);
+        }
+        if(m_frame) {
+            throw exception("Newframe already called.", errorCodes::PNT_ERROR);
+        }
 
         glfwMakeContextCurrent(m_window);
         ImGui::SetCurrentContext(m_ImContext);
@@ -149,8 +160,12 @@ namespace PNT {
     }
 
     void Window::endFrame() {
-        PNT_WINDOW_ASSERT(m_window);
-        PNT_NEWFRAME_ASSERT(m_frame);
+        if(m_window == nullptr) {
+            throw exception("Window not initalized.", errorCodes::PNT_ERROR);
+        }
+        if(!m_frame) {
+            throw exception("Endframe already called.", errorCodes::PNT_ERROR);
+        }
 
         ImGui::Render();
 
@@ -174,13 +189,17 @@ namespace PNT {
     }
 
     void Window::setEventCallback(void(*newEventCallback)(Window*, windowEvent)) {
-        PNT_WINDOW_ASSERT(m_window);
+        if(m_window == nullptr) {
+            throw exception("Window not initalized.", errorCodes::PNT_ERROR);
+        }
 
         m_data.eventCallback = newEventCallback;
     }
 
     void Window::pushEvent(windowEvent event) {
-        PNT_WINDOW_ASSERT(m_window);
+        if(m_window == nullptr) {
+            throw exception("Window not initalized.", errorCodes::PNT_ERROR);
+        }
 
         logger.get()->debug("[PNT]Pushing event of type \"{}\" for window \"{}\"", event.getTypename(), m_data.title);
 
@@ -192,7 +211,9 @@ namespace PNT {
     }
 
     void Window::setWindowData(windowData newData) {
-        PNT_WINDOW_ASSERT(m_window);
+        if(m_window == nullptr) {
+            throw exception("Window not initalized.", errorCodes::PNT_ERROR);
+        }
 
         m_data.eventCallback = newData.eventCallback;
         setTitle(newData.title);
@@ -205,21 +226,27 @@ namespace PNT {
     }
 
     void Window::setTitle(const char* title) {
-        PNT_WINDOW_ASSERT(m_window);
+        if(m_window == nullptr) {
+            throw exception("Window not initalized.", errorCodes::PNT_ERROR);
+        }
 
         this->m_data.title = title;
         glfwSetWindowTitle(m_window, title);
     }
 
     void Window::setTitle(std::string title) {
-        PNT_WINDOW_ASSERT(m_window);
+        if(m_window == nullptr) {
+            throw exception("Window not initalized.", errorCodes::PNT_ERROR);
+        }
 
         this->m_data.title = title;
         glfwSetWindowTitle(m_window, title.c_str());
     }
 
     void Window::setIcon(const GLFWimage& icon) {
-        PNT_WINDOW_ASSERT(m_window);
+        if(m_window == nullptr) {
+            throw exception("Window not initalized.", errorCodes::PNT_ERROR);
+        }
 
         logger.get()->debug("[PNT]Setting icon for window \"{}\"", m_data.title);
 
@@ -231,62 +258,80 @@ namespace PNT {
         }
     }
 
-    void Window::setDimentions(uint16_t width, uint16_t height) {
-        PNT_WINDOW_ASSERT(m_window);
+    void Window::setDimentions(uint32_t width, uint32_t height) {
+        if(m_window == nullptr) {
+            throw exception("Window not initalized.", errorCodes::PNT_ERROR);
+        }
 
         glfwSetWindowSize(m_window, width, height);
         callbackManagers::windowsizeCallbackManager(m_window, width, height);
     }
 
     void Window::setFocused() {
-        PNT_WINDOW_ASSERT(m_window);
+        if(m_window == nullptr) {
+            throw exception("Window not initalized.", errorCodes::PNT_ERROR);
+        }
 
         glfwFocusWindow(m_window);
         callbackManagers::windowFocusCallback(m_window, 1);
     }
 
-    void Window::setPosition(uint16_t xpos, uint16_t ypos) {
-        PNT_WINDOW_ASSERT(m_window);
+    void Window::setPosition(uint32_t xpos, uint32_t ypos) {
+        if(m_window == nullptr) {
+            throw exception("Window not initalized.", errorCodes::PNT_ERROR);
+        }
 
         glfwSetWindowPos(m_window, xpos, ypos);
         callbackManagers::windowposCallbackManager(m_window, xpos, ypos);
     }
 
     void Window::hide() {
-        PNT_WINDOW_ASSERT(m_window);
+        if(m_window == nullptr) {
+            throw exception("Window not initalized.", errorCodes::PNT_ERROR);
+        }
 
         glfwHideWindow(m_window);
     }
 
     void Window::show() {
-        PNT_WINDOW_ASSERT(m_window);
+        if(m_window == nullptr) {
+            throw exception("Window not initalized.", errorCodes::PNT_ERROR);
+        }
 
         glfwShowWindow(m_window);
     }
 
     void Window::minimize() {
-        PNT_WINDOW_ASSERT(m_window);
+        if(m_window == nullptr) {
+            throw exception("Window not initalized.", errorCodes::PNT_ERROR);
+        }
 
         glfwIconifyWindow(m_window);
         callbackManagers::iconifyCallbackManager(m_window, 1);
     }
 
     void Window::maximize() {
-        PNT_WINDOW_ASSERT(m_window);
+        if(m_window == nullptr) {
+            throw exception("Window not initalized.", errorCodes::PNT_ERROR);
+        }
 
         glfwRestoreWindow(m_window);
         callbackManagers::iconifyCallbackManager(m_window, 0);
     }
 
-    void Window::setVsyncMode(int8_t vsyncMode) {
-        PNT_WINDOW_ASSERT(m_window);
+    void Window::setVsyncMode(vsyncModes vsyncMode) {
+        if(m_window == nullptr) {
+            throw exception("Window not initalized.", errorCodes::PNT_ERROR);
+        }
 
         m_data.vsyncMode = vsyncMode;
-        glfwSwapInterval(vsyncMode);
+        glfwSwapInterval((int)vsyncMode);
     }
 
     void Window::setClearColor(float red, float green, float blue, float alpha) {
-        PNT_WINDOW_ASSERT(m_window);
+        if(m_window == nullptr) {
+            throw exception("Window not initalized.", errorCodes::PNT_ERROR);
+        }
 
         m_data.clearColor[0] = red;
         m_data.clearColor[1] = green;
@@ -295,13 +340,17 @@ namespace PNT {
     }
 
     void Window::setShouldClose(bool shouldClose) {
-        PNT_WINDOW_ASSERT(m_window);
+        if(m_window == nullptr) {
+            throw exception("Window not initalized.", errorCodes::PNT_ERROR);
+        }
 
         glfwSetWindowShouldClose(m_window, shouldClose);
     }
 
     void Window::setAspectRatio(uint32_t numerator, uint32_t denominator) {
-        PNT_WINDOW_ASSERT(m_window);
+        if(m_window == nullptr) {
+            throw exception("Window not initalized.", errorCodes::PNT_ERROR);
+        }
 
         logger.get()->debug("[PNT]Setting aspect ratio: {}, {} for window \"{}\"", numerator, denominator,m_data.title);
 
@@ -309,7 +358,9 @@ namespace PNT {
     }
 
     std::chrono::duration<double> Window::getDeltaTime() const {
-        PNT_WINDOW_ASSERT(m_window);
+        if(m_window == nullptr) {
+            throw exception("Window not initalized.", errorCodes::PNT_ERROR);
+        }
 
         return deltaTime;
     }
@@ -323,61 +374,81 @@ namespace PNT {
     }
 
     std::string Window::getTitle() const {
-        PNT_WINDOW_ASSERT(m_window);
+        if(m_window == nullptr) {
+            throw exception("Window not initalized.", errorCodes::PNT_ERROR);
+        }
 
         return m_data.title;
     }
 
     uint16_t Window::getWidth() const {
-        PNT_WINDOW_ASSERT(m_window);
+        if(m_window == nullptr) {
+            throw exception("Window not initalized.", errorCodes::PNT_ERROR);
+        }
 
         return m_data.width;
     }
 
     uint16_t Window::getHeight() const {
-        PNT_WINDOW_ASSERT(m_window);
+        if(m_window == nullptr) {
+            throw exception("Window not initalized.", errorCodes::PNT_ERROR);
+        }
 
         return m_data.height;
     }
 
     bool Window::getFocus() const {
-        PNT_WINDOW_ASSERT(m_window);
+        if(m_window == nullptr) {
+            throw exception("Window not initalized.", errorCodes::PNT_ERROR);
+        }
 
         return m_data.focused;
     }
 
     uint16_t Window::getXPos() const {
-        PNT_WINDOW_ASSERT(m_window);
+        if(m_window == nullptr) {
+            throw exception("Window not initalized.", errorCodes::PNT_ERROR);
+        }
 
         return m_data.xpos;
     }
 
     uint16_t Window::getYPos() const {
-        PNT_WINDOW_ASSERT(m_window);
+        if(m_window == nullptr) {
+            throw exception("Window not initalized.", errorCodes::PNT_ERROR);
+        }
 
         return m_data.ypos;
     }
 
     bool Window::getHidden() const {
-        PNT_WINDOW_ASSERT(m_window);
+        if(m_window == nullptr) {
+            throw exception("Window not initalized.", errorCodes::PNT_ERROR);
+        }
 
         return m_data.hidden;
     }
 
     bool Window::getIconified() const {
-        PNT_WINDOW_ASSERT(m_window);
+        if(m_window == nullptr) {
+            throw exception("Window not initalized.", errorCodes::PNT_ERROR);
+        }
 
         return m_data.iconified;
     }
 
     GladGLContext* Window::getGL() const {
-        PNT_WINDOW_ASSERT(m_window);
+        if(m_window == nullptr) {
+            throw exception("Window not initalized.", errorCodes::PNT_ERROR);
+        }
 
         return m_openglContext;
     }
 
     bool Window::shouldClose() const {
-        PNT_WINDOW_ASSERT(m_window);
+        if(m_window == nullptr) {
+            throw exception("Window not initalized.", errorCodes::PNT_ERROR);
+        }
 
         return glfwWindowShouldClose(m_window);
     }

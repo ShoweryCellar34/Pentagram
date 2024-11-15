@@ -19,6 +19,26 @@ namespace PNT {
 
     void monitorCallback(GLFWmonitor*, int);
 
+    enum class eventTypes {
+        KEYBOARD,
+        CHAR,
+        DROP,
+        SCROLL,
+        CURSORPOS,
+        WINDOWPOS,
+        WINDOWSIZE,
+        CURSORENTER,
+        MOUSEBUTTON,
+        WINDOWFOCUS,
+        ICONIFY
+    };
+
+    enum class vsyncModes {
+        ADAPTIVE = -1,
+        OFF,
+        ON,
+    };
+
     class callbackManagers {
     private:
         friend class Window;
@@ -43,11 +63,11 @@ namespace PNT {
         bool focused;
         bool hidden;
         bool iconified;
-        int8_t vsyncMode;
+        vsyncModes vsyncMode;
         float clearColor[4];
         void* userPointer;
 
-        windowData() : eventCallback(nullptr), title{0}, width(128), height(128), xpos(200), ypos(200), ImGuiFlags(0), focused(false), hidden(false), iconified(false), vsyncMode(0), clearColor{0.0f, 0.0f, 0.0f, 0.0f}, userPointer(nullptr) {
+        windowData() : eventCallback(nullptr), title{0}, width(128), height(128), xpos(200), ypos(200), ImGuiFlags(0), focused(false), hidden(false), iconified(false), vsyncMode(vsyncModes::OFF), clearColor{0.0f, 0.0f, 0.0f, 0.0f}, userPointer(nullptr) {
         }
     };
 
@@ -144,7 +164,7 @@ namespace PNT {
         /// @brief Sets the dimentions of the window.
         /// @param width The desired window width.
         /// @param height The desired window height.
-        void setDimentions(uint16_t width, uint16_t height);
+        void setDimentions(uint32_t width, uint32_t height);
 
         /// @brief Focuses the window.
         void setFocused();
@@ -152,7 +172,7 @@ namespace PNT {
         /// @brief Sets the position of the window.
         /// @param xpos The desired x window position.
         /// @param ypos The desired y window position.
-        void setPosition(uint16_t xpos, uint16_t ypos);
+        void setPosition(uint32_t xpos, uint32_t ypos);
 
         /// @brief Hides the window.
         void hide();
@@ -167,8 +187,8 @@ namespace PNT {
         void maximize();
 
         /// @brief Sets the vsync mode for the window.
-        /// @param vsyncMode The desired vsync mode for the window, 1 = on, 0 = off, -1 adaptive.
-        void setVsyncMode(int8_t vsyncMode);
+        /// @param vsyncMode The desired vsync mode for the windowof type "vsyncModes".
+        void setVsyncMode(vsyncModes vsyncMode);
 
         /// @brief Sets the opengl clear color for the window.
         /// @param red The desired red channel.

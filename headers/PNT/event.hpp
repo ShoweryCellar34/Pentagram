@@ -4,6 +4,7 @@
 #include <string>
 #include <stdint.h>
 #include <stddef.h>
+#include <PNT/window.hpp>
 
 namespace PNT {
     class Window;
@@ -63,7 +64,7 @@ namespace PNT {
 
     // Structure for events.
     struct windowEvent {
-        unsigned short type;
+        eventTypes type;
         keyEvent keyboard;
         charEvent character;
         dropEvent dropFiles;

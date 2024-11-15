@@ -1,23 +1,25 @@
 #pragma once
 
-#define PNT_REQUIRE_INIT() if(!initialized) PNT::assertMsg(__FILE__, __LINE__, 0)
-#define PNT_REQUIRE_DEINIT() if(initialized) PNT::assertMsg(__FILE__, __LINE__, 1)
-
-#define PNT_WINDOW_ASSERT(x) if(!x) PNT::assertMsg(__FILE__, __LINE__, 2)
-#define PNT_NO_WINDOW_ASSERT(x) if(x) PNT::assertMsg(__FILE__, __LINE__, 3)
-#define PNT_NEWFRAME_ASSERT(x) if(!x) PNT::assertMsg(__FILE__, __LINE__, 4)
-#define PNT_ENDFRAME_ASSERT(x) if(x) PNT::assertMsg(__FILE__, __LINE__, 5)
-
-#define PNT_SHADER_ID(x) if(!x) PNT::assertMsg(__FILE__, __LINE__, 6)
-#define PNT_NO_SHADER_ID(x) if(x) PNT::assertMsg(__FILE__, __LINE__, 7)
-
-#define PNT_PROGRAM_ID(x) if(!x) PNT::assertMsg(__FILE__, __LINE__, 8)
-#define PNT_NO_PROGRAM_ID(x) if(x) PNT::assertMsg(__FILE__, __LINE__, 9)
+#include <exception>
+#include <string>
 
 namespace PNT {
-    extern bool initialized;
+    enum class errorCodes {
+        PNT_ERROR,
+        GLFW_ERROR
+    };
 
-    void assertMsg(const char* file, int line, int code);
+    class exception : std::exception {
+    private:
+        std::string m_message;
+        errorCodes m_errorCode;
+
+    public:
+        exception(const std::string& message, errorCodes errorCode);
+
+        const char* what() const throw();
+        errorCodes whatErrorCode() const;
+    };
 
     void errorCallback(int errorCode, const char* errorDescription);
 }

@@ -13,8 +13,6 @@ namespace PNT {
     // Init/deinit definitions.
 
     bool init() {
-        PNT_REQUIRE_DEINIT();
-
         initialized = glfwInit();
         logger.get()->set_pattern("%d-%m-%Y %H:%M:%S %l : %v", spdlog::pattern_time_type::utc);
         logger.get()->flush_on(spdlog::level::trace);
@@ -25,8 +23,6 @@ namespace PNT {
     }
 
     void deinit() {
-        PNT_REQUIRE_INIT();
-
         logger.get()->info("[PNT]Shutting down Pentagram");
         for(Window* window : Window::m_instancesList) {
             window->destroyWindow();
