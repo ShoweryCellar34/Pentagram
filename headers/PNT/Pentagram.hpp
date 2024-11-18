@@ -1,8 +1,9 @@
 #pragma once
 
+#include <PNT/error.hpp>
 #include <PNT/init.hpp>
-#include <PNT/window.hpp>
 #include <PNT/event.hpp>
+#include <PNT/window.hpp>
 
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>

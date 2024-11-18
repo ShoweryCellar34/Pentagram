@@ -10,12 +10,12 @@ namespace PNT {
     auto consoleSink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
     auto fileSink = std::make_shared<spdlog::sinks::daily_file_sink_mt>("pentagramLogs/", 0, 0, true);
     std::vector<spdlog::sink_ptr> sinks{consoleSink, fileSink};
-    std::shared_ptr<spdlog::logger> logger = std::make_shared<spdlog::logger>("Pentagram log", sinks.begin(), sinks.end());
+    std::shared_ptr<spdlog::logger> logger = std::make_shared<spdlog::logger>("Pentagram", sinks.begin(), sinks.end());
 #endif
 #ifdef PNT_NO_CONSOLE_LOG
     auto fileSink = std::make_shared<spdlog::sinks::daily_file_sink_mt>("pentagramLogs/", 0, 0, true);
     std::vector<spdlog::sink_ptr> sinks{fileSink};
-    std::shared_ptr<spdlog::logger> logger = std::make_shared<spdlog::logger>("Pentagram log", sinks.begin(), sinks.end());
+    std::shared_ptr<spdlog::logger> logger = std::make_shared<spdlog::logger>("Pentagram", sinks.begin(), sinks.end());
 #endif
 
     exception::exception(const std::string& message, errorCodes errorCode) : m_message(message), m_errorCode(errorCode) {
