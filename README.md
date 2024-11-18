@@ -9,11 +9,11 @@ Run this command with [git](https://git-scm.com/) installed to clone this reposi
 
 ## Platform support
 
-Penagram uses strictly cross-platform libraries \(Windows, Mac, and Linux support\) and [CMake](https://cmake.org/), tested on Arch linux X11 (with GNOME, idk if that matters), and has been tested on Windows 11/10.
+Ghoul Engine uses strictly cross-platform libraries \(Windows, Mac, and Linux support\) and [CMake](https://cmake.org/), and is tested on Arch linux with KDE plasma and Windows 11/10.
 
 ## Disclaimer
 
-Wayland is not supported as the restrictions on windows position query and modification with imgui \(internaly imgui calls a fuction that segfaults on wayland, may fix in the future. DO NOT EXPECT THIS\). Using linux works, but it is buggier that windows.
+Wayland can be used if you don't ever query or set the window position, this includes using imgui viewports.
 
 ## How to use with cmake
 
