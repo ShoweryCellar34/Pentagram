@@ -271,6 +271,9 @@ namespace PNT {
         if(m_window == nullptr) {
             throw exception("Window not initalized.", errorCodes::PNT_ERROR);
         }
+        if((xpos == GLFW_DONT_CARE) and (ypos == GLFW_DONT_CARE)) {
+            return;
+        }
 
         glfwSetWindowPos(m_window, xpos, ypos);
         callbackManagers::windowposCallbackManager(m_window, xpos, ypos);

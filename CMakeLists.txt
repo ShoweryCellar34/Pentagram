@@ -6,7 +6,6 @@ project(Pentagram LANGUAGES CXX C DESCRIPTION "A framwork for building apps" HOM
 
 set(GLFW_USE_HYBRID_HPG true CACHE BOOL "Force use of high-performance GPU on hybrid systems")
 set(GLFW_LIBRARY_TYPE "STATIC" CACHE STRING "Library type override for GLFW (SHARED, STATIC, OBJECT, or empty to follow BUILD_SHARED_LIBS)")
-set(GLFW_BUILD_WAYLAND false CACHE BOOL "Build support for Wayland")
 add_subdirectory(vendors/glfw)
 
 set(GLM_ENABLE_CXX_20 true CACHE BOOL "Enable C++ 20")
