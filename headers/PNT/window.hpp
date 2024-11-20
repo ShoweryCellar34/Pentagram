@@ -249,7 +249,7 @@ namespace PNT {
 
         /// @brief Gets the OpenGL context.
         /// @return The opengl context pointer.
-        GladGLContext* getGL() const;
+        const GladGLContext* const getGL() const;
 
         /// @brief Check if the currect window should close.
         /// @return True if the window should close.
@@ -257,6 +257,6 @@ namespace PNT {
 
         /// @brief Gets the glfw window.
         /// @return A pointer to the internal glfw window (BE CAREFUL).
-        GLFWwindow* getGLFWWindow() const;
+        const GLFWwindow* const getGLFWWindow() const;
     };
 }

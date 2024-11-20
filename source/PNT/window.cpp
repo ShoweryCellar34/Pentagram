@@ -428,7 +428,7 @@ namespace PNT {
         return m_data.iconified;
     }
 
-    GladGLContext* Window::getGL() const {
+    const GladGLContext* const Window::getGL() const {
         if(m_window == nullptr) {
             throw exception("Window not initalized.", errorCodes::PNT_ERROR);
         }
@@ -444,7 +444,7 @@ namespace PNT {
         return glfwWindowShouldClose(m_window);
     }
 
-    GLFWwindow* Window::getGLFWWindow() const {
+    const GLFWwindow* const Window::getGLFWWindow() const {
         return m_window;
     }
 
