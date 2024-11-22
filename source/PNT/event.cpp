@@ -41,11 +41,11 @@ namespace PNT {
         return event;
     }
 
-    windowEvent createDropEvent(size_t pathCount, const char* paths[]) {
+    windowEvent createDropEvent(int pathCount, const char* paths[]) {
         windowEvent event;
 
         event.type = eventTypes::DROP;
-        for(size_t i = 0; i < pathCount; i++) {
+        for(int i = 0; i < pathCount; i++) {
             event.dropFiles.paths.emplace_back(paths[i]);
         }
 

@@ -1,10 +1,9 @@
 #pragma once
 
 #include <string>
-#include <stdint.h>
-#include <stddef.h>
 #include <vector>
 #include <chrono>
+#include <imgui.h>
 
 struct GLFWmonitor;
 struct GLFWwindow;
@@ -59,7 +58,8 @@ namespace PNT {
     struct windowData {
         void(*eventCallback)(Window*, windowEvent);
         std::string title;
-        uint32_t width, height, xpos, ypos, ImGuiFlags;
+        int width, height, xpos, ypos;
+        ImGuiConfigFlags ImGuiFlags;
         bool focused;
         bool hidden;
         bool iconified;
@@ -77,12 +77,12 @@ namespace PNT {
         friend void deinit();
         friend void processEvents();
 
-        static inline size_t m_instances;
+        static inline int m_instances;
         static inline std::vector<Window*> m_instancesList;
         GLFWwindow* m_window = nullptr;
         GladGLContext* m_openglContext;
-        bool m_closed = true;
-        bool m_frame = false;
+        bool m_closed;
+        bool m_frame;
         windowData m_data;
         std::vector<windowEvent> m_eventQueue;
         ImGuiContext* m_ImContext;
@@ -92,7 +92,7 @@ namespace PNT {
         std::chrono::steady_clock::time_point endframe;
         std::chrono::duration<double> deltaTime;
 
-        void createWindowIntern(const std::string& title, uint32_t width, uint32_t height, uint32_t xpos, uint32_t ypos, uint32_t ImGuiFlags);
+        void createWindowIntern(const std::string& title, int width, int height, int xpos, int ypos, ImGuiConfigFlags ImGuiFlags);
     public:
         /// @brief Window object empty default constuctor, can be used later with "createWindow()" method.
         Window();
@@ -104,7 +104,7 @@ namespace PNT {
         /// @param xpos The desired x position.
         /// @param ypos The desired y position.
         /// @param ImGuiFlags The desired imgui configuration flags.
-        Window(const std::string& title, uint32_t width, uint32_t height, uint32_t xpos, uint32_t ypos, uint32_t ImGuiFlags);
+        Window(const std::string& title, int width, int height, int xpos, int ypos, ImGuiConfigFlags ImGuiFlags);
 
         /// @brief Window object constuctor.
         /// @param data The desired "windowData" object for the window.
@@ -119,7 +119,7 @@ namespace PNT {
         /// @param xpos The desired x position.
         /// @param ypos The desired y position.
         /// @param ImGuiFlags The desired imgui configuration flags.
-        void createWindow(const std::string& title, uint32_t width, uint32_t height, uint32_t xpos, uint32_t ypos, uint32_t ImGuiFlags = 0);
+        void createWindow(const std::string& title, int width, int height, int xpos, int ypos, ImGuiConfigFlags ImGuiFlags = 0);
 
         /// @brief Creates the window, you can use this in conjunction with the "Window()" constructor that tskes no arguments to create the window on screen later.
         /// @param data The desired "windowData" object for the window.
@@ -161,7 +161,7 @@ namespace PNT {
         /// @brief Sets the dimentions of the window.
         /// @param width The desired window width.
         /// @param height The desired window height.
-        void setDimentions(uint32_t width, uint32_t height);
+        void setDimentions(int width, int height);
 
         /// @brief Focuses the window.
         void setFocused();
@@ -169,7 +169,7 @@ namespace PNT {
         /// @brief Sets the position of the window.
         /// @param xpos The desired x window position.
         /// @param ypos The desired y window position.
-        void setPosition(uint32_t xpos, uint32_t ypos);
+        void setPosition(int xpos, int ypos);
 
         /// @brief Hides the window.
         void hide();
@@ -201,7 +201,7 @@ namespace PNT {
         /// @brief Sets the required aspect ratio of the window.
         /// @param numerator The desired aspect ratio numerator (-1 for anything).
         /// @param denominator The desired aspect ratio denominator (-1 for anything).
-        void setAspectRatio(uint32_t numerator, uint32_t denominator);
+        void setAspectRatio(int numerator, int denominator);
 
         /// @brief Gets the time to calculate the last frame.
         /// @return The time in nanoseconds between the last newframe and endframe pair.
@@ -221,11 +221,11 @@ namespace PNT {
 
         /// @brief Gets the width of the window.
         /// @return The window width.
-        uint16_t getWidth() const;
+        int getWidth() const;
 
         /// @brief Gets the height of the window.
         /// @return The window height.
-        uint16_t getHeight() const;
+        int getHeight() const;
 
         /// @brief Gets the window focus.
         /// @return The focus of the window, true if focused and false if not focused.
@@ -233,11 +233,11 @@ namespace PNT {
 
         /// @brief Gets the X position of the window.
         /// @return The window X position.
-        uint16_t getXPos() const;
+        int getXPos() const;
 
         /// @brief Gets the Y position of the window.
         /// @return The window Y position.
-        uint16_t getYPos() const;
+        int getYPos() const;
 
         /// @brief Gets the hidden state of the window.
         /// @return True if the window is hidden (not on screen of on taskbar), and false if otherwise.
@@ -249,7 +249,7 @@ namespace PNT {
 
         /// @brief Gets the OpenGL context.
         /// @return The opengl context pointer.
-        const GladGLContext* const getGL() const;
+        const GladGLContext* getGL() const;
 
         /// @brief Check if the currect window should close.
         /// @return True if the window should close.
@@ -257,6 +257,6 @@ namespace PNT {
 
         /// @brief Gets the glfw window.
         /// @return A pointer to the internal glfw window (BE CAREFUL).
-        const GLFWwindow* const getGLFWWindow() const;
+        const GLFWwindow* getGLFWWindow() const;
     };
 }

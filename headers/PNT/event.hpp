@@ -82,7 +82,7 @@ namespace PNT {
 
     windowEvent createKeyEvent(int key, int scancode, int action, int mods);
     windowEvent createCharEvent(unsigned int codepoint);
-    windowEvent createDropEvent(size_t pathCount, const char* paths[]);
+    windowEvent createDropEvent(int pathCount, const char* paths[]);
     windowEvent createScrollEvent(double xoffset, double yoffset);
     windowEvent createCursorposEvent(double xpos, double ypos);
     windowEvent createWindowposEvent(int xpos, int ypos);
