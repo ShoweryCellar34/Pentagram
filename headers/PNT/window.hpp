@@ -4,6 +4,8 @@
 #include <vector>
 #include <chrono>
 #include <imgui.h>
+#include <glad/gl.h>
+#include <GLFW/glfw3.h>
 
 struct GLFWmonitor;
 struct GLFWwindow;
@@ -67,7 +69,7 @@ namespace PNT {
         float clearColor[4];
         void* userPointer;
 
-        windowData() : eventCallback(nullptr), title{0}, width(128), height(128), xpos(200), ypos(200), ImGuiFlags(0), focused(false), hidden(false), iconified(false), vsyncMode(vsyncModes::OFF), clearColor{0.0f, 0.0f, 0.0f, 0.0f}, userPointer(nullptr) {
+        windowData() : eventCallback(nullptr), title{0}, width(128), height(128), xpos(GLFW_DONT_CARE), ypos(GLFW_DONT_CARE), ImGuiFlags(0), focused(false), hidden(false), iconified(false), vsyncMode(vsyncModes::OFF), clearColor{0.0f, 0.0f, 0.0f, 1.0f}, userPointer(nullptr) {
         }
     };
 

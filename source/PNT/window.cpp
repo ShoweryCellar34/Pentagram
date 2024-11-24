@@ -2,8 +2,6 @@
 
 #include <algorithm>
 #include <spdlog/spdlog.h>
-#include <glad/gl.h>
-#include <GLFW/glfw3.h>
 #include <imgui.h>
 #include <misc/cpp/imgui_stdlib.h>
 #include <backends/imgui_impl_glfw.h>
