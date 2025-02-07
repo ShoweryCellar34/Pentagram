@@ -1,4 +1,4 @@
-This project uses the following projects:
+This project uses the following project(s):
 
 - ImGui: The license for ImGui can be found at `vendors/imgui/LICENSE.txt`.
 - GLFW: The license for SDL can be found at `vendors/glfw/LICENCE.md`.
