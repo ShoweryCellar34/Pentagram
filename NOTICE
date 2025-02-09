@@ -3,7 +3,7 @@ This project uses the following project(s):
 - ImGui: The license for ImGui can be found at `vendors/imgui/LICENSE.txt`.
 - GLFW: The license for GLFW can be found at `vendors/glfw/LICENCE.md`.
 - glm: The license for glm can be found at `vendors/glm/copying.txt`.
-- GLAD: The license for GLAD can be found at `vendors/glad/LICENSE`.
+- GLAD: The license for GLAD can be found at `vendors/glad/glad/LICENSE`.
 - stb: The license for stb can be found at `vendors/stb/LICENSE`.
 - spdlog: The license for stb can be found at `vendors/spdlog/LICENSE`.
 
